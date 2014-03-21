@@ -18,3 +18,14 @@ fi
 
 echo "Executing 'python $OPENSHIFT_REPO_DIR/wsgi/openshift/manage.py collectstatic --noinput'"
 python "$OPENSHIFT_REPO_DIR"wsgi/openshift/manage.py collectstatic --noinput
+
+echo "Copying migrations to  app-root storage"
+cp -r "${OPENSHIFT_DATA_DIR}migrations" ${OPENSHIFT_REPO_DIR}wsgi/openshift/dapi
+python "$OPENSHIFT_REPO_DIR"wsgi/openshift/manage.py schemamigration dapi --auto
+ 
+echo "Executing 'python $OPENSHIFT_REPO_DIR/wsgi/openshift/manage.py migrate dapi'"
+python "$OPENSHIFT_REPO_DIR"wsgi/openshift/manage.py migrate dapi
+ 
+ 
+echo "Saving migrations to persistent storage"
+cp -r "${OPENSHIFT_REPO_DIR}wsgi/openshift/dapi/migrations" ${OPENSHIFT_DATA_DIR}

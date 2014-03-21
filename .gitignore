@@ -6,3 +6,5 @@
 .project
 .pydevproject
 *.db
+wsgi/openshift/dapi/migrations
+
