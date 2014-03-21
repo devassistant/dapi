@@ -1,0 +1,9 @@
+{% if daps_list %}
+    <ul>
+    {% for dap in daps_list %}
+        <li><a href="/dap/{{ dap.package_name }}/">{{ dap.package_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No daps are available.</p>
+{% endif %}

@@ -1,0 +1,22 @@
+<h1>{{ dap }}</h1>
+<ul>
+    <li>{{ dap.summary }}</li>
+    <li>Version: {{ dap.version }}</li>
+    <li>License: {{ dap.license }}</li>
+    {% if dap.homepage %}
+    <li><a href="{{ dap.homepage }}">homepage</a></li>
+    {% endif %}
+    {% if dap.bugreports %}
+    <li><a href="{{ dap.bugreports }}">bugreports</a></li>
+    {% endif %}
+    {% if dap.description %}
+    <li>{{ dap.description }}</li>
+    {% endif %}
+    <li>Authors:
+        <ul>
+        {% for author in dap.author_set.all %}
+            <li>{{ author }}</li>
+        {% endfor %}
+        </ul>
+    </li>
+</ul>
