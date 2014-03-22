@@ -19,7 +19,7 @@ else:
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Miro Hroncok', 'mhroncok@redhat.com'),
 )
 MANAGERS = ADMINS
 
@@ -47,6 +47,8 @@ else:
             'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         }
     }
+
+ALLOWED_HOSTS = ['.rhcloud.com']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

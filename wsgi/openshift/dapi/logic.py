@@ -2,6 +2,7 @@ import daploader
 import logging
 import os
 from cStringIO import StringIO
+from dapi.models import *
 
 try:
     UPLOADDIR = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'upload')
@@ -33,7 +34,6 @@ def handle_uploaded_dap(f):
 
 
 def save_dap_to_db(dap):
-    from dapi.models import *
     try:
         d = Dap.objects.get(package_name=dap.meta['package_name'])
         if d.version >= dap.meta['version']:
