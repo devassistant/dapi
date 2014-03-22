@@ -29,3 +29,5 @@ cp -r "${OPENSHIFT_REPO_DIR}wsgi/openshift/dapi/migrations" ${OPENSHIFT_DATA_DIR
 ./manage.py createsuperuser --username=foo --noinput --email foo@bar.com
 ./manage.py changepassword foo
 ````
+
+Don't forget to update settings.py with your e-mail address and ALLOWED_HOSTS.
