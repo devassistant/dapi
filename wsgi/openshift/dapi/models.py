@@ -10,6 +10,8 @@ class Dap(models.Model):
     description = models.CharField(max_length=2000,blank=True)
     def __unicode__(self):
         return self.package_name
+    def link(self):
+        return 'daps/'+self.package_name+'-'+self.version+'.dap'
 
 class Author(models.Model):
     dap = models.ForeignKey(Dap)

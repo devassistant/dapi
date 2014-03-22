@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <h1>{{ dap }}</h1>
 <ul>
     <li>{{ dap.summary }}</li>
@@ -19,4 +20,5 @@
         {% endfor %}
         </ul>
     </li>
+    <li><a href="{% static dap.link %}">download</a></li>
 </ul>
