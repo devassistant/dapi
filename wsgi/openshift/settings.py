@@ -7,7 +7,7 @@ ON_OPENSHIFT = False
 DAPDIR = 'upload'
 if os.environ.has_key('OPENSHIFT_REPO_DIR'):
     ON_OPENSHIFT = True
-    DAPDIR = os.path.join(os.environ['OPENSHIFT_DATA_DIR'],'upload')
+    DAPDIR = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'upload')
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:

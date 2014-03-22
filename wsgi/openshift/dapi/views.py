@@ -9,6 +9,7 @@ from dapi.models import Dap
 from dapi.forms import UploadDapForm
 from dapi.logic import *
 
+
 def index(request):
     if request.method == 'POST':
         form = UploadDapForm(request.POST, request.FILES)
@@ -20,11 +21,13 @@ def index(request):
         errors = []
         form = UploadDapForm()
     daps_list = Dap.objects.all().order_by('package_name')
-    return render_to_response('dapi/index.html', {'daps_list': daps_list,'form': form,'errors': errors},context_instance=RequestContext(request))
+    return render_to_response('dapi/index.html', {'daps_list': daps_list, 'form': form, 'errors': errors}, context_instance=RequestContext(request))
+
 
 def dap(request, dap):
     d = get_object_or_404(Dap, package_name=dap)
     return render_to_response('dapi/dap.html', {'dap': d})
+
 
 def success(request):
     return render_to_response('dapi/success.html')
