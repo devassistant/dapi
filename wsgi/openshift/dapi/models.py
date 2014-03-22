@@ -1,7 +1,7 @@
 from django.db import models
 
 class Dap(models.Model):
-    package_name = models.CharField(max_length=200)
+    package_name = models.CharField(max_length=200,unique=True)
     version = models.CharField(max_length=200)
     license = models.CharField(max_length=200)
     homepage = models.CharField(max_length=200,blank=True)

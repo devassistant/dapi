@@ -1,9 +1,24 @@
 {% if daps_list %}
+<h2>Available daps</h2>
     <ul>
     {% for dap in daps_list %}
         <li><a href="/dap/{{ dap.package_name }}/">{{ dap.package_name }}</a></li>
     {% endfor %}
     </ul>
-{% else %}
-    <p>No daps are available.</p>
+{% endif %}
+
+<h2>Upload a dap</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <p>By submitting the form, you agree to terms of service.</p>
+  <p><input type="submit" value="Submit" /></p>
+</form>
+{% if errors %}
+<h3>Errors:</h3>
+<ul>
+    {% for error in errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+</ul>
 {% endif %}

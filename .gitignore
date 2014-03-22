@@ -7,4 +7,4 @@
 .pydevproject
 *.db
 wsgi/openshift/dapi/migrations
-
+*.dap
