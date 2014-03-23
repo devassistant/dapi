@@ -1,4 +1,5 @@
 import daploader
+from daploader import dapver
 import logging
 import os
 from cStringIO import StringIO
@@ -26,18 +27,19 @@ def handle_uploaded_dap(f):
             errors = out.getvalue().rstrip().split('\n')
     except (daploader.DapFileError, daploader.DapMetaError) as e:
         errors = [str(e)]
+    if not errors:
+        errors = save_dap_to_db(dap)
     if errors:
         os.remove(dapfile)
-    else:
-        errors = save_dap_to_db(dap)
     return errors
 
 
 def save_dap_to_db(dap):
     try:
         d = Dap.objects.get(package_name=dap.meta['package_name'])
-        if d.version >= dap.meta['version']:
+        if dapver.compare(d.version,dap.meta['version']) >= 0:
             return ['We have ' + d.package_name + ' already in the same or higher version. If you are the owner, bump the version.']
+        # keep the old .dap file as a backup
     except Dap.DoesNotExist:
         d = Dap()
     d.package_name = dap.meta['package_name']
@@ -48,7 +50,8 @@ def save_dap_to_db(dap):
     d.summary = dap.meta['summary']
     d.description = dap.meta['description']
     d.save()
-    # TODO remove old authors
+    for author in d.author_set.all():
+        author.delete()
     for author in dap.meta['authors']:
         d.author_set.create(author=author)
     return []
