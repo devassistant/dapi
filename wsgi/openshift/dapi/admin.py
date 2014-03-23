@@ -9,7 +9,7 @@ class AuthorInline(admin.StackedInline):
 
 class DapAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Mandatory', {'fields': ['package_name', 'version', 'license', 'summary']}),
+        ('Mandatory', {'fields': ['package_name', 'version', 'license', 'summary', 'user']}),
         ('Optional', {'fields': ['homepage', 'bugreports', 'description'], 'classes': ['collapse']}),
     ]
     inlines = [AuthorInline]

@@ -11,7 +11,7 @@ except KeyError:
     UPLOADDIR = 'upload'
 
 
-def handle_uploaded_dap(f):
+def handle_uploaded_dap(f, user):
     errors = []
     dapfile = os.path.join(UPLOADDIR, f.name)
     if os.path.isfile(dapfile):
@@ -29,17 +29,19 @@ def handle_uploaded_dap(f):
         errors = [str(e)]
     dname = None
     if not errors:
-        errors, dname = save_dap_to_db(dap)
+        errors, dname = save_dap_to_db(dap, user)
     if errors:
         os.remove(dapfile)
     return errors, dname
 
 
-def save_dap_to_db(dap):
+def save_dap_to_db(dap, user):
     try:
         d = Dap.objects.get(package_name=dap.meta['package_name'])
+        if d.user != user:
+            return ['We have ' + d.package_name + ' already here, but you don\'t own it.'], None
         if dapver.compare(d.version,dap.meta['version']) >= 0:
-            return ['We have ' + d.package_name + ' already in the same or higher version. If you are the owner, bump the version.'], None
+            return ['We have ' + d.package_name + ' already in the same or higher version. If you want to update it, bump the version.'], None
         # keep the old .dap file as a backup
     except Dap.DoesNotExist:
         d = Dap()
@@ -50,6 +52,7 @@ def save_dap_to_db(dap):
     d.bugreports = dap.meta['bugreports']
     d.summary = dap.meta['summary']
     d.description = dap.meta['description']
+    d.user = user
     d.save()
     for author in d.author_set.all():
         author.delete()

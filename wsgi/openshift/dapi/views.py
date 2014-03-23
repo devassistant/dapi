@@ -15,7 +15,7 @@ def index(request):
     if request.method == 'POST' and request.user.is_authenticated:
         form = UploadDapForm(request.POST, request.FILES)
         if form.is_valid():
-            errors, dname = handle_uploaded_dap(request.FILES['file'])
+            errors, dname = handle_uploaded_dap(request.FILES['file'], request.user)
             if not errors:
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
     else:

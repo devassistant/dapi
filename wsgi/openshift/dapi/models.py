@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Dap(models.Model):
@@ -9,6 +10,7 @@ class Dap(models.Model):
     bugreports = models.CharField(max_length=200, blank=True)
     summary = models.CharField(max_length=500)
     description = models.CharField(max_length=2000, blank=True)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.package_name
