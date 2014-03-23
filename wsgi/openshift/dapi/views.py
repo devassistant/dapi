@@ -15,9 +15,9 @@ def index(request):
     if request.method == 'POST' and request.user.is_authenticated:
         form = UploadDapForm(request.POST, request.FILES)
         if form.is_valid():
-            errors = handle_uploaded_dap(request.FILES['file'])
+            errors, dname = handle_uploaded_dap(request.FILES['file'])
             if not errors:
-                return HttpResponseRedirect(reverse('dapi.views.success'))
+                return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
     else:
         errors = []
         form = UploadDapForm()
@@ -28,11 +28,6 @@ def index(request):
 def dap(request, dap):
     d = get_object_or_404(Dap, package_name=dap)
     return render_to_response('dapi/dap.html', {'dap': d})
-
-
-def success(request):
-    return render_to_response('dapi/success.html')
-
 
 def logout(request):
     auth_logout(request)

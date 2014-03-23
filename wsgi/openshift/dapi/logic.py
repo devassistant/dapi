@@ -15,7 +15,7 @@ def handle_uploaded_dap(f):
     errors = []
     dapfile = os.path.join(UPLOADDIR, f.name)
     if os.path.isfile(dapfile):
-        return ['Oops. We already have ' + f.name + ' here. If you are the owner and you want to update it, bump the version.']
+        return ['Oops. We already have ' + f.name + ' here. If you are the owner and you want to update it, bump the version.'], None
     destination = open(dapfile, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
@@ -27,18 +27,19 @@ def handle_uploaded_dap(f):
             errors = out.getvalue().rstrip().split('\n')
     except (daploader.DapFileError, daploader.DapMetaError) as e:
         errors = [str(e)]
+    dname = None
     if not errors:
-        errors = save_dap_to_db(dap)
+        errors, dname = save_dap_to_db(dap)
     if errors:
         os.remove(dapfile)
-    return errors
+    return errors, dname
 
 
 def save_dap_to_db(dap):
     try:
         d = Dap.objects.get(package_name=dap.meta['package_name'])
         if dapver.compare(d.version,dap.meta['version']) >= 0:
-            return ['We have ' + d.package_name + ' already in the same or higher version. If you are the owner, bump the version.']
+            return ['We have ' + d.package_name + ' already in the same or higher version. If you are the owner, bump the version.'], None
         # keep the old .dap file as a backup
     except Dap.DoesNotExist:
         d = Dap()
@@ -54,4 +55,4 @@ def save_dap_to_db(dap):
         author.delete()
     for author in dap.meta['authors']:
         d.author_set.create(author=author)
-    return []
+    return [], d.package_name
