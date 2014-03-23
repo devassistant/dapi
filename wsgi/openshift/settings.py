@@ -5,9 +5,11 @@ import imp, os
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
 DAPDIR = 'upload'
+GITHUB_FILE = 'github'
 if os.environ.has_key('OPENSHIFT_REPO_DIR'):
     ON_OPENSHIFT = True
     DAPDIR = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'upload')
+    GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'github')
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:
@@ -184,6 +186,14 @@ LOGIN_REDIRECT_URL = '/'
 URL_PATH = ''
 SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
 SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
+
+try:
+    with open(GITHUB_FILE) as f:
+        github = f.readlines()
+    SOCIAL_AUTH_GITHUB_KEY = github[0].rstrip()
+    SOCIAL_AUTH_GITHUB_SECRET = github[1].rstrip()
+except Exception:
+    pass
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
