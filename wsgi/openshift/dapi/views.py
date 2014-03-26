@@ -32,3 +32,12 @@ def dap(request, dap):
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse('dapi.views.index'))
+
+def error_login(request):
+    try:
+        error = request.GET['message']
+        backend = request.GET['backend']
+    except KeyError:
+        error = ''
+        backend = ''
+    return render_to_response('dapi/error_login.html', {'error': error, 'backend': backend})

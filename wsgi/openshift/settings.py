@@ -142,6 +142,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'openshift.urls'
@@ -183,6 +184,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL = '/loginerr'
 URL_PATH = ''
 SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
 SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
