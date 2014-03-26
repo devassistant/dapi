@@ -17,7 +17,7 @@ if ON_OPENSHIFT:
     if DEBUG:
         print("WARNING: The DEBUG environment is set to True.")
 else:
-    DEBUG = True
+    DEBUG = bool(os.environ.get('DEBUG', True))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -50,7 +50,7 @@ else:
         }
     }
 
-ALLOWED_HOSTS = ['.rhcloud.com']
+ALLOWED_HOSTS = ['.rhcloud.com','127.0.0.1']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
