@@ -1,3 +1,31 @@
+{% if user.is_authenticated %}
+<p>You are logged in as {{ user.username }}! (<a href="/logout/">Logout</a>)</p>
+
+{% for assoc in backends.associated %}
+<form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
+{% endfor %}
+
+<p>Associate:
+{% for name in backends.not_associated %}
+<a href="{% url 'social:begin' name %}">{{ name }}</a>,
+{% endfor %}
+</p>
+{% else %}
+<p>Login:
+{% for name in backends.not_associated %}
+<a href="{% url 'social:begin' name %}">{{ name }}</a>,
+{% endfor %}
+</p>
+{% endif %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% if daps_list %}
 <h2>Available daps</h2>
     <ul>
@@ -15,43 +43,4 @@
   <p>By submitting the form, you agree to terms of service.</p>
   <p><input type="submit" value="Submit" /></p>
 </form>
-{% if errors %}
-<h3>Errors:</h3>
-<ul>
-    {% for error in errors %}
-        <li>{{ error }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-<h2>User</h2>
-<p>You are logged in as {{ user.username }}! (<a href="/logout/">Logout</a>)</p>
-
-<p>Associated:</p>
-{% for assoc in backends.associated %}
-  <div>
-    <strong>{{ assoc.provider }}</strong>
-    <form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}
-      <button>Disconnect</button>
-    </form>
-  </div>
-{% endfor %}
-
-<p>Associate:</p>
-<ul>
-  {% for name in backends.not_associated %}
-    <li>
-      <a href="{% url 'social:begin' name %}">{{ name }}</a>
-    </li>
-  {% endfor %}
-</ul>
-{% else %}
-<h2>Login</h2>
-<ul>
-  {% for name in backends.not_associated %}
-    <li>
-      <a href="{% url 'social:begin' name %}">{{ name }}</a>
-    </li>
-  {% endfor %}
-</ul>
 {% endif %}

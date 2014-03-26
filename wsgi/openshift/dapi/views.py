@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib.auth import logout as auth_logout
+from django.contrib import messages
 
 # Our local modules
 from dapi.models import Dap
@@ -18,11 +19,13 @@ def index(request):
             errors, dname = handle_uploaded_dap(request.FILES['file'], request.user)
             if not errors:
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
+            else:
+                for err in errors:
+                    messages.error(request, err)
     else:
-        errors = []
         form = UploadDapForm()
     daps_list = Dap.objects.all().order_by('package_name')
-    return render_to_response('dapi/index.html', {'daps_list': daps_list, 'form': form, 'errors': errors, 'user': request.user}, context_instance=RequestContext(request))
+    return render_to_response('dapi/index.html', {'daps_list': daps_list, 'form': form, 'user': request.user}, context_instance=RequestContext(request))
 
 
 def dap(request, dap):
@@ -32,12 +35,3 @@ def dap(request, dap):
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse('dapi.views.index'))
-
-def error_login(request):
-    try:
-        error = request.GET['message']
-        backend = request.GET['backend']
-    except KeyError:
-        error = ''
-        backend = ''
-    return render_to_response('dapi/error_login.html', {'error': error, 'backend': backend})
