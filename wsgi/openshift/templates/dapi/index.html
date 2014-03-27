@@ -5,19 +5,9 @@
 <h2>Available daps</h2>
     <ul>
     {% for dap in daps_list %}
-        <li><a href="/dap/{{ dap.package_name }}/">{{ dap.package_name }}</a></li>
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
     {% endfor %}
     </ul>
-{% endif %}
-
-{% if user.is_authenticated %}
-<h2>Upload a dap</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <p>By submitting the form, you agree to terms of service.</p>
-  <p><input type="submit" value="Submit" /></p>
-</form>
 {% endif %}
 
 {% endblock %}

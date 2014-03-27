@@ -14,6 +14,10 @@ from dapi.logic import *
 
 
 def index(request):
+    daps_list = Dap.objects.all().order_by('package_name')
+    return render(request, 'dapi/index.html', {'daps_list': daps_list})
+
+def upload(request):
     if request.method == 'POST' and request.user.is_authenticated:
         form = UploadDapForm(request.POST, request.FILES)
         if form.is_valid():
@@ -25,9 +29,7 @@ def index(request):
                     messages.error(request, err)
     else:
         form = UploadDapForm()
-    daps_list = Dap.objects.all().order_by('package_name')
-    return render(request, 'dapi/index.html', {'daps_list': daps_list, 'form': form})
-
+    return render(request, 'dapi/upload.html', {'form': form})
 
 def dap(request, dap):
     d = get_object_or_404(Dap, package_name=dap)

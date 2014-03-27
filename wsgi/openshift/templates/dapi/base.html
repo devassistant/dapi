@@ -6,9 +6,12 @@
     {% block head_scripts %}{% endblock %}
   </head>
   <body>
-    <p><a href="/">home</a></p>
+    <ul id="menu">
+      <li><a href="{% url 'dapi.views.index' %}">index</a></li>
+      {% if user.is_authenticated %}<li><a href="{% url 'dapi.views.upload' %}">upload</a></li>{% endif %}
+    </ul>
     {% if user.is_authenticated %}
-    <p>You are logged in as {{ user.username }}! (<a href="/logout/">Logout</a>)</p>
+    <p>You are logged in as {{ user.username }}! (<a href="{% url 'dapi.views.logout' %}">Logout</a>)</p>
 
     {% for assoc in backends.associated %}
     <form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
