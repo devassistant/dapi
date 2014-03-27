@@ -1,0 +1,25 @@
+{% extends "dapi/base.html" %}
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <p><input type="submit" value="Save" /></p>
+</form>
+
+{% if user == u %}
+{% if backends.not_associated %}
+<p>Associate:</p>
+  <ul>
+  {% for name in backends.not_associated %}
+    <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a></li>
+  {% endfor %}
+  </ul>
+
+{% endif %}
+
+{% for assoc in backends.associated %}
+<form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

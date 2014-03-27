@@ -1,7 +1,6 @@
 {% extends "dapi/base.html" %}
 {% block content %}
 
-{% if user.is_authenticated %}
 <h2>Upload a dap</h2>
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
@@ -9,8 +8,5 @@
   <p>By submitting the form, you agree to terms of service.</p>
   <p><input type="submit" value="Submit" /></p>
 </form>
-{% else %}
-<p>Login to upload a dap.</p>
-{% endif %}
 
 {% endblock %}

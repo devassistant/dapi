@@ -8,29 +8,19 @@
   <body>
     <ul id="menu">
       <li><a href="{% url 'dapi.views.index' %}">index</a></li>
-      {% if user.is_authenticated %}<li><a href="{% url 'dapi.views.upload' %}">upload</a></li>{% endif %}
-    </ul>
-    {% if user.is_authenticated %}
-    <p>You are logged in as {{ user.username }}! (<a href="{% url 'dapi.views.logout' %}">Logout</a>)</p>
-
-    {% for assoc in backends.associated %}
-    <form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
-    {% endfor %}
-    
-      {% if backends.not_associated %}
-      <p>Associate:
-      {% for name in backends.not_associated %}
-      <a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a>,
-      {% endfor %}
-      </p>
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'dapi.views.upload' %}">upload</a></li>
+      <li><a href="{% url 'dapi.views.user' user.username %}">{{ user.username }}</a><ul>
+        <li><a href="{% url 'dapi.views.user_edit' user.username %}">edit profile</a></li>
+        <li><a href="{% url 'dapi.views.logout' %}">logout</a></li>
+      </ul></li>
+      {% else %}
+      <li>login:<ul>{% for name in backends.not_associated %}
+        <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a></li>
+      {% endfor %}</ul></li>
       {% endif %}
-    {% else %}
-    <p>Login:
-    {% for name in backends.not_associated %}
-    <a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a>,
-    {% endfor %}
-    </p>
-    {% endif %}
+    </ul>
+
     
     {% if messages %}
     <ul class="messages">

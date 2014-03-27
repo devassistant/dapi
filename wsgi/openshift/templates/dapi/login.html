@@ -1,0 +1,9 @@
+{% extends "dapi/base.html" %}
+{% block content %}
+
+Login with:
+{% for name in backends.not_associated %}
+<a href="{% url 'social:begin' name %}?next={{ next }}">{{ name }}</a>,
+{% endfor %}
+
+{% endblock %}
