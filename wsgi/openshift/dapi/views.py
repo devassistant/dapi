@@ -8,6 +8,7 @@ from django.contrib import messages
 
 # Our local modules
 from dapi.models import Dap
+from django.contrib.auth.models import User
 from dapi.forms import UploadDapForm
 from dapi.logic import *
 

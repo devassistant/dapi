@@ -20,5 +20,14 @@
         {% endfor %}
         </ul>
     </li>
+    <li>Owned by {{ dap.user }}
+    {% if dap.comaintainers.exists %}
+        <ul>
+        {% for comaintainer in dap.comaintainers.all %}
+            <li>{{ comaintainer }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </li>
     <li><a href="{% static dap.link %}">download</a></li>
 </ul>

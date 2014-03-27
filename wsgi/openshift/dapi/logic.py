@@ -38,7 +38,7 @@ def handle_uploaded_dap(f, user):
 def save_dap_to_db(dap, user):
     try:
         d = Dap.objects.get(package_name=dap.meta['package_name'])
-        if d.user != user:
+        if d.user != user and user not in d.comaintainers.all():
             return ['We have ' + d.package_name + ' already here, but you don\'t own it.'], None
         if dapver.compare(d.version,dap.meta['version']) >= 0:
             return ['We have ' + d.package_name + ' already in the same or higher version. If you want to update it, bump the version.'], None
@@ -52,7 +52,10 @@ def save_dap_to_db(dap, user):
     d.bugreports = dap.meta['bugreports']
     d.summary = dap.meta['summary']
     d.description = dap.meta['description']
-    d.user = user
+    try:
+        d.user
+    except User.DoesNotExist:
+        d.user = user
     d.save()
     for author in d.author_set.all():
         author.delete()
