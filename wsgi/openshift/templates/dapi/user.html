@@ -1,0 +1,19 @@
+{% extends "dapi/base.html" %}
+{% block content %}
+{% load staticfiles %}
+<h1>{{ u }}</h1>
+<ul>
+    <li>Full name: {{ u.get_full_name }}</li>
+    <li>Joined: {{ u.date_joined }}</li>
+    {% if u.dap_set.exists %}<li>Daps: <ul>
+        {% for dap in u.dap_set.all %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
+        {% endfor %}
+    </ul></li>{% endif %}
+    {% if u.codap_set.exists %}<li>Daps co-owned: <ul>
+        {% for dap in u.codap_set.all %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
+        {% endfor %}
+    </ul></li>{% endif %}
+</ul>
+{% endblock %}

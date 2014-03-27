@@ -11,7 +11,7 @@ class Dap(models.Model):
     summary = models.CharField(max_length=500)
     description = models.CharField(max_length=2000, blank=True)
     user = models.ForeignKey(User)
-    comaintainers = models.ManyToManyField(User, null=True, blank=True, default=None, related_name='codap')
+    comaintainers = models.ManyToManyField(User, null=True, blank=True, default=None, related_name='codap_set')
 
     def __unicode__(self):
         return self.package_name

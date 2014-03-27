@@ -35,6 +35,10 @@ def dap(request, dap):
     d = get_object_or_404(Dap, package_name=dap)
     return render(request, 'dapi/dap.html', {'dap': d})
 
+def user(request, user):
+    u = get_object_or_404(User, username=user)
+    return render(request, 'dapi/user.html', {'u': u})
+
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse('dapi.views.index'))

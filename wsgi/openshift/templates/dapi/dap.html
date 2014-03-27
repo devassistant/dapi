@@ -22,11 +22,11 @@
         {% endfor %}
         </ul>
     </li>
-    <li>Owned by {{ dap.user }}
+    <li>Owned by <a href="{% url 'dapi.views.user' dap.user %}">{{ dap.user }}</a>
     {% if dap.comaintainers.exists %}
         <ul>
         {% for comaintainer in dap.comaintainers.all %}
-            <li>{{ comaintainer }}</li>
+            <li><a href="{% url 'dapi.views.user' comaintainer %}">{{ comaintainer }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
