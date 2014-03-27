@@ -1,3 +1,5 @@
+{% extends "dapi/base.html" %}
+{% block content %}
 {% load staticfiles %}
 <h1>{{ dap }}</h1>
 <ul>
@@ -31,3 +33,4 @@
     </li>
     <li><a href="{% static dap.link %}">download</a></li>
 </ul>
+{% endblock %}

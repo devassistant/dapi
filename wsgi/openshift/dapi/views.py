@@ -1,5 +1,5 @@
 # Django modules
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -26,12 +26,12 @@ def index(request):
     else:
         form = UploadDapForm()
     daps_list = Dap.objects.all().order_by('package_name')
-    return render_to_response('dapi/index.html', {'daps_list': daps_list, 'form': form, 'user': request.user}, context_instance=RequestContext(request))
+    return render(request, 'dapi/index.html', {'daps_list': daps_list, 'form': form})
 
 
 def dap(request, dap):
     d = get_object_or_404(Dap, package_name=dap)
-    return render_to_response('dapi/dap.html', {'dap': d})
+    return render(request, 'dapi/dap.html', {'dap': d})
 
 def logout(request):
     auth_logout(request)

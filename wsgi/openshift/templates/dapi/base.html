@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Dapi</title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    {% block head_scripts %}{% endblock %}
+  </head>
+  <body>
+    <p><a href="/">home</a></p>
+    {% if user.is_authenticated %}
+    <p>You are logged in as {{ user.username }}! (<a href="/logout/">Logout</a>)</p>
+
+    {% for assoc in backends.associated %}
+    <form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
+    {% endfor %}
+    
+      {% if backends.not_associated %}
+      <p>Associate:
+      {% for name in backends.not_associated %}
+      <a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a>,
+      {% endfor %}
+      </p>
+      {% endif %}
+    {% else %}
+    <p>Login:
+    {% for name in backends.not_associated %}
+    <a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a>,
+    {% endfor %}
+    </p>
+    {% endif %}
+    
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+    {% block scripts %}{% endblock %}
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+  </body>
+</html>
