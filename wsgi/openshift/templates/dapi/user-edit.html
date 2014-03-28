@@ -17,9 +17,11 @@
 
 {% endif %}
 
+{% if backends.associated.count > 1 %}
 {% for assoc in backends.associated %}
 <form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
 {% endfor %}
+{% endif %}
 {% endif %}
 
 {% endblock %}
