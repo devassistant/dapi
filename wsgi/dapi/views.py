@@ -25,7 +25,7 @@ def upload(request):
         if form.is_valid():
             errors, dname = handle_uploaded_dap(request.FILES['file'], request.user)
             if not errors:
-                messages.info(request, 'Dup successfully uploaded.')
+                messages.info(request, 'Dap successfully uploaded.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
             else:
                 for err in errors:
