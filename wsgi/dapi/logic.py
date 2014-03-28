@@ -10,15 +10,8 @@ from dapi.models import *
 
 def handle_uploaded_dap(f, user):
     errors = []
-    dapfile = os.path.join(settings.MEDIA_ROOT, f.name)
-    if os.path.isfile(dapfile):
-        return ['Oops. We already have ' + f.name + ' here. If you are the owner and you want to update it, bump the version.'], None
-    destination = open(dapfile, 'wb+')
-    for chunk in f.chunks():
-        destination.write(chunk)
-    destination.close()
     try:
-        dap = daploader.Dap(dapfile)
+        dap = daploader.Dap(f.temporary_file_path(), mimic_filename=f.name)
         out = StringIO()
         if not dap.check(output=out, network=False, level=logging.ERROR):
             errors = out.getvalue().rstrip().split('\n')
@@ -26,13 +19,11 @@ def handle_uploaded_dap(f, user):
         errors = [str(e)]
     dname = None
     if not errors:
-        errors, dname = save_dap_to_db(dap, user)
-    if errors:
-        os.remove(dapfile)
+        errors, dname = save_dap_to_db(f, dap, user)
     return errors, dname
 
 
-def save_dap_to_db(dap, user):
+def save_dap_to_db(f, dap, user):
     try:
         m = MetaDap.objects.get(package_name=dap.meta['package_name'])
         if m.user != user and user not in m.comaintainers.all():
@@ -52,6 +43,7 @@ def save_dap_to_db(dap, user):
     d.summary = dap.meta['summary']
     d.description = dap.meta['description']
     d.metadap = m
+    d.file = f
     d.save()
     for author in dap.meta['authors']:
         d.author_set.create(author=author)

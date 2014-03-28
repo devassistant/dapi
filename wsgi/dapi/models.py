@@ -17,6 +17,7 @@ class MetaDap(models.Model):
         return sorted([dap.version for dap in self.dap_set.all()], cmp=dapver.compare, reverse=True)
 
 class Dap(models.Model):
+    file = models.FileField(upload_to=lambda instance, filename: filename)
     metadap = models.ForeignKey(MetaDap)
     version = models.CharField(max_length=200)
     license = models.CharField(max_length=200)
@@ -27,9 +28,6 @@ class Dap(models.Model):
 
     def __unicode__(self):
         return self.metadap.package_name + '-' + self.version
-
-    def link(self):
-        return '/download/' + self.__unicode__() + '.dap'
 
     def is_pre(self):
         return not self.version[-1].isdigit()
