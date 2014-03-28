@@ -6,6 +6,8 @@
 .project
 .pydevproject
 *.db
-wsgi/openshift/dapi/migrations
-wsgi/openshift/github
+wsgi/dapi/migrations
+wsgi/github
+wsgi/upload
+wsgi/static/admin
 *.dap
