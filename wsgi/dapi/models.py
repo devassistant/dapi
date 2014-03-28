@@ -7,14 +7,27 @@ class MetaDap(models.Model):
     package_name = models.CharField(max_length=200, unique=True)
     user = models.ForeignKey(User)
     comaintainers = models.ManyToManyField(User, null=True, blank=True, default=None, related_name='codap_set')
-    latest = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+')
-    latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+')
+    latest = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
+    latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
 
     def __unicode__(self):
         return self.package_name
 
     def sorted_versions(self):
         return sorted([dap.version for dap in self.dap_set.all()], cmp=dapver.compare, reverse=True)
+
+    def get_latest(self):
+        versions = self.sorted_versions()
+        if not versions:
+            return None
+        return Dap.objects.get(metadap=self, version=versions[0])
+
+    def get_latest_stable(self):
+        versions = self.sorted_versions()
+        for version in versions:
+            if version[-1].isdigit():
+                return Dap.objects.get(metadap=self, version=version)
+        return None
 
 class Dap(models.Model):
     file = models.FileField(upload_to=lambda instance, filename: filename)
@@ -31,6 +44,13 @@ class Dap(models.Model):
 
     def is_pre(self):
         return not self.version[-1].isdigit()
+
+    def delete(self):
+        m = self.metadap
+        super(Dap, self).delete()
+        m.latest = m.get_latest()
+        m.latest_stable = m.get_latest_stable()
+        m.save()
 
     class Meta:
         unique_together = ('metadap', 'version',)
