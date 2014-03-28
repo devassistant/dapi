@@ -1,8 +1,9 @@
 {% extends "dapi/base.html" %}
 {% block content %}
 {% load staticfiles %}
-<h1>{{ dap }}</h1>
+<h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}</h1>
 <ul>
+    {% if dap %}
     <li>{{ dap.summary }}</li>
     <li>License: {{ dap.license }}</li>
     {% if dap.homepage %}
@@ -31,6 +32,10 @@
         {% endfor %}
         </ul>
     </li>
+    <li><a href="{% static dap.link %}">download</a></li>
+    {% else %}
+    <li>All version of this dap were deleted</li>
+    {% endif %}
     <li>Owned by <a href="{% url 'dapi.views.user' metadap.user %}">{{ metadap.user }}</a>
     {% if metadap.comaintainers.exists %}
         <ul>
@@ -40,7 +45,6 @@
         </ul>
     {% endif %}
     </li>
-    <li><a href="{% static dap.link %}">download</a></li>
 </ul>
 
 <h2>Available versions</h2>

@@ -1,6 +1,6 @@
 # Django modules
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib.auth import logout as auth_logout
@@ -36,18 +36,26 @@ def upload(request):
 
 def dap_devel(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest})
+    if m.latest:
+        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest})
+    else:
+        raise Http404
 
 def dap_stable(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable})
+    if m.latest_stable:
+        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable})
+    else:
+        raise Http404
 
 def dap(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if m.latest_stable:
         d = m.latest_stable
-    else:
+    elif m.latest:
         d = m.latest
+    else:
+        d = None
     return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d})
 
 def dap_version(request, dap, version):
