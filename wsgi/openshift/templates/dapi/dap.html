@@ -1,6 +1,5 @@
 {% extends "dapi/base.html" %}
 {% block content %}
-{% load staticfiles %}
 <h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}</h1>
 <ul>
     {% if dap %}
@@ -32,7 +31,7 @@
         {% endfor %}
         </ul>
     </li>
-    <li><a href="{% static dap.link %}">download</a></li>
+    <li><a href="{{ dap.link }}">download</a></li>
     {% else %}
     <li>All version of this dap were deleted</li>
     {% endif %}

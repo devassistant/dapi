@@ -29,7 +29,7 @@ class Dap(models.Model):
         return self.metadap.package_name + '-' + self.version
 
     def link(self):
-        return 'daps/' + self.__unicode__() + '.dap'
+        return '/download/' + self.__unicode__() + '.dap'
 
     def is_pre(self):
         return not self.version[-1].isdigit()

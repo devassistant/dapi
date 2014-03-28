@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import patterns, url
 
 urlpatterns = patterns('dapi.views',
@@ -12,3 +13,8 @@ urlpatterns = patterns('dapi.views',
     url(r'^login/$', 'login'),
     url(r'^logout/$', 'logout'),
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^download/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    )

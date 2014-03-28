@@ -1,3 +1,5 @@
+from django.conf import settings
+
 import daploader
 from daploader import dapver
 import logging
@@ -5,15 +7,10 @@ import os
 from cStringIO import StringIO
 from dapi.models import *
 
-try:
-    UPLOADDIR = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'upload')
-except KeyError:
-    UPLOADDIR = 'upload'
-
 
 def handle_uploaded_dap(f, user):
     errors = []
-    dapfile = os.path.join(UPLOADDIR, f.name)
+    dapfile = os.path.join(settings.MEDIA_ROOT, f.name)
     if os.path.isfile(dapfile):
         return ['Oops. We already have ' + f.name + ' here. If you are the owner and you want to update it, bump the version.'], None
     destination = open(dapfile, 'wb+')

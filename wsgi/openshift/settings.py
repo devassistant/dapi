@@ -4,11 +4,9 @@ import imp, os
 
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
-DAPDIR = 'upload'
 GITHUB_FILE = 'github'
 if os.environ.has_key('OPENSHIFT_REPO_DIR'):
     ON_OPENSHIFT = True
-    DAPDIR = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'upload')
     GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'github')
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -77,12 +75,12 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.environ.get('OPENSHIFT_DATA_DIR', '')
+MEDIA_ROOT = os.path.join(os.environ.get('OPENSHIFT_DATA_DIR', ''), 'upload')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/download/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -105,7 +103,6 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_DIR, '../dapi/static'),
-    ('daps', DAPDIR),
 )
 
 # List of finder classes that know how to find static files in
