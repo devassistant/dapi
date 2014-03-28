@@ -4,7 +4,6 @@
 <h1>{{ dap }}</h1>
 <ul>
     <li>{{ dap.summary }}</li>
-    <li>Version: {{ dap.version }}</li>
     <li>License: {{ dap.license }}</li>
     {% if dap.homepage %}
     <li><a href="{{ dap.homepage }}">homepage</a></li>
@@ -15,6 +14,16 @@
     {% if dap.description %}
     <li>{{ dap.description }}</li>
     {% endif %}
+    {% if dap.is_pre %}
+    <li>Warning, this is a prerelease!</li>
+    {% if dap != matadap.latest %}
+    <li>Warning, this is not the latest version available!</li>
+    {% endif %}
+    {% else %}
+    {% if dap != metadap.latest_stable %}
+    <li>Warning, this is not the latest stable version available!</li>
+    {% endif %}
+    {% endif %}
     <li>Authors:
         <ul>
         {% for author in dap.author_set.all %}
@@ -22,15 +31,22 @@
         {% endfor %}
         </ul>
     </li>
-    <li>Owned by <a href="{% url 'dapi.views.user' dap.user %}">{{ dap.user }}</a>
-    {% if dap.comaintainers.exists %}
+    <li>Owned by <a href="{% url 'dapi.views.user' metadap.user %}">{{ metadap.user }}</a>
+    {% if metadap.comaintainers.exists %}
         <ul>
-        {% for comaintainer in dap.comaintainers.all %}
+        {% for comaintainer in metadap.comaintainers.all %}
             <li><a href="{% url 'dapi.views.user' comaintainer %}">{{ comaintainer }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
     </li>
     <li><a href="{% static dap.link %}">download</a></li>
+</ul>
+
+<h2>Available versions</h2>
+<ul>
+{% for version in metadap.sorted_versions %}
+    <li><a href="{% url 'dapi.views.dap_version' metadap.package_name version %}">{{ version }}</a></li>
+{% endfor %}
 </ul>
 {% endblock %}

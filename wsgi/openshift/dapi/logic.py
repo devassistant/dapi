@@ -37,28 +37,29 @@ def handle_uploaded_dap(f, user):
 
 def save_dap_to_db(dap, user):
     try:
-        d = Dap.objects.get(package_name=dap.meta['package_name'])
-        if d.user != user and user not in d.comaintainers.all():
-            return ['We have ' + d.package_name + ' already here, but you don\'t own it.'], None
-        if dapver.compare(d.version,dap.meta['version']) >= 0:
-            return ['We have ' + d.package_name + ' already in the same or higher version. If you want to update it, bump the version.'], None
-        # keep the old .dap file as a backup
-    except Dap.DoesNotExist:
-        d = Dap()
-    d.package_name = dap.meta['package_name']
+        m = MetaDap.objects.get(package_name=dap.meta['package_name'])
+        if m.user != user and user not in m.comaintainers.all():
+            return ['We have ' + m.package_name + ' already here, but you don\'t own it.'], None
+        if m.latest and dapver.compare(m.latest.version,dap.meta['version']) >= 0:
+            return ['We have ' + m.package_name + ' already in the same or higher version (' + m.latest.version + '). If you want to update it, bump the version.'], None
+    except MetaDap.DoesNotExist:
+        m = MetaDap()
+        m.package_name = dap.meta['package_name']
+        m.user = user
+        m.save()
+    d = Dap()
     d.version = dap.meta['version']
     d.license = dap.meta['license']
     d.homepage = dap.meta['homepage']
     d.bugreports = dap.meta['bugreports']
     d.summary = dap.meta['summary']
     d.description = dap.meta['description']
-    try:
-        d.user
-    except User.DoesNotExist:
-        d.user = user
+    d.metadap = m
     d.save()
-    for author in d.author_set.all():
-        author.delete()
     for author in dap.meta['authors']:
         d.author_set.create(author=author)
-    return [], d.package_name
+    m.latest = d
+    if not d.is_pre():
+        m.latest_stable = d
+    m.save()
+    return [], m.package_name

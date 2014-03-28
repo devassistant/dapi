@@ -8,14 +8,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 # Our local modules
-from dapi.models import Dap
+from dapi.models import Dap, MetaDap
 from django.contrib.auth.models import User
 from dapi.forms import *
 from dapi.logic import *
 
 
 def index(request):
-    daps_list = Dap.objects.all().order_by('package_name')
+    daps_list = MetaDap.objects.all().order_by('package_name')
     return render(request, 'dapi/index.html', {'daps_list': daps_list})
 
 @login_required
@@ -34,9 +34,26 @@ def upload(request):
         form = UploadDapForm()
     return render(request, 'dapi/upload.html', {'form': form})
 
+def dap_devel(request, dap):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest})
+
+def dap_stable(request, dap):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable})
+
 def dap(request, dap):
-    d = get_object_or_404(Dap, package_name=dap)
-    return render(request, 'dapi/dap.html', {'dap': d})
+    m = get_object_or_404(MetaDap, package_name=dap)
+    if m.latest_stable:
+        d = m.latest_stable
+    else:
+        d = m.latest
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d})
+
+def dap_version(request, dap, version):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    d = get_object_or_404(Dap, metadap=m.pk, version=version)
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d})
 
 def user(request, user):
     u = get_object_or_404(User, username=user)

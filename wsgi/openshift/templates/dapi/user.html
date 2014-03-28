@@ -5,8 +5,8 @@
 <ul>
     <li>Full name: {{ u.get_full_name }}</li>
     <li>Joined: {{ u.date_joined }}</li>
-    {% if u.dap_set.exists %}<li>Daps: <ul>
-        {% for dap in u.dap_set.all %}
+    {% if u.metadap_set.exists %}<li>Daps: <ul>
+        {% for dap in u.metadap_set.all %}
         <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
         {% endfor %}
     </ul></li>{% endif %}
