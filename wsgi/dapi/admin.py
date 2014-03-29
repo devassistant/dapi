@@ -5,7 +5,7 @@ from django.contrib import admin
 class MetaDapAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Name', {'fields': ['package_name']}),
-        ('Owner', {'fields': ['user']}),
+        ('Owner', {'fields': ['user', 'comaintainers']}),
         ('Latest versions', {'fields': ['latest', 'latest_stable'], 'classes': ['collapse']}),
     ]
     filter_horizontal = ['comaintainers']
