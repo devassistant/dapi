@@ -88,7 +88,7 @@ def dap_admin(request, dap):
                     tform.save()
                     m.comaintainers.add(olduser)
                     m.comaintainers.remove(m.user)
-                    messages.info(request, 'Dap ' + dap + ' successfully transfered.')
+                    messages.info(request, 'Dap {dap} successfully transfered.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
                     tform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
@@ -106,7 +106,7 @@ def dap_admin(request, dap):
             if dform.is_valid():
                 if dap == request.POST['verification']:
                     m.delete()
-                    messages.info(request, 'Dap ' + dap + ' successfully deleted.')
+                    messages.info(request, 'Dap {dap} successfully deleted.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
                     dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
