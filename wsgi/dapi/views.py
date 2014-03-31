@@ -79,6 +79,25 @@ def dap_admin(request, dap):
         form = ComaintainersForm(instance=m)
     return render(request, 'dapi/dap-admin.html', {'form': form, 'm': m})
 
+@login_required
+def dap_delete(request, dap):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    if request.user.username != m.user and not request.user.is_superuser:
+        messages.error(request, 'You don\'t have permissions to delete this dap.')
+        return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    if request.method == 'POST':
+        form = DeleteDapForm(request.POST)
+        if form.is_valid():
+            if dap == request.POST['verification']:
+                m.delete()
+                messages.info(request, 'Dap ' + dap + ' successfully deleted.')
+                return HttpResponseRedirect(reverse('dapi.views.index'))
+            else:
+                messages.error(request, 'You didn\'t enter the dap\'s name correctly.')
+    else:
+        form = DeleteDapForm()
+    return render(request, 'dapi/dap-delete.html', {'form': form, 'm': m})
+
 def user(request, user):
     u = get_object_or_404(User, username=user)
     return render(request, 'dapi/user.html', {'u': u})
