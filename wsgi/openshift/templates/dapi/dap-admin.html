@@ -2,7 +2,13 @@
 {% block content %}
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <p><input type="submit" value="Save" /></p>
+  {{ cform.as_p }}
+  <p><input type="submit" name="cform" value="Save" /></p>
+</form>
+
+<form method="post">
+  {% csrf_token %}
+  {{ dform.as_p }}
+  <p><input type="submit" name="dform" value="Delete this dap forever" /></p>
 </form>
 {% endblock %}
