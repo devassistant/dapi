@@ -28,8 +28,7 @@ def upload(request):
                 messages.info(request, 'Dap successfully uploaded.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
             else:
-                for err in errors:
-                    messages.error(request, err)
+                form.errors['file'] = errors
     else:
         form = UploadDapForm()
     return render(request, 'dapi/upload.html', {'form': form})
@@ -87,7 +86,7 @@ def dap_admin(request, dap):
                     messages.info(request, 'Dap ' + dap + ' successfully transfered.')
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
-                    messages.error(request, 'You didn\'t enter the dap\'s name correctly.')
+                    tform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
         if 'dform' in request.POST:
             dform = DeleteDapForm(request.POST)
             if dform.is_valid():
@@ -96,7 +95,7 @@ def dap_admin(request, dap):
                     messages.info(request, 'Dap ' + dap + ' successfully deleted.')
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
-                    messages.error(request, 'You didn\'t enter the dap\'s name correctly.')
+                    dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
     return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'dform': dform, 'dap': m})
 
 @login_required
