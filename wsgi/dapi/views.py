@@ -77,13 +77,17 @@ def dap_admin(request, dap):
             cform = ComaintainersForm(request.POST, instance=m)
             if cform.is_valid():
                 cform.save()
+                m.comaintainers.remove(m.user)
                 messages.info(request, 'Comaintainers successfully saved.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
         if 'tform' in request.POST:
+            olduser = m.user
             tform = TransferDapForm(request.POST, instance=m)
             if tform.is_valid():
                 if dap == request.POST['verification']:
                     tform.save()
+                    m.comaintainers.add(olduser)
+                    m.comaintainers.remove(m.user)
                     messages.info(request, 'Dap ' + dap + ' successfully transfered.')
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
