@@ -44,6 +44,9 @@
         </ul>
     {% endif %}
     </li>
+    {% if user == metadap.user or user.is_superuser %}
+    <li><a href="{% url 'dapi.views.dap_admin' metadap %}">admin</a></li>
+    {% endif %}
 </ul>
 
 <h2>Available versions</h2>

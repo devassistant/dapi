@@ -1,11 +1,21 @@
 {% extends "dapi/base.html" %}
 {% block content %}
+<h1>{{ dap }}</h1>
+<h2>Comaintainers</h2>
 <form method="post">
   {% csrf_token %}
   {{ cform.as_p }}
   <p><input type="submit" name="cform" value="Save" /></p>
 </form>
 
+<h2>Transfer ownership</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ tform.as_p }}
+  <p><input type="submit" name="tform" value="Transfer this dap" /></p>
+</form>
+
+<h2>Delete this dap</h2>
 <form method="post">
   {% csrf_token %}
   {{ dform.as_p }}

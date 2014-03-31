@@ -66,18 +66,28 @@ def dap_version(request, dap, version):
 @login_required
 def dap_admin(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
-    if request.user.username != m.user and not request.user.is_superuser:
+    if request.user != m.user and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to administrate this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    cform = ComaintainersForm(instance=m)
+    tform = TransferDapForm(instance=m)
+    dform = DeleteDapForm()
     if request.method == 'POST':
-        cform = ComaintainersForm(instance=m)
-        dform = DeleteDapForm()
         if 'cform' in request.POST:
             cform = ComaintainersForm(request.POST, instance=m)
             if cform.is_valid():
                 cform.save()
                 messages.info(request, 'Comaintainers successfully saved.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+        if 'tform' in request.POST:
+            tform = TransferDapForm(request.POST, instance=m)
+            if tform.is_valid():
+                if dap == request.POST['verification']:
+                    tform.save()
+                    messages.info(request, 'Dap ' + dap + ' successfully transfered.')
+                    return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+                else:
+                    messages.error(request, 'You didn\'t enter the dap\'s name correctly.')
         if 'dform' in request.POST:
             dform = DeleteDapForm(request.POST)
             if dform.is_valid():
@@ -87,10 +97,7 @@ def dap_admin(request, dap):
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
                     messages.error(request, 'You didn\'t enter the dap\'s name correctly.')
-    else:
-        dform = DeleteDapForm()
-        cform = ComaintainersForm(instance=m)
-    return render(request, 'dapi/dap-admin.html', {'cform': cform, 'dform': dform, 'm': m})
+    return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'dform': dform, 'dap': m})
 
 @login_required
 def dap_delete(request, dap):
