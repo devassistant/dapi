@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from taggit.models import Tag
 
 # Our local modules
 from dapi.models import Dap, MetaDap
@@ -17,6 +18,11 @@ from dapi.logic import *
 def index(request):
     daps_list = MetaDap.objects.filter(active=True).order_by('package_name')
     return render(request, 'dapi/index.html', {'daps_list': daps_list})
+
+def tag(request, tag):
+    t = get_object_or_404(Tag, slug=tag)
+    daps_list = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('package_name')
+    return render(request, 'dapi/index.html', {'daps_list': daps_list, 'tag': t})
 
 @login_required
 def upload(request):

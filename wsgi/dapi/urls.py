@@ -13,6 +13,7 @@ urlpatterns = patterns('dapi.views',
     url(r'^upload/$', 'upload'),
     url(r'^login/$', 'login'),
     url(r'^logout/$', 'logout'),
+    url(r'^tag/(?P<tag>[^/]+)/$', 'tag'),
 )
 
 if settings.DEBUG:

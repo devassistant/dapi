@@ -2,7 +2,7 @@
 {% block content %}
 
 {% if daps_list %}
-<h2>Available daps</h2>
+<h1>Daps{% if tag %} tagged with {{ tag }}{% endif %}</h1>
     <ul>
     {% for dap in daps_list %}
         <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>

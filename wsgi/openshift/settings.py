@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south',
     'social.apps.django_app.default',
+    'taggit',
     'dapi',
 )
 

@@ -8,6 +8,7 @@ class MetaDapAdmin(admin.ModelAdmin):
         ('Owner', {'fields': ['user', 'comaintainers']}),
         ('Active', {'fields': ['active']}),
         ('Latest versions', {'fields': ['latest', 'latest_stable'], 'classes': ['collapse']}),
+        ('Tags', {'fields': ['tags']}),
     ]
     filter_horizontal = ['comaintainers']
 
