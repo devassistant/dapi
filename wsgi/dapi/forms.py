@@ -1,4 +1,5 @@
 from django.forms import *
+from dapi.models import MetaDap
 from django.contrib.auth.models import User
 
 
@@ -9,3 +10,12 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
+
+class ComaintainersForm(ModelForm):
+    class Meta:
+        model = MetaDap
+        fields = ('comaintainers',)
+
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        self.fields['comaintainers'].help_text = ''

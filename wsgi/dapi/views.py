@@ -63,6 +63,22 @@ def dap_version(request, dap, version):
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
     return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d})
 
+@login_required
+def dap_admin(request, dap):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    if request.user.username != m.user and not request.user.is_superuser:
+        messages.error(request, 'You don\'t have permissions to administrate this dap.')
+        return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    if request.method == 'POST':
+        form = ComaintainersForm(request.POST, instance=m)
+        if form.is_valid():
+            form.save()
+            messages.info(request, 'Comaintainers successfully saved.')
+            return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    else:
+        form = ComaintainersForm(instance=m)
+    return render(request, 'dapi/dap-admin.html', {'form': form, 'm': m})
+
 def user(request, user):
     u = get_object_or_404(User, username=user)
     return render(request, 'dapi/user.html', {'u': u})
@@ -72,7 +88,7 @@ def user_edit(request, user):
     u = get_object_or_404(User, username=user)
     if request.user.username != user and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to edit this user.')
-        return HttpResponseRedirect(reverse('dapi.views.user', args=(u, )))
+        return HttpResponseRedirect(reverse('dapi.views.user', args=(user, )))
     if request.method == 'POST':
         form = UserForm(request.POST, instance=u)
         if form.is_valid():
