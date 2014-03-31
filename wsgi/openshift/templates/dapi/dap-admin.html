@@ -15,7 +15,16 @@
   <p><input type="submit" name="tform" value="Transfer this dap" /></p>
 </form>
 
+<h2>Deactivate this dap</h2>
+<p>When you deactivate a dap, no new version can be uploaded and dap is no longer available in search results (unless manually specified).</p>
+<form method="post">
+  {% csrf_token %}
+  {{ aform.as_p }}
+  <p><input type="submit" name="aform" value="Deactivate this dap" /></p>
+</form>
+
 <h2>Delete this dap</h2>
+<p>Delete this dap only if simple deactivation is not enough. Once you delete the dap, all dap versions and metadata are deleted forever. Another user can then upload different dap with the same name.</p>
 <form method="post">
   {% csrf_token %}
   {{ dform.as_p }}

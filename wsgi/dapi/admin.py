@@ -6,6 +6,7 @@ class MetaDapAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Name', {'fields': ['package_name']}),
         ('Owner', {'fields': ['user', 'comaintainers']}),
+        ('Active', {'fields': ['active']}),
         ('Latest versions', {'fields': ['latest', 'latest_stable'], 'classes': ['collapse']}),
     ]
     filter_horizontal = ['comaintainers']

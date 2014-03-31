@@ -9,6 +9,7 @@ class MetaDap(models.Model):
     comaintainers = models.ManyToManyField(User, null=True, blank=True, default=None, related_name='codap_set')
     latest = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
     latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.package_name

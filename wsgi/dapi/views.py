@@ -15,7 +15,7 @@ from dapi.logic import *
 
 
 def index(request):
-    daps_list = MetaDap.objects.all().order_by('package_name')
+    daps_list = MetaDap.objects.filter(active=True).order_by('package_name')
     return render(request, 'dapi/index.html', {'daps_list': daps_list})
 
 @login_required
@@ -70,6 +70,7 @@ def dap_admin(request, dap):
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     cform = ComaintainersForm(instance=m)
     tform = TransferDapForm(instance=m)
+    aform = ActivationDapForm(instance=m)
     dform = DeleteDapForm()
     if request.method == 'POST':
         if 'cform' in request.POST:
@@ -87,6 +88,15 @@ def dap_admin(request, dap):
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
                     tform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
+        if 'aform' in request.POST:
+            aform = ActivationDapForm(request.POST, instance=m)
+            if aform.is_valid():
+                if dap == request.POST['verification']:
+                    aform.save()
+                    messages.info(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap,de='' if m.active else 'de'))
+                    return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+                else:
+                    aform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
         if 'dform' in request.POST:
             dform = DeleteDapForm(request.POST)
             if dform.is_valid():
@@ -96,7 +106,7 @@ def dap_admin(request, dap):
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
                     dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
-    return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'dform': dform, 'dap': m})
+    return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
 
 @login_required
 def dap_delete(request, dap):
