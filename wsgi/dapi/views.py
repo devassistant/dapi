@@ -125,13 +125,21 @@ def dap_tags(request, dap):
         messages.error(request, 'You don\'t have permissions to change tags of this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     if request.method == 'POST':
-        form = TagsForm(request.POST, instance=m)
+        data = request.POST.copy()
+        try:
+            data['tags'] += ','
+        except KeyError:
+            pass
+        form = TagsForm(data, instance=m)
         if form.is_valid():
             form.save()
             messages.info(request, 'Tags successfully saved.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
         form = TagsForm(instance=m)
+        if form['tags'].value():
+            data = {'tags': ', '.join([tagged.tag.name for tagged in form['tags'].value()])}
+            form = TagsForm(data, instance=m)
     return render(request, 'dapi/dap-tags.html', {'form': form, 'dap': m})
 
 @login_required
