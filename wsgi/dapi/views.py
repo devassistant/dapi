@@ -42,14 +42,14 @@ def upload(request):
 def dap_devel(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if m.latest:
-        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest})
+        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest, 'similar': m.similar_active_daps()[:5]})
     else:
         raise Http404
 
 def dap_stable(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if m.latest_stable:
-        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable})
+        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable, 'similar': m.similar_active_daps()[:5]})
     else:
         raise Http404
 
@@ -61,12 +61,12 @@ def dap(request, dap):
         d = m.latest
     else:
         d = None
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d})
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5]})
 
 def dap_version(request, dap, version):
     m = get_object_or_404(MetaDap, package_name=dap)
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d})
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5]})
 
 @login_required
 def dap_admin(request, dap):

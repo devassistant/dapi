@@ -72,4 +72,13 @@
     <li><a href="{% url 'dapi.views.dap_version' metadap.package_name version %}">{{ version }}</a></li>
 {% endfor %}
 </ul>
+
+{% if similar %}
+<h2>Similar daps</h2>
+<ul>
+{% for sim in similar %}
+    <li><a href="{% url 'dapi.views.dap' sim %}">{{ sim }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

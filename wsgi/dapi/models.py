@@ -32,6 +32,9 @@ class MetaDap(models.Model):
                 return Dap.objects.get(metadap=self, version=version)
         return None
 
+    def similar_active_daps(self):
+        return [dap for dap in self.tags.similar_objects() if dap.active]
+
 class Dap(models.Model):
     file = models.FileField(upload_to=lambda instance, filename: filename)
     metadap = models.ForeignKey(MetaDap)
