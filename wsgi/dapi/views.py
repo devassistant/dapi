@@ -119,6 +119,22 @@ def dap_admin(request, dap):
     return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
 
 @login_required
+def dap_tags(request, dap):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
+        messages.error(request, 'You don\'t have permissions to change tags of this dap.')
+        return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    if request.method == 'POST':
+        form = TagsForm(request.POST, instance=m)
+        if form.is_valid():
+            form.save()
+            messages.info(request, 'Tags successfully saved.')
+            return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    else:
+        form = TagsForm(instance=m)
+    return render(request, 'dapi/dap-tags.html', {'form': form, 'dap': m})
+
+@login_required
 def dap_delete(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user.username != m.user and not request.user.is_superuser:

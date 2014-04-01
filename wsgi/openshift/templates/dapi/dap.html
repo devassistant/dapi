@@ -52,7 +52,14 @@
     {% for tag in metadap.tags.all %}
         <li><a href="{% url 'dapi.views.tag' tag.slug %}">{{ tag }}</a></li>
     {% endfor %}
+        {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
+        <li><a href="{% url 'dapi.views.dap_tags' metadap %}">manage tags</a></li>
+        {% endif %}
     </ul></li>
+    {% else %}
+    {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
+    <li><a href="{% url 'dapi.views.dap_tags' metadap %}">add tags</a></li>
+    {% endif %}
     {% endif %}
     {% if user == metadap.user or user.is_superuser %}
     <li><a href="{% url 'dapi.views.dap_admin' metadap %}">admin</a></li>

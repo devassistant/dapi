@@ -37,3 +37,8 @@ class TransferDapForm(ModelForm):
         model = MetaDap
         fields = ('user',)
 
+class TagsForm(ModelForm):
+    class Meta:
+        model = MetaDap
+        fields = ('tags',)
+
