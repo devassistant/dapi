@@ -6,13 +6,13 @@
     <li>Full name: {{ u.get_full_name }}</li>
     <li>Joined: {{ u.date_joined }}</li>
     {% if u.metadap_set.exists %}<li>Daps: <ul>
-        {% for dap in u.metadap_set.all %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
+        {% for dap in u.metadap_set.all|dictsort:"package_name" %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a></li>
         {% endfor %}
     </ul></li>{% endif %}
     {% if u.codap_set.exists %}<li>Daps co-owned: <ul>
-        {% for dap in u.codap_set.all %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
+        {% for dap in u.codap_set.all|dictsort:"package_name" %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a></li>
         {% endfor %}
     </ul></li>{% endif %}
 </ul>
