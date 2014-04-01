@@ -47,6 +47,13 @@
         </ul>
     {% endif %}
     </li>
+    {% if metadap.tags.exists %}
+    <li>Tags:<ul>
+    {% for tag in metadap.tags.all %}
+        <li><a href="{% url 'dapi.views.tag' tag.slug %}">{{ tag }}</a></li>
+    {% endfor %}
+    </ul></li>
+    {% endif %}
     {% if user == metadap.user or user.is_superuser %}
     <li><a href="{% url 'dapi.views.dap_admin' metadap %}">admin</a></li>
     {% endif %}
