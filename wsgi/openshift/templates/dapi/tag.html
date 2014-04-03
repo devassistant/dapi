@@ -1,0 +1,13 @@
+{% extends "dapi/base.html" %}
+{% block content %}
+
+{% if daps_list %}
+<h1>Daps tagged with {{ tag }}</h1>
+    <ul>
+    {% for dap in daps_list %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

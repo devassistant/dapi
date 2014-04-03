@@ -16,13 +16,14 @@ from dapi.logic import *
 
 
 def index(request):
-    daps_list = MetaDap.objects.filter(active=True).order_by('package_name')
-    return render(request, 'dapi/index.html', {'daps_list': daps_list})
+    top_rated = sorted(MetaDap.objects.filter(active=True), key=lambda m: (-m.average_rank(),-m.rank_count()))[:10]
+    most_rated = sorted(MetaDap.objects.filter(active=True), key=lambda m: (-m.rank_count(),-m.average_rank()))[:10]
+    return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated})
 
 def tag(request, tag):
     t = get_object_or_404(Tag, slug=tag)
     daps_list = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('package_name')
-    return render(request, 'dapi/index.html', {'daps_list': daps_list, 'tag': t})
+    return render(request, 'dapi/tag.html', {'daps_list': daps_list, 'tag': t})
 
 @login_required
 def upload(request):

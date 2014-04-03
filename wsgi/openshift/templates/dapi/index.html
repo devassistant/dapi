@@ -1,11 +1,20 @@
 {% extends "dapi/base.html" %}
 {% block content %}
 
-{% if daps_list %}
-<h1>Daps{% if tag %} tagged with {{ tag }}{% endif %}</h1>
+{% if top_rated %}
+<h1>Top rated daps</h1>
     <ul>
-    {% for dap in daps_list %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
+    {% for dap in top_rated %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a> ({{ dap.average_rank|floatformat }})</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if most_rated %}
+<h1>Most rated daps</h1>
+    <ul>
+    {% for dap in most_rated %}
+        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a> ({{ dap.rank_count }} times)</li>
     {% endfor %}
     </ul>
 {% endif %}
