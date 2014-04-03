@@ -1,4 +1,4 @@
-from dapi.models import MetaDap, Dap, Author
+from dapi.models import MetaDap, Dap, Author, Rank
 from django.contrib import admin
 
 
@@ -30,3 +30,5 @@ class DapAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Dap, DapAdmin)
+
+admin.site.register(Rank)

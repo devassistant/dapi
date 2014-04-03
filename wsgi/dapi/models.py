@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
 
 from daploader import dapver
@@ -14,6 +15,7 @@ class MetaDap(models.Model):
     latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
     tags = TaggableManager(blank=True)
     active = models.BooleanField(default=True)
+    ranks = models.ManyToManyField(User, through='Rank', related_name='rankers', null=True, blank=True, default=None)
 
     def __unicode__(self):
         return self.package_name
@@ -63,6 +65,19 @@ class Author(models.Model):
 
     def __unicode__(self):
         return self.author
+
+class Rank(models.Model):
+    rank = models.IntegerField(
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+    metadap = models.ForeignKey(MetaDap)
+    user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return self.metadap.package_name + ' ' + self.user.username + ' ' + str(self.rank)
 
 
 @receiver(post_delete, sender=Dap)
