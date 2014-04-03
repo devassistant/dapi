@@ -241,3 +241,5 @@ LOGGING = {
         },
     }
 }
+
+TAGGIT_SLUG_MATCHING = True 
