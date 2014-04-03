@@ -79,6 +79,9 @@ class Rank(models.Model):
     def __unicode__(self):
         return self.metadap.package_name + ' ' + self.user.username + ' ' + str(self.rank)
 
+    class Meta:
+        unique_together = ('metadap', 'user',)
+
 
 @receiver(post_delete, sender=Dap)
 def dap_post_delete_handler(sender, **kwargs):
