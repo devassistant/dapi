@@ -6,12 +6,16 @@ from django.contrib.auth.models import User
 class UploadDapForm(Form):
     file = FileField()
 
+
 class UserForm(ModelForm):
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
 
+
 class ComaintainersForm(ModelForm):
+
     class Meta:
         model = MetaDap
         fields = ('comaintainers',)
@@ -20,12 +24,15 @@ class ComaintainersForm(ModelForm):
         super(ModelForm, self).__init__(*args, **kwargs)
         self.fields['comaintainers'].help_text = ''
 
+
 class DeleteDapForm(Form):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the deletion.')
+
 
 class DeleteVersionForm(Form):
     verification_name = CharField(max_length=200, help_text='Type the name of this dap to verify the deletion.')
     verification_version = CharField(max_length=200, help_text='Type the version of this dap to verify the deletion.')
+
 
 class ActivationDapForm(ModelForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the deactivation.')
@@ -34,6 +41,7 @@ class ActivationDapForm(ModelForm):
         model = MetaDap
         fields = ('active',)
 
+
 class TransferDapForm(ModelForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the transfer.')
 
@@ -41,11 +49,13 @@ class TransferDapForm(ModelForm):
         model = MetaDap
         fields = ('user',)
 
+
 class LeaveDapForm(Form):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the leaving.')
 
+
 class TagsForm(ModelForm):
+
     class Meta:
         model = MetaDap
         fields = ('tags',)
-

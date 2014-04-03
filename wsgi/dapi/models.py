@@ -9,6 +9,7 @@ from taggit.managers import TaggableManager
 
 from daploader import dapver
 
+
 class MetaDap(models.Model):
     package_name = models.CharField(max_length=200, unique=True)
     user = models.ForeignKey(User)
@@ -82,6 +83,7 @@ class Author(models.Model):
     def __unicode__(self):
         return self.author
 
+
 class Rank(models.Model):
     rank = models.IntegerField(
         validators=[
@@ -111,12 +113,14 @@ def dap_post_delete_handler(sender, **kwargs):
     m.latest_stable = m.get_latest_stable()
     m.save()
 
+
 @receiver(post_save, sender=Rank)
 def rank_post_save_handler(sender, **kwargs):
     rank = kwargs['instance']
     rank.metadap.rank_count = rank.metadap.calculate_rank_count()
     rank.metadap.average_rank = rank.metadap.calculate_average_rank()
     rank.metadap.save()
+
 
 @receiver(post_delete, sender=Rank)
 def rank_post_delete_handler(sender, **kwargs):

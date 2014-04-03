@@ -12,6 +12,7 @@ except IOError:
 # line, it's possible required libraries won't be in your searchable path
 #
 
+
 def application(environ, start_response):
 
     ctype = 'text/plain'

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Django settings for openshift project.
-import imp, os
+import imp
+import os
 
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
 GITHUB_FILE = 'github'
-if os.environ.has_key('OPENSHIFT_REPO_DIR'):
+if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
     GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'github')
 
@@ -48,7 +49,7 @@ else:
         }
     }
 
-ALLOWED_HOSTS = ['.rhcloud.com','127.0.0.1']
+ALLOWED_HOSTS = ['.rhcloud.com', '127.0.0.1']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -117,7 +118,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make a dictionary of default keys
-default_keys = { 'SECRET_KEY': 'vm4rl5*ymb@2&d_(gc$gb-^twq9w(u69hi--%$5xrh!xk(t%hw' }
+default_keys = {'SECRET_KEY': 'vm4rl5*ymb@2&d_(gc$gb-^twq9w(u69hi--%$5xrh!xk(t%hw'}
 
 # Replace default keys with dynamic values if we are in OpenShift
 use_keys = default_keys
@@ -222,17 +223,17 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'filters': {
-         'require_debug_false': {
-             '()': 'django.utils.log.RequireDebugFalse'
-         }
-     },
-     'handlers': {
-         'mail_admins': {
-             'level': 'ERROR',
-             'filters': ['require_debug_false'],
-             'class': 'django.utils.log.AdminEmailHandler'
-         }
-     },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
@@ -242,4 +243,4 @@ LOGGING = {
     }
 }
 
-TAGGIT_SLUG_MATCHING = True 
+TAGGIT_SLUG_MATCHING = True

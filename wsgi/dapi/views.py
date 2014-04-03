@@ -20,10 +20,12 @@ def index(request):
     most_rated = MetaDap.objects.filter(active=True).order_by('-rank_count', '-average_rank')[:10]
     return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated})
 
+
 def tag(request, tag):
     t = get_object_or_404(Tag, slug=tag)
     daps_list = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('package_name')
     return render(request, 'dapi/tag.html', {'daps_list': daps_list, 'tag': t})
+
 
 @login_required
 def upload(request):
@@ -40,6 +42,7 @@ def upload(request):
         form = UploadDapForm()
     return render(request, 'dapi/upload.html', {'form': form})
 
+
 def dap_devel(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
@@ -48,6 +51,7 @@ def dap_devel(request, dap):
     else:
         raise Http404
 
+
 def dap_stable(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
@@ -55,6 +59,7 @@ def dap_stable(request, dap):
         return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable, 'similar': m.similar_active_daps()[:5], 'rank': rank})
     else:
         raise Http404
+
 
 def dap(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
@@ -67,11 +72,13 @@ def dap(request, dap):
         d = None
     return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank})
 
+
 def dap_version(request, dap, version):
     m = get_object_or_404(MetaDap, package_name=dap)
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
     rank = get_rank(m, request.user)
     return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank})
+
 
 @login_required
 def dap_admin(request, dap):
@@ -108,7 +115,7 @@ def dap_admin(request, dap):
             if aform.is_valid():
                 if dap == request.POST['verification']:
                     aform.save()
-                    messages.info(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap,de='' if m.active else 'de'))
+                    messages.info(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap, de='' if m.active else 'de'))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
                     aform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
@@ -122,6 +129,7 @@ def dap_admin(request, dap):
                 else:
                     dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
     return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
+
 
 @login_required
 def dap_leave(request, dap):
@@ -144,6 +152,7 @@ def dap_leave(request, dap):
     else:
         form = LeaveDapForm()
     return render(request, 'dapi/dap-leave.html', {'form': form, 'dap': m})
+
 
 @login_required
 def dap_version_delete(request, dap, version):
@@ -170,6 +179,7 @@ def dap_version_delete(request, dap, version):
         form = DeleteVersionForm()
     return render(request, 'dapi/dap-version-delete.html', {'form': form, 'dap': d})
 
+
 @login_required
 def dap_tags(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
@@ -194,6 +204,7 @@ def dap_tags(request, dap):
             form = TagsForm(data, instance=m)
     return render(request, 'dapi/dap-tags.html', {'form': form, 'dap': m})
 
+
 @login_required
 def dap_delete(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
@@ -205,9 +216,11 @@ def dap_delete(request, dap):
         form = DeleteDapForm()
     return render(request, 'dapi/dap-delete.html', {'form': form, 'm': m})
 
+
 def user(request, user):
     u = get_object_or_404(User, username=user)
     return render(request, 'dapi/user.html', {'u': u})
+
 
 @login_required
 def dap_rank(request, dap, rank):
@@ -218,7 +231,7 @@ def dap_rank(request, dap, rank):
         if not c:
             r.rank = rank
             r.save()
-        messages.info(request, 'Successfully ranked {dap} with {rank}'.format(dap=dap,rank=rank))
+        messages.info(request, 'Successfully ranked {dap} with {rank}'.format(dap=dap, rank=rank))
     else:
         try:
             request.user.rank_set.get(metadap=m).delete()
@@ -226,6 +239,7 @@ def dap_rank(request, dap, rank):
             pass
         messages.info(request, 'Successfully unranked {dap}'.format(dap=dap))
     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+
 
 @login_required
 def user_edit(request, user):
@@ -243,6 +257,7 @@ def user_edit(request, user):
         form = UserForm(instance=u)
     return render(request, 'dapi/user-edit.html', {'form': form, 'u': u})
 
+
 def login(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('dapi.views.index'))
@@ -251,6 +266,7 @@ def login(request):
     except KeyError:
         n = ''
     return render(request, 'dapi/login.html', {'next': n})
+
 
 @login_required
 def logout(request):
