@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from taggit.managers import TaggableManager
 
 from daploader import dapver
@@ -51,13 +53,6 @@ class Dap(models.Model):
     def is_pre(self):
         return not self.version[-1].isdigit()
 
-    def delete(self):
-        m = self.metadap
-        super(Dap, self).delete()
-        m.latest = m.get_latest()
-        m.latest_stable = m.get_latest_stable()
-        m.save()
-
     class Meta:
         unique_together = ('metadap', 'version',)
 
@@ -68,3 +63,16 @@ class Author(models.Model):
 
     def __unicode__(self):
         return self.author
+
+
+@receiver(post_delete, sender=Dap)
+def dap_post_delete_handler(sender, **kwargs):
+    dap = kwargs['instance']
+    # Delete the file
+    storage, path = dap.file.storage, dap.file.path
+    storage.delete(path)
+    # Recalculate metadaps latest values
+    m = dap.metadap
+    m.latest = m.get_latest()
+    m.latest_stable = m.get_latest_stable()
+    m.save()
