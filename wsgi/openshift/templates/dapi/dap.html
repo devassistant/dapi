@@ -72,7 +72,11 @@
 <h2>Available versions</h2>
 <ul>
 {% for version in metadap.sorted_versions %}
-    <li><a href="{% url 'dapi.views.dap_version' metadap.package_name version %}">{{ version }}</a></li>
+    <li><a href="{% url 'dapi.views.dap_version' metadap.package_name version %}">{{ version }}</a>
+    {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
+    (<a href="{% url 'dapi.views.dap_version_delete' metadap.package_name version %}">delete</a>)
+    {% endif %}
+    </li>
 {% endfor %}
 </ul>
 

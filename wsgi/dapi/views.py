@@ -141,6 +141,31 @@ def dap_leave(request, dap):
     return render(request, 'dapi/dap-leave.html', {'form': form, 'dap': m})
 
 @login_required
+def dap_version_delete(request, dap, version):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    d = get_object_or_404(Dap, metadap=m.pk, version=version)
+    if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
+        messages.error(request, 'You don\'t have permissions to delete versions of this dap.')
+        return HttpResponseRedirect(reverse('dapi.views.dap_version', args=(dap, version)))
+    if request.method == 'POST':
+        form = DeleteVersionForm(request.POST)
+        if form.is_valid():
+            wrong = False
+            if dap != request.POST['verification_name']:
+                form.errors['verification_name'] = ['You didn\'t enter the dap\'s name correctly.']
+                wrong = True
+            if version != request.POST['verification_version']:
+                form.errors['verification_version'] = ['You didn\'t enter the version correctly.']
+                wrong = True
+            if not wrong:
+                d.delete()
+                messages.info(request, 'Successfully deleted {dap}.'.format(dap=d))
+                return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    else:
+        form = DeleteVersionForm()
+    return render(request, 'dapi/dap-version-delete.html', {'form': form, 'dap': d})
+
+@login_required
 def dap_tags(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:

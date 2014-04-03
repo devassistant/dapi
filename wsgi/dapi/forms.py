@@ -23,6 +23,10 @@ class ComaintainersForm(ModelForm):
 class DeleteDapForm(Form):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the deletion.')
 
+class DeleteVersionForm(Form):
+    verification_name = CharField(max_length=200, help_text='Type the name of this dap to verify the deletion.')
+    verification_version = CharField(max_length=200, help_text='Type the version of this dap to verify the deletion.')
+
 class ActivationDapForm(ModelForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the deactivation.')
 
