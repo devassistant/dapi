@@ -2,7 +2,7 @@ from __future__ import division
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
@@ -18,6 +18,8 @@ class MetaDap(models.Model):
     tags = TaggableManager(blank=True)
     active = models.BooleanField(default=True)
     ranks = models.ManyToManyField(User, through='Rank', related_name='rankers', null=True, blank=True, default=None)
+    average_rank = models.FloatField(null=True, blank=True, default=None)
+    rank_count = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.package_name
@@ -41,7 +43,7 @@ class MetaDap(models.Model):
     def similar_active_daps(self):
         return [dap for dap in self.tags.similar_objects() if dap.active]
 
-    def average_rank(self):
+    def calculate_average_rank(self):
         total = 0
         for rank in self.rank_set.all():
             total += rank.rank
@@ -49,7 +51,7 @@ class MetaDap(models.Model):
             return None
         return total / self.rank_set.count()
 
-    def rank_count(self):
+    def calculate_rank_count(self):
         return self.rank_set.count()
 
 
@@ -108,3 +110,17 @@ def dap_post_delete_handler(sender, **kwargs):
     m.latest = m.get_latest()
     m.latest_stable = m.get_latest_stable()
     m.save()
+
+@receiver(post_save, sender=Rank)
+def rank_post_save_handler(sender, **kwargs):
+    rank = kwargs['instance']
+    rank.metadap.rank_count = rank.metadap.calculate_rank_count()
+    rank.metadap.average_rank = rank.metadap.calculate_average_rank()
+    rank.metadap.save()
+
+@receiver(post_delete, sender=Rank)
+def rank_post_delete_handler(sender, **kwargs):
+    rank = kwargs['instance']
+    rank.metadap.rank_count = rank.metadap.calculate_rank_count()
+    rank.metadap.average_rank = rank.metadap.calculate_average_rank()
+    rank.metadap.save()

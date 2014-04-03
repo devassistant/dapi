@@ -16,8 +16,8 @@ from dapi.logic import *
 
 
 def index(request):
-    top_rated = sorted(MetaDap.objects.filter(active=True), key=lambda m: (-m.average_rank(),-m.rank_count()))[:10]
-    most_rated = sorted(MetaDap.objects.filter(active=True), key=lambda m: (-m.rank_count(),-m.average_rank()))[:10]
+    top_rated = MetaDap.objects.filter(active=True).order_by('-average_rank', '-rank_count')[:10]
+    most_rated = MetaDap.objects.filter(active=True).order_by('-rank_count', '-average_rank')[:10]
     return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated})
 
 def tag(request, tag):
