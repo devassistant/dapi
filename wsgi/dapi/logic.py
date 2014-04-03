@@ -36,12 +36,8 @@ def save_dap_to_db(f, dap, user):
         m.user = user
         m.save()
     d = Dap()
-    d.version = dap.meta['version']
-    d.license = dap.meta['license']
-    d.homepage = dap.meta['homepage']
-    d.bugreports = dap.meta['bugreports']
-    d.summary = dap.meta['summary']
-    d.description = dap.meta['description']
+    for attr in ['version', 'license', 'homepage', 'bugreports', 'summary', 'description']:
+        setattr(d, attr, dap.meta[attr])
     d.metadap = m
     d.file = f
     d.save()
