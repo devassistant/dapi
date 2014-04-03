@@ -122,7 +122,8 @@ def dap_admin(request, dap):
 def dap_leave(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user == m.user:
-        messages.error(request, 'You cannot leave this dap. First, transfer it to someone.')
+        messages.error(request, 'You cannot leave this dap. First, transfer it to someone else.')
+        return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     if not request.user in m.comaintainers.all():
         messages.error(request, 'You cannot leave this dap, you are not it\'s comaintainer.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
