@@ -1,3 +1,5 @@
+from __future__ import division
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_delete
@@ -38,6 +40,18 @@ class MetaDap(models.Model):
 
     def similar_active_daps(self):
         return [dap for dap in self.tags.similar_objects() if dap.active]
+
+    def average_rank(self):
+        total = 0
+        for rank in self.rank_set.all():
+            total += rank.rank
+        if not total:
+            return None
+        return total / self.rank_set.count()
+
+    def rank_count(self):
+        return self.rank_set.count()
+
 
 class Dap(models.Model):
     file = models.FileField(upload_to=lambda instance, filename: filename)
