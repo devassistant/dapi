@@ -16,19 +16,22 @@ from dapi.logic import *
 
 
 def index(request):
+    '''The homepage, currentl lists top and most ranked daps'''
     top_rated = MetaDap.objects.filter(active=True).order_by('-average_rank', '-rank_count')[:10]
     most_rated = MetaDap.objects.filter(active=True).order_by('-rank_count', '-average_rank')[:10]
     return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated})
 
 
 def tag(request, tag):
+    '''Lists all daps of given tag'''
     t = get_object_or_404(Tag, slug=tag)
-    daps_list = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('package_name')
+    daps_list = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('-average_rank', '-rank_count')
     return render(request, 'dapi/tag.html', {'daps_list': daps_list, 'tag': t})
 
 
 @login_required
 def upload(request):
+    '''Upload a dap form'''
     if request.method == 'POST':
         form = UploadDapForm(request.POST, request.FILES)
         if form.is_valid():
@@ -44,6 +47,7 @@ def upload(request):
 
 
 def dap_devel(request, dap):
+    '''Display latest version of dap, even if that's devel'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
     if m.latest:
@@ -53,6 +57,7 @@ def dap_devel(request, dap):
 
 
 def dap_stable(request, dap):
+    '''Display latest stable version of dap'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
     if m.latest_stable:
@@ -62,6 +67,7 @@ def dap_stable(request, dap):
 
 
 def dap(request, dap):
+    '''Display latest stable version of dap, or latest devel if no stable is available'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
     if m.latest_stable:
@@ -74,6 +80,7 @@ def dap(request, dap):
 
 
 def dap_version(request, dap, version):
+    '''Display a particular version of dap'''
     m = get_object_or_404(MetaDap, package_name=dap)
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
     rank = get_rank(m, request.user)
@@ -82,6 +89,7 @@ def dap_version(request, dap, version):
 
 @login_required
 def dap_admin(request, dap):
+    '''Administrate dap's comaintainers, transfer it to other user, (de)activate it or delete it'''
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user != m.user and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to administrate this dap.')
@@ -133,6 +141,7 @@ def dap_admin(request, dap):
 
 @login_required
 def dap_leave(request, dap):
+    '''If you are the comaintainer of a dap, here you resign'''
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user == m.user:
         messages.error(request, 'You cannot leave this dap. First, transfer it to someone else.')
@@ -156,6 +165,7 @@ def dap_leave(request, dap):
 
 @login_required
 def dap_version_delete(request, dap, version):
+    '''Delete a particular version of a dap'''
     m = get_object_or_404(MetaDap, package_name=dap)
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
     if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
@@ -182,6 +192,7 @@ def dap_version_delete(request, dap, version):
 
 @login_required
 def dap_tags(request, dap):
+    '''Manage dap's tags'''
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to change tags of this dap.')
@@ -206,24 +217,8 @@ def dap_tags(request, dap):
 
 
 @login_required
-def dap_delete(request, dap):
-    m = get_object_or_404(MetaDap, package_name=dap)
-    if request.user.username != m.user and not request.user.is_superuser:
-        messages.error(request, 'You don\'t have permissions to delete this dap.')
-        return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
-
-    else:
-        form = DeleteDapForm()
-    return render(request, 'dapi/dap-delete.html', {'form': form, 'm': m})
-
-
-def user(request, user):
-    u = get_object_or_404(User, username=user)
-    return render(request, 'dapi/user.html', {'u': u})
-
-
-@login_required
 def dap_rank(request, dap, rank):
+    '''Rank a given dap with given rank. Use 0 to unrank.'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = int(rank)
     if rank:
@@ -241,8 +236,14 @@ def dap_rank(request, dap, rank):
     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
 
 
+def user(request, user):
+    '''Display the user profile'''
+    u = get_object_or_404(User, username=user)
+    return render(request, 'dapi/user.html', {'u': u})
+
 @login_required
 def user_edit(request, user):
+    '''Edit the user profile'''
     u = get_object_or_404(User, username=user)
     if request.user.username != user and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to edit this user.')
@@ -259,6 +260,8 @@ def user_edit(request, user):
 
 
 def login(request):
+    '''In another world, this would be a log in form.
+    Here it just contains backend links.'''
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('dapi.views.index'))
     try:
@@ -270,5 +273,6 @@ def login(request):
 
 @login_required
 def logout(request):
+    '''Logs out the user'''
     auth_logout(request)
     return HttpResponseRedirect(reverse('dapi.views.index'))

@@ -9,6 +9,8 @@ from dapi.models import *
 
 
 def handle_uploaded_dap(f, user):
+    '''Check uploaded file for validity and save it to the DB if it's OK.
+    Report errors if not.'''
     errors = []
     try:
         dap = daploader.Dap(f.temporary_file_path(), mimic_filename=f.name)
@@ -24,6 +26,7 @@ def handle_uploaded_dap(f, user):
 
 
 def save_dap_to_db(f, dap, user):
+    '''Save the dap and it's metadata to the database'''
     try:
         m = MetaDap.objects.get(package_name=dap.meta['package_name'])
         if m.user != user and user not in m.comaintainers.all():
@@ -51,6 +54,7 @@ def save_dap_to_db(f, dap, user):
 
 
 def get_rank(metadap, user):
+    '''Gets the rank of given metadap and user (if available)'''
     try:
         return metadap.rank_set.get(user=user).rank
     except:

@@ -2,6 +2,7 @@ from django.forms import *
 from dapi.models import MetaDap
 from django.contrib.auth.models import User
 
+VERIFY_HELP_TEXT = 'Type the {what} of this dap to verify the {why}.'
 
 class UploadDapForm(Form):
     file = FileField()
@@ -26,16 +27,16 @@ class ComaintainersForm(ModelForm):
 
 
 class DeleteDapForm(Form):
-    verification = CharField(max_length=200, help_text='Type the name of this dap to verify the deletion.')
+    verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
 
 
 class DeleteVersionForm(Form):
-    verification_name = CharField(max_length=200, help_text='Type the name of this dap to verify the deletion.')
-    verification_version = CharField(max_length=200, help_text='Type the version of this dap to verify the deletion.')
+    verification_name = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
+    verification_version = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='version', why='deletion'))
 
 
 class ActivationDapForm(ModelForm):
-    verification = CharField(max_length=200, help_text='Type the name of this dap to verify the deactivation.')
+    verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deactivation'))
 
     class Meta:
         model = MetaDap
