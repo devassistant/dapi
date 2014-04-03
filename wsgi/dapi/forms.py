@@ -37,6 +37,9 @@ class TransferDapForm(ModelForm):
         model = MetaDap
         fields = ('user',)
 
+class LeaveDapForm(Form):
+    verification = CharField(max_length=200, help_text='Type the name of this dap to verify the leaving.')
+
 class TagsForm(ModelForm):
     class Meta:
         model = MetaDap

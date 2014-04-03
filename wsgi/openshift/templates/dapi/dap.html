@@ -64,6 +64,9 @@
     {% if user == metadap.user or user.is_superuser %}
     <li><a href="{% url 'dapi.views.dap_admin' metadap %}">admin</a></li>
     {% endif %}
+    {% if user in metadap.comaintainers.all %}
+    <li><a href="{% url 'dapi.views.dap_leave' metadap %}">leave this dap</a></li>
+    {% endif %}
 </ul>
 
 <h2>Available versions</h2>

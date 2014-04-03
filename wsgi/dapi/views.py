@@ -119,6 +119,27 @@ def dap_admin(request, dap):
     return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
 
 @login_required
+def dap_leave(request, dap):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    if request.user == m.user:
+        messages.error(request, 'You cannot leave this dap. First, transfer it to someone.')
+    if not request.user in m.comaintainers.all():
+        messages.error(request, 'You cannot leave this dap, you are not it\'s comaintainer.')
+        return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    if request.method == 'POST':
+        form = LeaveDapForm(request.POST)
+        if form.is_valid():
+            if dap == request.POST['verification']:
+                m.comaintainers.remove(request.user)
+                messages.info(request, 'Successfully leaved {dap}.'.format(dap=dap))
+                return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+            else:
+                form.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
+    else:
+        form = LeaveDapForm()
+    return render(request, 'dapi/dap-leave.html', {'form': form, 'dap': m})
+
+@login_required
 def dap_tags(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
     if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
