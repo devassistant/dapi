@@ -48,3 +48,10 @@ def save_dap_to_db(f, dap, user):
         m.latest_stable = d
     m.save()
     return [], m.package_name
+
+
+def get_rank(metadap, user):
+    try:
+        return metadap.rank_set.get(user=user).rank
+    except:
+        return None

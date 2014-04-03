@@ -41,32 +41,36 @@ def upload(request):
 
 def dap_devel(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
+    rank = get_rank(m, request.user)
     if m.latest:
-        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest, 'similar': m.similar_active_daps()[:5]})
+        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest, 'similar': m.similar_active_daps()[:5], 'rank': rank})
     else:
         raise Http404
 
 def dap_stable(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
+    rank = get_rank(m, request.user)
     if m.latest_stable:
-        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable, 'similar': m.similar_active_daps()[:5]})
+        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable, 'similar': m.similar_active_daps()[:5], 'rank': rank})
     else:
         raise Http404
 
 def dap(request, dap):
     m = get_object_or_404(MetaDap, package_name=dap)
+    rank = get_rank(m, request.user)
     if m.latest_stable:
         d = m.latest_stable
     elif m.latest:
         d = m.latest
     else:
         d = None
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5]})
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank})
 
 def dap_version(request, dap, version):
     m = get_object_or_404(MetaDap, package_name=dap)
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5]})
+    rank = get_rank(m, request.user)
+    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank})
 
 @login_required
 def dap_admin(request, dap):
@@ -203,6 +207,24 @@ def dap_delete(request, dap):
 def user(request, user):
     u = get_object_or_404(User, username=user)
     return render(request, 'dapi/user.html', {'u': u})
+
+@login_required
+def dap_rank(request, dap, rank):
+    m = get_object_or_404(MetaDap, package_name=dap)
+    rank = int(rank)
+    if rank:
+        r, c = request.user.rank_set.get_or_create(metadap=m, defaults={'rank': rank})
+        if not c:
+            r.rank = rank
+            r.save()
+        messages.info(request, 'Successfully ranked {dap} with {rank}'.format(dap=dap,rank=rank))
+    else:
+        try:
+            request.user.rank_set.get(metadap=m).delete()
+        except Rank.DoesNotExist:
+            pass
+        messages.info(request, 'Successfully unranked {dap}'.format(dap=dap))
+    return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
 
 @login_required
 def user_edit(request, user):
