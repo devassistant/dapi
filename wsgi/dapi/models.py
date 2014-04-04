@@ -20,7 +20,8 @@ class MetaDap(models.Model):
     latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
     tags = TaggableManager(blank=True)
     active = models.BooleanField(default=True)
-    ranks = models.ManyToManyField(User, through='Rank', related_name='rankers', null=True, blank=True, default=None)
+    ranks = models.ManyToManyField(User, through='Rank', related_name='ranked_set', null=True, blank=True, default=None)
+    reports = models.ManyToManyField(User, through='Report', related_name='reported_set', null=True, blank=True, default=None)
     average_rank = models.FloatField(null=True, blank=True, default=None)
     rank_count = models.IntegerField(default=0)
 
@@ -121,6 +122,23 @@ class Rank(models.Model):
 
     class Meta:
         unique_together = ('metadap', 'user',)
+
+
+class Report(models.Model):
+    LEGAL = 'l'
+    MALWARE = 'm'
+    HATE = 'h'
+    TYPE_CHOICES = (
+        (LEGAL, 'legal'),
+        (MALWARE, 'malware'),
+        (HATE, 'hate'),
+    )
+    type = models.CharField(max_length=1, choices=TYPE_CHOICES)
+    metadap = models.ForeignKey(MetaDap)
+    reporter = models.ForeignKey(User, null=True, blank=True, default=None)
+    email = models.EmailField(null=True, blank=True, default=None)
+    versions = models.ManyToManyField(Dap, null=True, blank=True, default=None, related_name='report_set')
+    message = models.TextField()
 
 
 @receiver(post_delete, sender=Dap)

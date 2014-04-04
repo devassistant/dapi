@@ -1,4 +1,4 @@
-from dapi.models import MetaDap, Dap, Author, Rank
+from dapi.models import *
 from django.contrib import admin
 
 
@@ -32,3 +32,15 @@ class DapAdmin(admin.ModelAdmin):
 admin.site.register(Dap, DapAdmin)
 
 admin.site.register(Rank)
+
+
+class ReportAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Dap', {'fields': ['metadap', 'versions']}),
+        ('Reporter', {'fields': ['reporter', 'email']}),
+        ('Report', {'fields': ['message']}),
+    ]
+    filter_horizontal = ['versions']
+
+
+admin.site.register(Report, ReportAdmin)
