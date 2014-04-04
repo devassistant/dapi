@@ -193,6 +193,9 @@ URL_PATH = ''
 SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
 SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
 
+SOCIAL_AUTH_GITHUB_EXTRA_DATA = [('username', 'username')]
+SOCIAL_AUTH_FEDORA_EXTRA_DATA = [('nickname', 'username')]
+
 try:
     with open(GITHUB_FILE) as f:
         github = f.readlines()
