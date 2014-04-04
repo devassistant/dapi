@@ -129,10 +129,12 @@ class Report(models.Model):
     LEGAL = 'l'
     MALWARE = 'm'
     HATE = 'h'
+    SPAM = 's'
     TYPE_CHOICES = (
-        (LEGAL, 'legal'),
-        (MALWARE, 'malware'),
-        (HATE, 'hate'),
+        (LEGAL, 'Legal (copyright issues, non-free or patented content...)'),
+        (MALWARE, 'Malware (this dap tries to break my system or leak my data)'),
+        (HATE, 'Hate (racism, sexism, adult content, etc)'),
+        (SPAM, 'Spam or advertising'),
     )
     problem = models.CharField(max_length=1, choices=TYPE_CHOICES)
     metadap = models.ForeignKey(MetaDap)
@@ -141,6 +143,15 @@ class Report(models.Model):
     versions = models.ManyToManyField(Dap, null=True, blank=True, default=None, related_name='report_set')
     message = models.TextField()
 
+    def __unicode__(self):
+        '''Returns metadap name, username or e-mail and typo of report sepearted by spaces'''
+        if self.reporter:
+            user = self.reporter.username
+        elif self.email:
+            user = self.email
+        else:
+            user = '<anonymous>'
+        return self.metadap.package_name + ' ' + user + ' ' + self.get_problem_display().split()[0].lower()
 
 @receiver(post_delete, sender=Dap)
 def dap_post_delete_handler(sender, **kwargs):

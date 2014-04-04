@@ -71,6 +71,7 @@ class ReportForm(ModelForm):
         help_texts = {
             'problem': 'Select the type of problem you want to report.',
             'versions': 'Where this problem occurs? If you are not sure, you can leave it blank.',
+            'message': 'Describe the problem you want to report.',
         }
 
 
