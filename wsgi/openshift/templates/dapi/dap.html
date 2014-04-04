@@ -69,7 +69,7 @@
     <li>Rank this dap:
     {% for i in "xxxxx" %}
         <a href="{% url 'dapi.views.dap_rank' metadap forloop.counter %}">{{ forloop.counter }}</a>
-    {% endfor %}
+    {% endfor %}(more is better)
     </li>
     {% endif %}
     {% if rank %}
