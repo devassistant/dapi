@@ -95,6 +95,7 @@ def dap_admin(request, dap):
         messages.error(request, 'You don\'t have permissions to administrate this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     cform = ComaintainersForm(instance=m)
+    cform.fields['comaintainers'].queryset = User.objects.exclude(id=m.user_id)
     tform = TransferDapForm(instance=m)
     aform = ActivationDapForm(instance=m)
     dform = DeleteDapForm()
