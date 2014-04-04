@@ -201,7 +201,7 @@ def dap_tags(request, dap):
     if request.method == 'POST':
         data = request.POST.copy()
         try:
-            data['tags'] += ','
+            data['tags'] = data['tags'].lower() + ','
         except KeyError:
             pass
         form = TagsForm(data, instance=m)
