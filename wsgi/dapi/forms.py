@@ -1,8 +1,9 @@
 from django.forms import *
-from dapi.models import MetaDap
+from dapi.models import MetaDap, Report
 from django.contrib.auth.models import User
 
 VERIFY_HELP_TEXT = 'Type the {what} of this dap to verify the {why}.'
+
 
 class UploadDapForm(Form):
     file = FileField()
@@ -60,3 +61,22 @@ class TagsForm(ModelForm):
     class Meta:
         model = MetaDap
         fields = ('tags',)
+
+
+class ReportForm(ModelForm):
+
+    class Meta:
+        model = Report
+        fields = ('problem', 'versions', 'message')
+        help_texts = {
+            'problem': 'Select the type of problem you want to report.',
+            'versions': 'Where this problem occurs? If you are not sure, you can leave it blank.',
+        }
+
+
+class ReportAnonymousForm(ModelForm):
+
+    class Meta(ReportForm.Meta):
+        fields = ReportForm.Meta.fields + ('email',)
+        help_texts = ReportForm.Meta.help_texts
+        help_texts['email'] = 'Optional. So we can inform you about the solution. We don\'t send spam or sell e-mail addresses.'

@@ -237,10 +237,32 @@ def dap_rank(request, dap, rank):
     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
 
 
+def dap_report(request, dap):
+    '''Report an evil dap'''
+    m = get_object_or_404(MetaDap, package_name=dap)
+    if request.user.is_authenticated():
+        formclass = ReportForm
+    else:
+        formclass = ReportAnonymousForm
+    if request.method == 'POST':
+        form = formclass(request.POST)
+        if form.is_valid():
+            r = form.save(commit=False)
+            r.metadap = m
+            r.save()
+            messages.info(request, 'Dap successfully reported.')
+            return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+    else:
+        form = formclass()
+    form.fields['versions'].queryset = Dap.objects.filter(metadap=m)
+    return render(request, 'dapi/dap-report.html', {'form': form, 'dap': m})
+
+
 def user(request, user):
     '''Display the user profile'''
     u = get_object_or_404(User, username=user)
     return render(request, 'dapi/user.html', {'u': u})
+
 
 @login_required
 def user_edit(request, user):

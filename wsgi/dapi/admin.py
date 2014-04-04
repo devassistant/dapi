@@ -38,7 +38,7 @@ class ReportAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Dap', {'fields': ['metadap', 'versions']}),
         ('Reporter', {'fields': ['reporter', 'email']}),
-        ('Report', {'fields': ['message']}),
+        ('Report', {'fields': ['problem', 'message']}),
     ]
     filter_horizontal = ['versions']
 

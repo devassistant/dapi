@@ -125,6 +125,7 @@ class Rank(models.Model):
 
 
 class Report(models.Model):
+    '''Model that stores info about evil daps reported'''
     LEGAL = 'l'
     MALWARE = 'm'
     HATE = 'h'
@@ -133,7 +134,7 @@ class Report(models.Model):
         (MALWARE, 'malware'),
         (HATE, 'hate'),
     )
-    type = models.CharField(max_length=1, choices=TYPE_CHOICES)
+    problem = models.CharField(max_length=1, choices=TYPE_CHOICES)
     metadap = models.ForeignKey(MetaDap)
     reporter = models.ForeignKey(User, null=True, blank=True, default=None)
     email = models.EmailField(null=True, blank=True, default=None)
@@ -155,6 +156,7 @@ def dap_post_delete_handler(sender, **kwargs):
     m.latest_stable = m._get_latest_stable()
     m.save()
 
+
 def recalculate_rank(sender, **kwargs):
     '''Recalculate the average rank and rank count in a form of handler'''
     rank = kwargs['instance']
@@ -162,10 +164,12 @@ def recalculate_rank(sender, **kwargs):
     rank.metadap.average_rank = rank.metadap._get_average_rank()
     rank.metadap.save()
 
+
 @receiver(post_save, sender=Rank)
 def rank_post_save_handler(sender, **kwargs):
     '''When a rank is saved (created or updated), recalculate the average rank and rank count.'''
     recalculate_rank(sender, **kwargs)
+
 
 @receiver(post_delete, sender=Rank)
 def rank_post_delete_handler(sender, **kwargs):
