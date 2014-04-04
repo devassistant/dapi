@@ -5,7 +5,10 @@
 <h1>Top rated daps</h1>
     <ul>
     {% for dap in top_rated %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a> ({{ dap.average_rank|floatformat }})</li>
+        <li>
+            <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+            {% if dap.average_rank %}({{ dap.average_rank|floatformat }}){% endif %}
+        </li>
     {% endfor %}
     </ul>
 {% endif %}
