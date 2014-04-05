@@ -249,6 +249,8 @@ def dap_report(request, dap):
         if form.is_valid():
             r = form.save(commit=False)
             r.metadap = m
+            if request.user.is_authenticated():
+                r.reporter = request.user
             r.save()
             messages.info(request, 'Dap successfully reported.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
