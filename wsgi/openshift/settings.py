@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     'south',
     'social.apps.django_app.default',
     'taggit',
+    'captcha',
     'dapi',
 )
 

@@ -1,6 +1,7 @@
 from django.forms import *
 from dapi.models import MetaDap, Report
 from django.contrib.auth.models import User
+from captcha.fields import CaptchaField
 
 VERIFY_HELP_TEXT = 'Type the {what} of this dap to verify the {why}.'
 
@@ -76,6 +77,7 @@ class ReportForm(ModelForm):
 
 
 class ReportAnonymousForm(ModelForm):
+    captcha = CaptchaField()
 
     class Meta(ReportForm.Meta):
         fields = ReportForm.Meta.fields + ('email',)
