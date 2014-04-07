@@ -1,6 +1,6 @@
 {% extends "dapi/base.html" %}
 {% block content %}
-<h1>{{ dap }} tags</h1>
+<h1>Report {{ dap }}</h1>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
