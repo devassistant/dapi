@@ -2,7 +2,7 @@ from __future__ import division
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
@@ -139,7 +139,7 @@ class Report(models.Model):
     )
     problem = models.CharField(max_length=1, choices=TYPE_CHOICES)
     metadap = models.ForeignKey(MetaDap)
-    reporter = models.ForeignKey(User, null=True, blank=True, default=None)
+    reporter = models.ForeignKey(User, null=True, blank=True, default=None, on_delete=models.SET_DEFAULT)
     email = models.EmailField(null=True, blank=True, default=None)
     versions = models.ManyToManyField(Dap, null=True, blank=True, default=None, related_name='report_set')
     message = models.TextField()
@@ -199,3 +199,12 @@ def rank_post_save_handler(sender, **kwargs):
 def rank_post_delete_handler(sender, **kwargs):
     '''When a rank is deleted, recalculate the average rank and rank count.'''
     recalculate_rank(sender, **kwargs)
+
+
+@receiver(pre_delete, sender=User)
+def user_pre_delete_handler(sender, **kwargs):
+    '''When an user is deleted, save his e-mail address to his former reports.'''
+    user = kwargs['instance']
+    for report in user.report_set.all():
+        report.email = user.email
+        report.save()
