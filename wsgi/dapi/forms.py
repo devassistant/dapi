@@ -5,7 +5,7 @@ from captcha.fields import CaptchaField
 from social.apps.django_app.default import models as social_models
 
 
-VERIFY_HELP_TEXT = 'Type the {what} of this dap to verify the {why}.'
+VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}.'
 
 
 class UploadDapForm(Form):
@@ -56,6 +56,10 @@ class ComaintainersForm(ModelForm):
 
 class DeleteDapForm(Form):
     verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
+
+
+class DeleteUserForm(Form):
+    verification = CharField(max_length=30, help_text='Enter the username to confirm the deletion.')
 
 
 class DeleteVersionForm(Form):

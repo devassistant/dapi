@@ -313,6 +313,7 @@ def user_edit(request, user):
         return HttpResponseRedirect(reverse('dapi.views.user', args=(user, )))
     uform = UserForm(instance=u)
     pform = ProfileSyncForm(instance=u.profile)
+    dform = DeleteUserForm()
     if request.method == 'POST':
         if 'uform' in request.POST:
             uform = UserForm(request.POST, instance=u)
@@ -326,7 +327,16 @@ def user_edit(request, user):
                 pform.save()
                 messages.info(request, 'Sync settings successfully saved.')
                 return HttpResponseRedirect(reverse('dapi.views.user_edit', args=(u, )))
-    return render(request, 'dapi/user-edit.html', {'uform': uform, 'pform': pform, 'u': u})
+        if 'dform' in request.POST:
+            dform = DeleteUserForm(request.POST)
+            if dform.is_valid():
+                if user == request.POST['verification']:
+                    u.delete()
+                    messages.info(request, 'Successfully deleted {user}.'.format(user=user))
+                    return HttpResponseRedirect(reverse('dapi.views.index'))
+                else:
+                    dform.errors['verification'] = ['You didn\'t enter the username correctly.']
+    return render(request, 'dapi/user-edit.html', {'uform': uform, 'pform': pform, 'dform': dform, 'u': u})
 
 
 def login(request):
