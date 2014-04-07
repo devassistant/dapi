@@ -18,6 +18,14 @@ class UserForm(ModelForm):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
 
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        if self.instance.profile.syncs.exists():
+            self.fields['email'].help_text = 'Further fields cannot be edited, because at least one service is configured to override those data on login. See below to disable it.'
+            for field in 'email first_name last_name'.split():
+                self.fields[field].widget.attrs['readonly'] = 'readonly'
+                self.fields[field].widget.attrs['class'] = 'disabled'
+
 
 class ProfileSyncForm(ModelForm):
 
