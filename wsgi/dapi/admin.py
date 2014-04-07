@@ -32,6 +32,7 @@ class DapAdmin(admin.ModelAdmin):
 admin.site.register(Dap, DapAdmin)
 
 admin.site.register(Rank)
+admin.site.register(Profile)
 
 
 class ReportAdmin(admin.ModelAdmin):

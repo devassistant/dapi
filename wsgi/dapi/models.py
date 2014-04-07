@@ -154,6 +154,17 @@ class Report(models.Model):
             user = '<anonymous>'
         return self.metadap.package_name + ' ' + user + ' ' + self.get_problem_display().split()[0].lower()
 
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, primary_key=True)
+    fedora_sync = models.BooleanField(default=False)
+    github_sync = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        '''Returns username'''
+        return self.user.username
+
+
 @receiver(post_delete, sender=Dap)
 def dap_post_delete_handler(sender, **kwargs):
     '''When a dap is deleted, delete the associated file
