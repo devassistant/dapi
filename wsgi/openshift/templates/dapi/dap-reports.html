@@ -19,4 +19,5 @@
 {% if not reports %}
 <p>No unsolved reports for this dap, hurrah!</p>
 {% endif %}
+<p><a href="{% url 'dapi.views.dap_report' dap.package_name %}">Report this dap</a>.</p>
 {% endblock %}

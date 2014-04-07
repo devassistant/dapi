@@ -4,6 +4,7 @@
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
+  <p>Check if this wasn't <a href="{% url 'dapi.views.dap_reports' dap.package_name %}">already reported</a>!</p>
   <p><input type="submit" value="Report this dap" /></p>
 </form>
 {% endblock %}

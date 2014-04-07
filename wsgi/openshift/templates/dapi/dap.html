@@ -81,6 +81,10 @@
     {% if user in metadap.comaintainers.all %}
     <li><a href="{% url 'dapi.views.dap_leave' metadap %}">leave this dap</a></li>
     {% endif %}
+    {% if reports %}
+    <li>Waring, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report(s)</a>!</li>
+    {% endif %}
+    <li><a href="{% url 'dapi.views.dap_report' metadap.package_name %}">report this dap as evil</a></li>
 </ul>
 
 <h2>Available versions</h2>
