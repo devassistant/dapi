@@ -259,6 +259,12 @@ def dap_report(request, dap):
     form.fields['versions'].queryset = Dap.objects.filter(metadap=m)
     return render(request, 'dapi/dap-report.html', {'form': form, 'dap': m})
 
+def dap_reports(request, dap):
+    '''List reports of given dap'''
+    m = get_object_or_404(MetaDap, package_name=dap)
+    reports = Report.objects.filter(metadap=m)
+    return render(request, 'dapi/dap-reports.html', {'dap': m, 'reports': reports})
+
 
 def user(request, user):
     '''Display the user profile'''
