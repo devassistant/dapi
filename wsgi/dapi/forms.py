@@ -33,6 +33,7 @@ class ProfileSyncForm(ModelForm):
         super(ModelForm, self).__init__(*args, **kwargs)
         self.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=self.instance.user)
 
+
 class ComaintainersForm(ModelForm):
 
     class Meta:

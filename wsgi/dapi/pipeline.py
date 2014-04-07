@@ -1,5 +1,6 @@
 from dapi import models
 
+
 def create_profile(strategy, request, user=None, is_new=False, *args, **kwargs):
     '''Create a profile for newly created user'''
     if not user or not is_new:
@@ -13,6 +14,7 @@ def create_profile(strategy, request, user=None, is_new=False, *args, **kwargs):
         'user': user
     }
 
+
 def auto_sync(strategy, request, user=None, is_new=False, *args, **kwargs):
     '''Enable sync of data for newly created user'''
     if not user or not is_new:
@@ -22,13 +24,14 @@ def auto_sync(strategy, request, user=None, is_new=False, *args, **kwargs):
         strategy.backend.name,
         uid
     )
-    
+
     if social:
         user.profile.syncs.add(social)
 
     return {
         'user': user
     }
+
 
 def user_details(strategy, details, response, user=None, *args, **kwargs):
     '''Update user details using data from provider if the user wants it.'''

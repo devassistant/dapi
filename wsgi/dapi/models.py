@@ -157,6 +157,7 @@ class Report(models.Model):
 
 
 class Profile(models.Model):
+    '''Additional data stored per User'''
     user = models.OneToOneField(User, primary_key=True)
     syncs = models.ManyToManyField(social_models.UserSocialAuth, null=True, blank=True, default=None)
 
