@@ -9,7 +9,7 @@ from django.contrib import messages
 from taggit.models import Tag
 
 # Our local modules
-from dapi.models import Dap, MetaDap
+from dapi.models import Dap, MetaDap, Report
 from django.contrib.auth.models import User
 from dapi.forms import *
 from dapi.logic import *
@@ -263,6 +263,7 @@ def dap_report(request, dap):
     form.fields['versions'].queryset = Dap.objects.filter(metadap=m)
     return render(request, 'dapi/dap-report.html', {'form': form, 'dap': m})
 
+
 def dap_reports(request, dap):
     '''List reports of given dap'''
     m = get_object_or_404(MetaDap, package_name=dap)
@@ -271,6 +272,18 @@ def dap_reports(request, dap):
     else:
         reports = m.report_set.filter(solved=False)
     return render(request, 'dapi/dap-reports.html', {'dap': m, 'reports': reports})
+
+
+@login_required
+def report_toggle_solve(request, report_id):
+    '''Mark solved reports unsolved and vice versa'''
+    if not request.user.is_staff:
+        raise Http404
+    r = get_object_or_404(Report, id=report_id)
+    r.solved = not r.solved
+    r.save()
+    messages.info(request, 'Successfully toggled the report')
+    return HttpResponseRedirect(reverse('dapi.views.dap_reports', args=(r.metadap.package_name, )))
 
 
 def user(request, user):

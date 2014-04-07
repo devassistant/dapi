@@ -1,6 +1,7 @@
 {% extends "dapi/base.html" %}
 {% block content %}
 <h1>Reports for {{ dap }}</h1>
+<p><a href="{% url 'dapi.views.dap_report' dap.package_name %}">Report this dap</a>.</p>
 {% for report in reports %}
 <h3>{% if report.solved %}<del>{% endif %}{{ report.get_problem_display }}{% if report.solved %}</del>{% endif %}</h3>
 {{ report.message|linebreaks }}
@@ -14,10 +15,15 @@
     <em>anonymous</em>
 {% endif %}
 </p>
+<p></p>
+{% endif %}
+{% if report.solved %}
+<p><a href="{% url 'dapi.views.report_toggle_solve' report.id %}">Mark as unsolved again.</a></p>
+{% else %}
+<p><a href="{% url 'dapi.views.report_toggle_solve' report.id %}">Mark as solved.</a></p>
 {% endif %}
 {% endfor %}
 {% if not reports %}
 <p>No unsolved reports for this dap, hurrah!</p>
 {% endif %}
-<p><a href="{% url 'dapi.views.dap_report' dap.package_name %}">Report this dap</a>.</p>
 {% endblock %}
