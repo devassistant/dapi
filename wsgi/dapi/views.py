@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from taggit.models import Tag
-from social.apps.django_app.default import models as social_models
 
 # Our local modules
 from dapi.models import Dap, MetaDap, Report
@@ -143,7 +142,6 @@ def dap_admin(request, dap):
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
                     dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
-    cform.fields['comaintainers'].queryset = User.objects.exclude(id=m.user_id)
     return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
 
 
@@ -252,10 +250,9 @@ def dap_report(request, dap):
     else:
         formclass = ReportAnonymousForm
     if request.method == 'POST':
-        form = formclass(request.POST)
+        form = formclass(m, request.POST)
         if form.is_valid():
             r = form.save(commit=False)
-            r.metadap = m
             if request.user.is_authenticated():
                 r.reporter = request.user
             r.save()
@@ -275,8 +272,7 @@ def dap_report(request, dap):
             messages.info(request, 'Dap successfully reported.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
-        form = formclass()
-    form.fields['versions'].queryset = Dap.objects.filter(metadap=m)
+        form = formclass(m)
     return render(request, 'dapi/dap-report.html', {'form': form, 'dap': m})
 
 
@@ -330,8 +326,6 @@ def user_edit(request, user):
                 pform.save()
                 messages.info(request, 'Sync settings successfully saved.')
                 return HttpResponseRedirect(reverse('dapi.views.user_edit', args=(u, )))
-    pform.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=u)
-    social_models.UserSocialAuth.__str__ = lambda self: self.get_backend().name
     return render(request, 'dapi/user-edit.html', {'uform': uform, 'pform': pform, 'u': u})
 
 
