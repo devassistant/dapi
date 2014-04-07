@@ -5,6 +5,14 @@
 {% for report in reports %}
 <h3>{% if report.solved %}<del>{% endif %}{{ report.get_problem_display }}{% if report.solved %}</del>{% endif %}</h3>
 {{ report.message|linebreaks }}
+
+{% if report.versions.exists %}
+<p>Versions specified:
+{% for ver in report.versions.all %}
+<a href="{% url 'dapi.views.dap_version' ver.metadap.package_name ver.version %}">{{ ver }}</a>,
+{% endfor %}
+</p>
+{% endif %}
 {% if user.is_staff %}
 <p>Reported by
 {% if report.reporter %}

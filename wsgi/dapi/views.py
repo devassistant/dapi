@@ -256,6 +256,7 @@ def dap_report(request, dap):
             if request.user.is_authenticated():
                 r.reporter = request.user
             r.save()
+            form.save_m2m()
             messages.info(request, 'Dap successfully reported.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
