@@ -2,8 +2,8 @@
 {% block content %}
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <p><input type="submit" value="Save" /></p>
+  {{ uform.as_p }}
+  <p><input type="submit" name="uform" value="Save" /></p>
 </form>
 
 {% if user == u %}
@@ -23,5 +23,11 @@
 {% endfor %}
 {% endif %}
 {% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  {{ pform.as_p }}
+  <p><input type="submit" name="pform" value="Save" /></p>
+</form>
 
 {% endblock %}

@@ -213,9 +213,11 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.get_username',
     'social.pipeline.social_auth.associate_by_email',
     'social.pipeline.user.create_user',
+    'dapi.pipeline.create_profile',
     'social.pipeline.social_auth.associate_user',
+    'dapi.pipeline.auto_sync',
     'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details'
+    'dapi.pipeline.user_details'
 )
 
 # A sample logging configuration. The only tangible logging

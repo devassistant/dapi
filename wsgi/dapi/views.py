@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from taggit.models import Tag
+from social.apps.django_app.default import models as social_models
 
 # Our local modules
 from dapi.models import Dap, MetaDap, Report
@@ -314,15 +315,24 @@ def user_edit(request, user):
     if request.user.username != user and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to edit this user.')
         return HttpResponseRedirect(reverse('dapi.views.user', args=(user, )))
+    uform = UserForm(instance=u)
+    pform = ProfileSyncForm(instance=u.profile)
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=u)
-        if form.is_valid():
-            form.save()
-            messages.info(request, 'User successfully edited.')
-            return HttpResponseRedirect(reverse('dapi.views.user', args=(u, )))
-    else:
-        form = UserForm(instance=u)
-    return render(request, 'dapi/user-edit.html', {'form': form, 'u': u})
+        if 'uform' in request.POST:
+            uform = UserForm(request.POST, instance=u)
+            if uform.is_valid():
+                uform.save()
+                messages.info(request, 'User successfully saved.')
+                return HttpResponseRedirect(reverse('dapi.views.user_edit', args=(u, )))
+        if 'pform' in request.POST:
+            pform = ProfileSyncForm(request.POST, instance=u.profile)
+            if pform.is_valid():
+                pform.save()
+                messages.info(request, 'Sync settings successfully saved.')
+                return HttpResponseRedirect(reverse('dapi.views.user_edit', args=(u, )))
+    pform.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=u)
+    social_models.UserSocialAuth.__str__ = lambda self: self.get_backend().name
+    return render(request, 'dapi/user-edit.html', {'uform': uform, 'pform': pform, 'u': u})
 
 
 def login(request):

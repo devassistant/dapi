@@ -1,5 +1,5 @@
 from django.forms import *
-from dapi.models import MetaDap, Report
+from dapi.models import MetaDap, Report, Profile
 from django.contrib.auth.models import User
 from captcha.fields import CaptchaField
 
@@ -15,6 +15,16 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
+
+
+class ProfileSyncForm(ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = ('syncs',)
+        help_texts = {
+            'syncs': 'Select services, that will override your name and e-mail on login.',
+        }
 
 
 class ComaintainersForm(ModelForm):

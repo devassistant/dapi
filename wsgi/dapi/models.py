@@ -6,6 +6,7 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
+from social.apps.django_app.default import models as social_models
 
 from daploader import dapver
 
@@ -157,8 +158,7 @@ class Report(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, primary_key=True)
-    fedora_sync = models.BooleanField(default=False)
-    github_sync = models.BooleanField(default=False)
+    syncs = models.ManyToManyField(social_models.UserSocialAuth, null=True, blank=True, default=None)
 
     def __unicode__(self):
         '''Returns username'''
