@@ -142,6 +142,7 @@ class Report(models.Model):
     email = models.EmailField(null=True, blank=True, default=None)
     versions = models.ManyToManyField(Dap, null=True, blank=True, default=None, related_name='report_set')
     message = models.TextField()
+    solved = models.BooleanField(default=False)
 
     def __unicode__(self):
         '''Returns metadap name, username or e-mail and typo of report sepearted by spaces'''

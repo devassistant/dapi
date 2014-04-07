@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Reports for {{ dap }}</h1>
 {% for report in reports %}
-<h3>{{ report.get_problem_display }}</h3>
+<h3>{% if report.solved %}<del>{% endif %}{{ report.get_problem_display }}{% if report.solved %}</del>{% endif %}</h3>
 {{ report.message|linebreaks }}
 {% if user.is_staff %}
 <p>Reported by

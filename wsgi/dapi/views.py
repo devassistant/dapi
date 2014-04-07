@@ -50,7 +50,7 @@ def dap_devel(request, dap):
     '''Display latest version of dap, even if that's devel'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
-    reports = m.report_set.all()
+    reports = m.report_set.filter(solved=False)
     if m.latest:
         return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
     else:
@@ -61,7 +61,7 @@ def dap_stable(request, dap):
     '''Display latest stable version of dap'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
-    reports = m.report_set.all()
+    reports = m.report_set.filter(solved=False)
     if m.latest_stable:
         return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
     else:
@@ -72,7 +72,7 @@ def dap(request, dap):
     '''Display latest stable version of dap, or latest devel if no stable is available'''
     m = get_object_or_404(MetaDap, package_name=dap)
     rank = get_rank(m, request.user)
-    reports = m.report_set.all()
+    reports = m.report_set.filter(solved=False)
     if m.latest_stable:
         d = m.latest_stable
     elif m.latest:
@@ -87,7 +87,7 @@ def dap_version(request, dap, version):
     m = get_object_or_404(MetaDap, package_name=dap)
     d = get_object_or_404(Dap, metadap=m.pk, version=version)
     rank = get_rank(m, request.user)
-    reports = m.report_set.all()
+    reports = m.report_set.filter(solved=False)
     return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
 
 
@@ -266,7 +266,10 @@ def dap_report(request, dap):
 def dap_reports(request, dap):
     '''List reports of given dap'''
     m = get_object_or_404(MetaDap, package_name=dap)
-    reports = m.report_set.all()
+    if request.user.is_staff:
+        reports = m.report_set.order_by('solved')
+    else:
+        reports = m.report_set.filter(solved=False)
     return render(request, 'dapi/dap-reports.html', {'dap': m, 'reports': reports})
 
 
