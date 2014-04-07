@@ -6,6 +6,8 @@ from django.template import RequestContext
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from taggit.models import Tag
 
 # Our local modules
@@ -257,6 +259,18 @@ def dap_report(request, dap):
                 r.reporter = request.user
             r.save()
             form.save_m2m()
+            if not settings.DEBUG:
+                to = []
+                if m.user.email:
+                    to.append(m.user.email)
+                for admin in settings.ADMINS:
+                    to.append(admin[1])
+                send_mail('Dap {dap} reported as evil'.format(dap=dap),
+                          '''Hi, dap {dap} was reported as evil.
+                          See {link} for more information.'''.format(dap=dap,
+                                                                     link=request.build_absolute_uri(reverse('dapi.views.dap_reports', args=(dap, )))),
+                          'no-reply@rhcloud.com',
+                          to, fail_silently=False)
             messages.info(request, 'Dap successfully reported.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
