@@ -6,9 +6,11 @@ import os
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
 GITHUB_FILE = 'github'
+WHOOSH_INDEX = 'whoosh'
 if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
-    GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'github')
+    GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], GITHUB_FILE)
+    WHOOSH_INDEX = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], WHOOSH_INDEX)
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:
@@ -170,6 +172,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'taggit',
     'captcha',
+    'haystack',
     'dapi',
 )
 
@@ -250,3 +253,10 @@ LOGGING = {
 }
 
 TAGGIT_SLUG_MATCHING = True
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': WHOOSH_INDEX,
+    },
+}

@@ -11,3 +11,4 @@ wsgi/github
 wsgi/upload
 wsgi/static/admin
 *.dap
+wsgi/whoosh/

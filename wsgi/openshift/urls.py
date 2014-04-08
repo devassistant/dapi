@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^', include('dapi.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^search/', include('haystack.urls')),
 )

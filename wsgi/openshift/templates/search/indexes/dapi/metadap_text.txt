@@ -1,0 +1,5 @@
+{{ object.package_name }}
+{% for dap in object.dap_set.all %}
+{{ dap.summary }}
+{{ dap.description }}
+{% endfor %}
