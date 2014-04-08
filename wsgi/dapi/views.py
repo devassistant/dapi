@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from taggit.models import Tag
 
 # Our local modules
@@ -27,7 +28,15 @@ def index(request):
 def tag(request, tag):
     '''Lists all daps of given tag'''
     t = get_object_or_404(Tag, slug=tag)
-    daps_list = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('-average_rank', '-rank_count')
+    all_tagged_daps = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('-average_rank', '-rank_count')
+    paginator = Paginator(all_tagged_daps, 25)
+    page = request.GET.get('page')
+    try:
+        daps_list = paginator.page(page)
+    except PageNotAnInteger:
+        daps_list = paginator.page(1)
+    except EmptyPage:
+        daps_list = paginator.page(paginator.num_pages)
     return render(request, 'dapi/tag.html', {'daps_list': daps_list, 'tag': t})
 
 

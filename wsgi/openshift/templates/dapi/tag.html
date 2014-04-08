@@ -8,6 +8,15 @@
         <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a></li>
     {% endfor %}
     </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if daps_list.has_previous %}<a href="?page={{ daps_list.previous_page_number }}">previous</a>{% endif %}
+            <span class="current">Page {{ daps_list.number }} of {{ daps_list.paginator.num_pages }}.</span>
+            {% if daps_list.has_next %}<a href="?page={{ daps_list.next_page_number }}">next</a>{% endif %}
+        </span>
+    </div>
+{% else %}
+<p>There are no active daps tagged with {{ tag }}.</p>
 {% endif %}
 
 {% endblock %}
