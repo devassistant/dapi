@@ -9,11 +9,14 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework import viewsets
+
 from taggit.models import Tag
 
 # Our local modules
 from dapi.models import Dap, MetaDap, Report
 from django.contrib.auth.models import User
+from dapi import serializers
 from dapi.forms import *
 from dapi.logic import *
 
@@ -365,3 +368,19 @@ def logout(request):
     '''Logs out the user'''
     auth_logout(request)
     return HttpResponseRedirect(reverse('dapi.views.index'))
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    '''API endpoint that allows users to be viewed'''
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+
+class MetaDapViewSet(viewsets.ReadOnlyModelViewSet):
+    '''API endpoint that allows metadaps to be viewed'''
+    queryset = MetaDap.objects.all()
+    serializer_class = serializers.MetaDapSerializer
+
+class DapViewSet(viewsets.ReadOnlyModelViewSet):
+    '''API endpoint that allows daps to be viewed'''
+    queryset = Dap.objects.all()
+    serializer_class = serializers.DapSerializer

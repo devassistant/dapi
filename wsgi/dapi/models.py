@@ -70,6 +70,10 @@ class MetaDap(models.Model):
         The rank_count attribute should be used to obtain this value from DB.'''
         return self.rank_set.count()
 
+    def get_unsolved_reports_count(self):
+        '''Gets the number of active reports'''
+        return self.report_set.filter(solved=False).count()
+
 
 class Dap(models.Model):
     '''Model representing a specific version of a dap (of MetaDap instance)'''
@@ -89,6 +93,18 @@ class Dap(models.Model):
     def is_pre(self):
         '''Returns True if this is a pre_release'''
         return not self.version[-1].isdigit()
+
+    def is_latest(self):
+        '''Whether the Dap is latest version of it's MetaDap.'''
+        return self == self.metadap.latest
+
+    def is_latest_stable(self):
+        '''Whether the Dap is latest stable version of it's MetaDap.'''
+        return self == self.metadap.latest_stable
+
+    def get_authors(self):
+        '''Returns the list of authors as strings'''
+        return [author.author for author in self.author_set.all()]
 
     class Meta:
         unique_together = ('metadap', 'version',)
@@ -164,6 +180,22 @@ class Profile(models.Model):
     def __unicode__(self):
         '''Returns username'''
         return self.user.username
+
+    def _get_social_username(self, provider):
+        '''Get the username of this user on given social auth provider, if any'''
+        try:
+            usa = social_models.UserSocialAuth.objects.get(user=self.user, provider=provider)
+            return usa.extra_data['username']
+        except social_models.UserSocialAuth.DoesNotExist, KeyError:
+            return None
+
+    def fedora_username(self):
+        '''If the user uses Fedora to login, return his FAS username'''
+        return self._get_social_username('fedora')
+
+    def github_username(self):
+        '''If the user uses Github to login, return his Github username'''
+        return self._get_social_username('github')
 
 
 @receiver(post_delete, sender=Dap)

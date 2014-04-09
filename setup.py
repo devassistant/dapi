@@ -20,5 +20,6 @@ setup(
         'django-simple-captcha',
         'django-haystack',
         'whoosh',
+        'djangorestframework',
     ],
 )

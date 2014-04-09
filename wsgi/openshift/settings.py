@@ -173,6 +173,7 @@ INSTALLED_APPS = (
     'taggit',
     'captcha',
     'haystack',
+    'rest_framework',
     'dapi',
 )
 
@@ -263,3 +264,8 @@ HAYSTACK_CONNECTIONS = {
 }
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',),
+    'PAGINATE_BY': 10,
+}
