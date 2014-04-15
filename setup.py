@@ -20,6 +20,9 @@ setup(
         'django-simple-captcha',
         'django-haystack',
         'whoosh',
-        'djangorestframework',
+        'djangorestframework==03b4c60b',
     ],
+    dependency_links = [
+        'git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework-03b4c60b',
+    ]
 )
