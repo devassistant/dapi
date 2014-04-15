@@ -6,6 +6,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     fedora_username = serializers.Field(source='profile.fedora_username')
     github_username = serializers.Field(source='profile.github_username')
+    full_name = serializers.Field(source='get_full_name')
 
     class Meta:
         model = User
@@ -13,12 +14,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'id',
             'username',
+            'full_name',
             'metadap_set',
             'codap_set',
             'fedora_username',
             'github_username',
         )
-        #lookup_field = 'username'
 
 
 class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
@@ -53,6 +54,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
     is_latest = serializers.Field(source='is_latest')
     is_latest_stable = serializers.Field(source='is_latest_stable')
     reports = serializers.Field(source='metadap.get_unsolved_reports_count')
+    active = serializers.Field(source='metadap.active')
 
     class Meta:
         model = Dap
@@ -72,4 +74,5 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'is_latest',
             'is_latest_stable',
             'reports',
+            'active',
         )
