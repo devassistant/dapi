@@ -19,6 +19,7 @@
         <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a></li>
       {% endfor %}</ul></li>
       {% endif %}
+      <li><a href="{% url 'api-root' %}">API</a></li>
     </ul>
 
     

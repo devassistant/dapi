@@ -373,11 +373,13 @@ def logout(request):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     '''API endpoint that allows users to be viewed'''
     queryset = User.objects.all()
+    lookup_field = 'username'
     serializer_class = serializers.UserSerializer
 
 class MetaDapViewSet(viewsets.ReadOnlyModelViewSet):
     '''API endpoint that allows metadaps to be viewed'''
     queryset = MetaDap.objects.all()
+    lookup_field = 'package_name'
     serializer_class = serializers.MetaDapSerializer
 
 class DapViewSet(viewsets.ReadOnlyModelViewSet):

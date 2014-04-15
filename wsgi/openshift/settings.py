@@ -7,10 +7,12 @@ import os
 ON_OPENSHIFT = False
 GITHUB_FILE = 'github'
 WHOOSH_INDEX = 'whoosh'
+SITE_URL = 'http://127.0.0.1:8000/'
 if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
     GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], GITHUB_FILE)
     WHOOSH_INDEX = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], WHOOSH_INDEX)
+    SITE_URL = 'http://dapi-devassistant.rhcloud.com/'
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:
@@ -83,7 +85,7 @@ MEDIA_ROOT = os.path.join(os.environ.get('OPENSHIFT_DATA_DIR', ''), 'upload')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/download/'
+MEDIA_URL = SITE_URL + 'download/'
 
 # We have to write all uploaded files to disk, so we can test them with daplint right away
 FILE_UPLOAD_MAX_MEMORY_SIZE = 0

@@ -33,7 +33,7 @@ echo GITHUB-API-ID > ${OPENSHIFT_DATA_DIR}github
 echo GITHUB-API-SECRET >> ${OPENSHIFT_DATA_DIR}github
 ````
 
-Don't forget to update settings.py with your e-mail address and ALLOWED_HOSTS.
+Don't forget to update settings.py with your e-mail address, ALLOWED_HOSTS and SITE_URL.
 
 Go to `http://website.url/admin`, log in as admin and add a Profile for your admin user! Feel free to disable admin on production.
 
