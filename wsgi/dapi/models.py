@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from taggit.managers import TaggableManager
 from social.apps.django_app.default import models as social_models
 
@@ -54,6 +56,10 @@ class MetaDap(models.Model):
     def similar_active_daps(self):
         '''Returns active daps with similar tags'''
         return [dap for dap in self.tags.similar_objects() if dap.active]
+
+    def similar_active_daps_api(self):
+        '''Dirty trick to return API links of similar daps'''
+        return [settings.SITE_URL+reverse('metadap-detail', args=(dap.package_name, )) for dap in self.similar_active_daps()]
 
     def _get_average_rank(self):
         '''Calculates the average rank of the dap.

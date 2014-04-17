@@ -37,7 +37,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
     reports = serializers.Field(source='get_unsolved_reports_count')
     tags = serializers.Field(source='tags.all')
-    similar_daps = serializers.Field(source='similar_active_daps')
+    similar_daps = serializers.Field(source='similar_active_daps_api')
     url = serializers.HyperlinkedIdentityField(
         view_name='metadap-detail',
         lookup_field='package_name')
