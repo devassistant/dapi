@@ -370,6 +370,11 @@ def logout(request):
     return HttpResponseRedirect(reverse('dapi.views.index'))
 
 
+def terms(request):
+    '''Terms and conditions'''
+    return render(request, 'dapi/terms.html')
+
+
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     '''API endpoint that allows users to be viewed'''
     queryset = User.objects.all()

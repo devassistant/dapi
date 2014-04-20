@@ -5,5 +5,5 @@ Login with:
 {% for name in backends.not_associated %}
 <a href="{% url 'social:begin' name %}?next={{ next }}">{{ name }}</a>,
 {% endfor %}
-
+<p>By logging in you agree to <a href="{% url 'dapi.views.terms' %}">the terms of service</a>.</p>
 {% endblock %}

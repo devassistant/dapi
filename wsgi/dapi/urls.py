@@ -19,6 +19,7 @@ urlpatterns = patterns('dapi.views',
     url(r'^user/(?P<user>[^/]+)/edit/$', 'user_edit'),
     url(r'^upload/$', 'upload'),
     url(r'^login/$', 'login'),
+    url(r'^terms/$', 'terms'),
     url(r'^logout/$', 'logout'),
     url(r'^tag/(?P<tag>[^/]+)/$', 'tag'),
 )
