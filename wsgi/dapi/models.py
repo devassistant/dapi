@@ -192,7 +192,7 @@ class Profile(models.Model):
         try:
             usa = social_models.UserSocialAuth.objects.get(user=self.user, provider=provider)
             return usa.extra_data['username']
-        except social_models.UserSocialAuth.DoesNotExist, KeyError:
+        except (social_models.UserSocialAuth.DoesNotExist, KeyError):
             return None
 
     def fedora_username(self):
