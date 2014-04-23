@@ -1,6 +1,6 @@
 '''This was written by Shah Pavel Jamal
 See http://www.sprklab.com/notes/13-passing-arguments-to-functions-in-django-template
-Waiting to get a permission to use it'''
+Used with permission'''
 from django import template
 
 register = template.Library()
