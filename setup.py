@@ -8,7 +8,8 @@ setup(
     description='DevAssistant Package Index',
     author='Miro Hroncok',
     author_email='mhroncok@redhat.com',
-    url='http://www.python.org/sigs/distutils-sig/',
+    url='https://github.com/hroncok/dapi',
+    license='AGPLv3',
     install_requires=[
         'Django==1.6',
         'psycopg2',
