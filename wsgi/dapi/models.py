@@ -187,7 +187,7 @@ class Profile(models.Model):
         '''Returns username'''
         return self.user.username
 
-    def _get_social_username(self, provider):
+    def get_social_username(self, provider):
         '''Get the username of this user on given social auth provider, if any'''
         try:
             usa = social_models.UserSocialAuth.objects.get(user=self.user, provider=provider)
@@ -197,7 +197,7 @@ class Profile(models.Model):
 
     def get_social_url(self, provider):
         '''Get the URL of this user on given social auth provider, if any'''
-        username = self._get_social_username(provider)
+        username = self.get_social_username(provider)
         if not username:
             return None
         try:
@@ -208,11 +208,11 @@ class Profile(models.Model):
 
     def fedora_username(self):
         '''If the user uses Fedora to login, return his FAS username'''
-        return self._get_social_username('fedora')
+        return self.get_social_username('fedora')
 
     def github_username(self):
         '''If the user uses Github to login, return his Github username'''
-        return self._get_social_username('github')
+        return self.get_social_username('github')
 
 
 @receiver(post_delete, sender=Dap)
