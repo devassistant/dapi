@@ -276,3 +276,5 @@ REST_FRAMEWORK = {
     ),
     'PAGINATE_BY': 10,
 }
+
+GRAVATAR_DEFAULT_IMAGE = 'identicon'
