@@ -1,6 +1,13 @@
-.gravatar {
+.navbar-nav .gravatar {
   -moz-border-radius: 10%;
   -webkit-border-radius: 10%;
   -khtml-border-radius: 10%;
   border-radius: 10%;
+}
+
+.gravatar {
+  -moz-border-radius: 3%;
+  -webkit-border-radius: 3%;
+  -khtml-border-radius: 3%;
+  border-radius: 3%;
 }
