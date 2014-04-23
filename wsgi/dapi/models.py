@@ -195,6 +195,17 @@ class Profile(models.Model):
         except (social_models.UserSocialAuth.DoesNotExist, KeyError):
             return None
 
+    def get_social_url(self, provider):
+        '''Get the URL of this user on given social auth provider, if any'''
+        username = self._get_social_username(provider)
+        if not username:
+            return None
+        try:
+            url = getattr(settings, 'SOCIAL_AUTH_{provider}_PROFILE_LINK'.format(provider=provider.upper()))
+        except AttributeError:
+            return None
+        return url.format(username=username)
+
     def fedora_username(self):
         '''If the user uses Fedora to login, return his FAS username'''
         return self._get_social_username('fedora')

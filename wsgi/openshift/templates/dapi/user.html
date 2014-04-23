@@ -20,7 +20,8 @@
       <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
       {% load method_call %}
       {% for backend in backends.backends %}
-      <p><span class="glyphicon glyphicon-user"></span> {{ u.profile|args:backend|call:'_get_social_username' }} at {{ backend|title }}</p>
+      <p><span class="glyphicon glyphicon-user"></span>
+      <a href="{{ u.profile|args:backend|call:'get_social_url' }}">{{ u.profile|args:backend|call:'_get_social_username' }}</a> at {{ backend|title }}</p>
       {% endfor %}
   </div>
 

@@ -205,6 +205,9 @@ SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
 SOCIAL_AUTH_GITHUB_EXTRA_DATA = [('username', 'username')]
 SOCIAL_AUTH_FEDORA_EXTRA_DATA = [('nickname', 'username')]
 
+SOCIAL_AUTH_GITHUB_PROFILE_LINK = 'https://github.com/{username}'
+SOCIAL_AUTH_FEDORA_PROFILE_LINK = 'https://fedoraproject.org/wiki/User:{username}'
+
 try:
     with open(GITHUB_FILE) as f:
         github = f.readlines()
