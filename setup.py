@@ -16,7 +16,7 @@ setup(
         'South',
         'daploader>=0.0.4',
         'PyYAML',
-        'python-social-auth',
+        'python-social-auth==c5dd3339',
         'django-taggit',
         'django-simple-captcha',
         'django-haystack',
@@ -25,6 +25,7 @@ setup(
         'django-gravatar2',
     ],
     dependency_links = [
+        'git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth-c5dd3339',
         'git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework-03b4c60b',
     ]
 )
