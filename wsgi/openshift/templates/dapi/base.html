@@ -1,9 +1,11 @@
 <!doctype html>
+{% load staticfiles %}
 <html>
   <head>
     <title>{% block title %}{% endblock %} - Dapi</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel=stylesheet type="text/css" href="http://devassistant.org/landing_page/css/custom.css" />
+    <link rel=stylesheet type="text/css" href="{% static 'style.css' %}" />
     {% block head_scripts %}{% endblock %}
   </head>
   <body>
@@ -36,7 +38,8 @@
             </li>
             <li class="dropdown">
             {% if user.is_authenticated %}
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+              {% load gravatar %}
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% gravatar user.email 20 user.username %} {{ user.username }}<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="{% url 'dapi.views.user' user.username %}">View profile</a></li>
                 <li><a href="{% url 'dapi.views.user_edit' user.username %}">Edit profile</a></li>

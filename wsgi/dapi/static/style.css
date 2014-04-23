@@ -1,0 +1,6 @@
+.gravatar {
+  -moz-border-radius: 10%;
+  -webkit-border-radius: 10%;
+  -khtml-border-radius: 10%;
+  border-radius: 10%;
+}

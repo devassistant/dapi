@@ -176,6 +176,7 @@ INSTALLED_APPS = (
     'captcha',
     'haystack',
     'rest_framework',
+    'django_gravatar',
     'dapi',
 )
 
