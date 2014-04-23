@@ -1,9 +1,7 @@
 {% extends "dapi/base.html" %}
-{% block title %}API{% endblock %}
+{% block title %}API - {{ name }}{% endblock %}
 {% load rest_framework %}
 {% block content %}
-<div id="content">
-
         {% if 'GET' in allowed_methods %}
             <form id="get-form" class="pull-right">
                 <fieldset>
@@ -137,6 +135,4 @@
 
         </div>
         <!-- END content-main -->
-
-    </div>
 {% endblock %}

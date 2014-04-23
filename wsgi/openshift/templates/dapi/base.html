@@ -3,38 +3,78 @@
   <head>
     <title>{% block title %}{% endblock %} - Dapi</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel=stylesheet type="text/css" href="http://devassistant.org/landing_page/css/custom.css" />
     {% block head_scripts %}{% endblock %}
   </head>
   <body>
-    <ul id="menu">
-      <li><a href="{% url 'dapi.views.index' %}">index</a></li>
-      {% if user.is_authenticated %}
-      <li><a href="{% url 'dapi.views.upload' %}">upload</a></li>
-      <li><a href="{% url 'dapi.views.user' user.username %}">{{ user.username }}</a><ul>
-        <li><a href="{% url 'dapi.views.user_edit' user.username %}">edit profile</a></li>
-        <li><a href="{% url 'dapi.views.logout' %}">logout</a></li>
-      </ul></li>
-      {% else %}
-      <li>login:<ul>{% for name in backends.not_associated %}
-        <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a></li>
-      {% endfor %}</ul></li>
-      {% endif %}
-      <li><a href="{% url 'api-root' %}">API</a></li>
-    </ul>
+    <div class="container page-container">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="Go to homepage">Dapi</a>
+        </div>
 
-    
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <form method="get" action="/search">
-        {{ search_form.as_p }}
-        <p><input type="submit" value="Search" /></p>
-    </form>
-    {% block content %}{% endblock %}
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'dapi.views.upload' %}">Upload a dap</a></li>
+            {% endif %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">About<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'dapi.views.terms' %}">Terms of Use</a></li>
+                <li><a href="{% url 'api-root' %}">API</a></li>
+                <li><a href="http://doc.devassistant.org/en/latest/developer_documentation.html" target="_blank">Developer Documentation</a></li>
+                <li><a href="https://github.com/hroncok/dapi" target="_blank">Dapi Source Code</a></li>
+                <li><a href="http://devassistant.org/" target="_blank">DevAssistant Homepage</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+            {% if user.is_authenticated %}
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'dapi.views.user' user.username %}">View profile</a></li>
+                <li><a href="{% url 'dapi.views.user_edit' user.username %}">Edit profile</a></li>
+                <li><a href="{% url 'dapi.views.logout' %}">Logout</a></li>
+              </ul>
+            {% else %}
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+              {% for name in backends.not_associated %}
+                <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name|title }}</a></li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+            </li>
+          </ul>
+          <div class="col-sm-3 col-md-3 pull-right">
+            <form class="navbar-form" role="search" method="get" action="/search">
+              <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search" id="id_q" name="q">
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
     {% block scripts %}{% endblock %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
