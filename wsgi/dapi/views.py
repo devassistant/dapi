@@ -25,7 +25,8 @@ def index(request):
     '''The homepage, currentl lists top and most ranked daps'''
     top_rated = MetaDap.objects.filter(active=True).order_by('-average_rank', '-rank_count')[:10]
     most_rated = MetaDap.objects.filter(active=True).order_by('-rank_count', '-average_rank')[:10]
-    return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated})
+    recent = MetaDap.objects.filter(active=True).order_by('-pk')[:10]
+    return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated, 'recent': recent})
 
 
 def tag(request, tag):

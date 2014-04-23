@@ -2,25 +2,55 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 
+<div class="row announcement-boxes">
+
 {% if top_rated %}
-<h1>Top rated daps</h1>
-    <ul>
-    {% for dap in top_rated %}
-        <li>
-            <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
-            {% if dap.average_rank %}({{ dap.average_rank|floatformat }}){% endif %}
+  <div class="container col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Top rated daps</div>
+      <ul class="list-group">
+      {% for dap in top_rated %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+          {% if dap.average_rank %}({{ dap.average_rank|floatformat }}){% endif %}
         </li>
-    {% endfor %}
-    </ul>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
 {% endif %}
 
 {% if most_rated %}
-<h1>Most rated daps</h1>
-    <ul>
-    {% for dap in most_rated %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a> ({{ dap.rank_count }} times)</li>
-    {% endfor %}
-    </ul>
+  <div class="container col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Most rated daps</div>
+      <ul class="list-group">
+      {% for dap in most_rated %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+          ({{ dap.rank_count }} times)
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
 {% endif %}
+
+{% if recent %}
+  <div class="container col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Recent daps</div>
+      <ul class="list-group">
+      {% for dap in recent %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
+</div>
 
 {% endblock %}
