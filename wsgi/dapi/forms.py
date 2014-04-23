@@ -9,7 +9,7 @@ VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}.'
 
 
 class UploadDapForm(Form):
-    file = FileField()
+    file = FileField(label='')
 
 
 class UserForm(ModelForm):
