@@ -48,7 +48,7 @@
             {% else %}
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Login<b class="caret"></b></a>
               <ul class="dropdown-menu">
-              {% for name in backends.not_associated %}
+              {% for name in backends.backends %}
                 <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name|title }}</a></li>
               {% endfor %}
               </ul>
