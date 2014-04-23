@@ -1,22 +1,63 @@
 {% extends "dapi/base.html" %}
-{% block title %}{{ u }}{% endblock %}
-{% block content %}
-{% load staticfiles %}
-<h1>{{ u }}</h1>
+{% block title %}{{ u }} {% if u.get_full_name %} ({{ u.get_full_name }}){% endif %}{% endblock %}
 {% load gravatar %}
-{% gravatar user.email 150 user.username %}
-<ul>
-    <li>Full name: {{ u.get_full_name }}</li>
-    <li>Joined: {{ u.date_joined }}</li>
-    {% if u.metadap_set.exists %}<li>Daps: <ul>
-        {% for dap in u.metadap_set.all|dictsort:"package_name" %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a></li>
-        {% endfor %}
-    </ul></li>{% endif %}
-    {% if u.codap_set.exists %}<li>Daps co-owned: <ul>
-        {% for dap in u.codap_set.all|dictsort:"package_name" %}
-        <li><a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a></li>
-        {% endfor %}
-    </ul></li>{% endif %}
-</ul>
+{% block content %}
+<div class="row">
+  <div class="container col-sm-4">
+    <div>
+      {% gravatar u.email 230 u.username %}
+      {% if u.get_full_name %}
+      <h1>{{ u.get_full_name }}</h1>
+      <h2>{{ u.username }}</h2>
+      {% else %}
+      <h1>{{ u.username }}</h1>
+      {% endif %}
+      {% if u.is_staff %}
+      <p><span class="glyphicon glyphicon-wrench"></span> Admin</p>
+      {% endif %}
+    </div>
+      <p><span class="glyphicon glyphicon-time"></span> Joined on {{ u.date_joined|date:'M d, Y' }}</p>
+      <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
+      {% load method_call %}
+      {% for backend in backends.backends %}
+      <p><span class="glyphicon glyphicon-user"></span> {{ u.profile|args:backend|call:'_get_social_username' }} at {{ backend|title }}</p>
+      {% endfor %}
+  </div>
+
+
+  <div class="container col-sm-4">
+{% if u.metadap_set.exists %}
+    <div class="panel panel-default">
+      <div class="panel-heading">Daps owned by {{ u }}</div>
+      <ul class="list-group">
+      {% for dap in u.metadap_set.all|dictsortreversed:'rank_count'|dictsortreversed:'average_rank'|dictsortreversed:'active' %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+{% else %}
+    <div><p>{{ u }} doesn't own any daps yet.</p></div>
+{% endif %}
+  </div>
+
+  <div class="container col-sm-4">
+{% if u.codap_set.exists %}
+    <div class="panel panel-default">
+      <div class="panel-heading">Daps comaintained by {{ u }}</div>
+      <ul class="list-group">
+      {% for dap in u.codap_set.all|dictsortreversed:'rank_count'|dictsortreversed:'average_rank'|dictsortreversed:'active' %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+{% else %}
+    <div><p>{{ u }} doesn't comaintain any daps.</p></div>
+{% endif %}
+  </div>
+
+</div>
 {% endblock %}
