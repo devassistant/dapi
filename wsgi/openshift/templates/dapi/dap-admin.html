@@ -1,6 +1,7 @@
 {% extends "dapi/base.html" %}
+{% block title %}{{ dap }} administration{% endblock %}
 {% block content %}
-<h1>{{ dap }}</h1>
+<h1>{{ dap }} administration</h1>
 <h2>Comaintainers</h2>
 <form method="post">
   {% csrf_token %}

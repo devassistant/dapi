@@ -1,5 +1,7 @@
 {% extends "dapi/base.html" %}
+{% block title %}Edit {{ u }}{% endblock %}
 {% block content %}
+<h1>Edit {{ u }}</h1>
 <form method="post">
   {% csrf_token %}
   {{ uform.as_p }}

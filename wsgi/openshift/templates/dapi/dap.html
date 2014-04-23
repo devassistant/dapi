@@ -1,4 +1,5 @@
 {% extends "dapi/base.html" %}
+{% block title %}{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}{% endblock %}
 {% block content %}
 <h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}</h1>
 <ul>
