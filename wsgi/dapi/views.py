@@ -51,7 +51,7 @@ def upload(request):
         if form.is_valid():
             errors, dname = handle_uploaded_dap(request.FILES['file'], request.user)
             if not errors:
-                messages.info(request, 'Dap successfully uploaded.')
+                messages.success(request, 'Dap successfully uploaded.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
             else:
                 form.errors['file'] = errors
@@ -122,7 +122,7 @@ def dap_admin(request, dap):
             if cform.is_valid():
                 cform.save()
                 m.comaintainers.remove(m.user)
-                messages.info(request, 'Comaintainers successfully saved.')
+                messages.success(request, 'Comaintainers successfully saved.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
         if 'tform' in request.POST:
             olduser = m.user
@@ -132,7 +132,7 @@ def dap_admin(request, dap):
                     tform.save()
                     m.comaintainers.add(olduser)
                     m.comaintainers.remove(m.user)
-                    messages.info(request, 'Dap {dap} successfully transfered.'.format(dap=dap))
+                    messages.success(request, 'Dap {dap} successfully transfered.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
                     tform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
@@ -141,7 +141,7 @@ def dap_admin(request, dap):
             if aform.is_valid():
                 if dap == request.POST['verification']:
                     aform.save()
-                    messages.info(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap, de='' if m.active else 'de'))
+                    messages.success(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap, de='' if m.active else 'de'))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
                     aform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
@@ -150,7 +150,7 @@ def dap_admin(request, dap):
             if dform.is_valid():
                 if dap == request.POST['verification']:
                     m.delete()
-                    messages.info(request, 'Dap {dap} successfully deleted.'.format(dap=dap))
+                    messages.success(request, 'Dap {dap} successfully deleted.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
                     dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
@@ -172,7 +172,7 @@ def dap_leave(request, dap):
         if form.is_valid():
             if dap == request.POST['verification']:
                 m.comaintainers.remove(request.user)
-                messages.info(request, 'Successfully leaved {dap}.'.format(dap=dap))
+                messages.success(request, 'Successfully leaved {dap}.'.format(dap=dap))
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
             else:
                 form.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
@@ -201,7 +201,7 @@ def dap_version_delete(request, dap, version):
                 wrong = True
             if not wrong:
                 d.delete()
-                messages.info(request, 'Successfully deleted {dap}.'.format(dap=d))
+                messages.success(request, 'Successfully deleted {dap}.'.format(dap=d))
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
         form = DeleteVersionForm()
@@ -224,7 +224,7 @@ def dap_tags(request, dap):
         form = TagsForm(data, instance=m)
         if form.is_valid():
             form.save()
-            messages.info(request, 'Tags successfully saved.')
+            messages.success(request, 'Tags successfully saved.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
         form = TagsForm(instance=m)
@@ -244,13 +244,13 @@ def dap_rank(request, dap, rank):
         if not c:
             r.rank = rank
             r.save()
-        messages.info(request, 'Successfully ranked {dap} with {rank}'.format(dap=dap, rank=rank))
+        messages.success(request, 'Successfully ranked {dap} with {rank}'.format(dap=dap, rank=rank))
     else:
         try:
             request.user.rank_set.get(metadap=m).delete()
         except Rank.DoesNotExist:
             pass
-        messages.info(request, 'Successfully unranked {dap}'.format(dap=dap))
+        messages.success(request, 'Successfully unranked {dap}'.format(dap=dap))
     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
 
 
@@ -281,7 +281,7 @@ def dap_report(request, dap):
                                                                      link=request.build_absolute_uri(reverse('dapi.views.dap_reports', args=(dap, )))),
                           'no-reply@rhcloud.com',
                           to, fail_silently=False)
-            messages.info(request, 'Dap successfully reported.')
+            messages.success(request, 'Dap successfully reported.')
             return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     else:
         form = formclass(m)
@@ -306,7 +306,7 @@ def report_toggle_solve(request, report_id):
     r = get_object_or_404(Report, id=report_id)
     r.solved = not r.solved
     r.save()
-    messages.info(request, 'Successfully toggled the report')
+    messages.success(request, 'Successfully toggled the report')
     return HttpResponseRedirect(reverse('dapi.views.dap_reports', args=(r.metadap.package_name, )))
 
 
@@ -331,20 +331,20 @@ def user_edit(request, user):
             uform = UserForm(request.POST, instance=u)
             if uform.is_valid():
                 uform.save()
-                messages.info(request, 'User successfully saved.')
+                messages.success(request, 'User {u} successfully saved.'.format(u=user))
                 return HttpResponseRedirect(reverse('dapi.views.user_edit', args=(u, )))
         if 'pform' in request.POST:
             pform = ProfileSyncForm(request.POST, instance=u.profile)
             if pform.is_valid():
                 pform.save()
-                messages.info(request, 'Sync settings successfully saved.')
+                messages.success(request, 'Sync settings successfully saved.')
                 return HttpResponseRedirect(reverse('dapi.views.user_edit', args=(u, )))
         if 'dform' in request.POST:
             dform = DeleteUserForm(request.POST)
             if dform.is_valid():
                 if user == request.POST['verification']:
                     u.delete()
-                    messages.info(request, 'Successfully deleted {user}.'.format(user=user))
+                    messages.success(request, 'Successfully deleted {user}.'.format(user=user))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
                     dform.errors['verification'] = ['You didn\'t enter the username correctly.']
