@@ -8,16 +8,16 @@
     {% if u.get_full_name %}
     <div class="page-header">
       <h1>{{ u.get_full_name }}<br />
-      <small>{{ u.username }}</small></h1>
+      <small>{{ u.username }}{% if u.is_staff %}<br />
+      <span class="label label-success">ADMIN</span>{% endif %}</small></h1>
     </div>
     {% else %}
     <div class="page-header">
-      <h1>{{ u.username }}</h1>
+      <h1>{{ u.username }}{% if u.is_staff %}<br />
+      <span class="label label-success">ADMIN</span>{% endif %}</h1>
     </div>
     {% endif %}
-    {% if u.is_staff %}
-    <p><span class="glyphicon glyphicon-cog"></span> Admin</p>
-    {% endif %}
+    
     <p><span class="glyphicon glyphicon-time"></span> Joined on {{ u.date_joined|date:'M d, Y' }}</p>
     <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
     {% load method_call %}
