@@ -69,8 +69,9 @@
         </div>
       </nav>
 
+      {% load alerts %}
       {% for message in messages %}
-      <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+      <div class="alert alert-{{ message.tags|alerts }}">
         <a href="#" class="close" data-dismiss="alert">&times;</a>
         {{ message }}
       </div>
