@@ -12,7 +12,7 @@
     <h1>{{ u.username }}</h1>
     {% endif %}
     {% if u.is_staff %}
-    <p><span class="glyphicon glyphicon-wrench"></span> Admin</p>
+    <p><span class="glyphicon glyphicon-cog"></span> Admin</p>
     {% endif %}
     <p><span class="glyphicon glyphicon-time"></span> Joined on {{ u.date_joined|date:'M d, Y' }}</p>
     <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
@@ -21,6 +21,9 @@
     <p><span class="glyphicon glyphicon-user"></span>
     <a href="{{ u.profile|args:backend|call:'get_social_url' }}">{{ u.profile|args:backend|call:'get_social_username' }}</a> at {{ backend|title }}</p>
     {% endfor %}
+    {% if user == u or user.is_superuser %}
+    <p><a href="{% url 'dapi.views.user_edit' u %}" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> Edit {{ u }}</a></p>
+    {% endif %}
   </div>
 
 
