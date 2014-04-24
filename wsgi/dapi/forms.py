@@ -1,6 +1,7 @@
 from django.forms import *
 from dapi.models import MetaDap, Dap, Report, Profile
 from django.contrib.auth.models import User
+from django.forms.util import ErrorList
 from captcha.fields import CaptchaField
 from social.apps.django_app.default import models as social_models
 
@@ -8,11 +9,40 @@ from social.apps.django_app.default import models as social_models
 VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}.'
 
 
-class UploadDapForm(Form):
+class DivErrorList(ErrorList):
+    '''Make the form errors look better'''
+    def __unicode__(self):
+        return self.as_divs()
+    def as_divs(self):
+        if not self:
+            return ''
+        template = '''
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          %s
+        </div>
+        '''
+        return template % '\n'.join(['<p>%s</p>' % e for e in self])
+
+
+class DivErrorForm(Form):
+    '''A form that uses DivErrorList'''
+    def __init__(self, *args, **kwargs):
+        super(Form, self).__init__(*args, **kwargs)
+        self.error_class = DivErrorList
+
+class DivErrorModelForm(ModelForm):
+    '''A model form that uses DivErrorList'''
+    def __init__(self, *args, **kwargs):
+        super(Form, self).__init__(*args, **kwargs)
+        self.error_class = DivErrorList
+
+
+class UploadDapForm(DivErrorForm):
     file = FileField(label='')
 
 
-class UserForm(ModelForm):
+class UserForm(DivErrorModelForm):
 
     class Meta:
         model = User
@@ -27,7 +57,7 @@ class UserForm(ModelForm):
                 self.fields[field].widget.attrs['class'] = 'disabled'
 
 
-class ProfileSyncForm(ModelForm):
+class ProfileSyncForm(DivErrorModelForm):
 
     class Meta:
         model = Profile
@@ -42,7 +72,7 @@ class ProfileSyncForm(ModelForm):
         self.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=self.instance.user)
 
 
-class ComaintainersForm(ModelForm):
+class ComaintainersForm(DivErrorModelForm):
 
     class Meta:
         model = MetaDap
@@ -54,20 +84,20 @@ class ComaintainersForm(ModelForm):
         self.fields['comaintainers'].queryset = User.objects.exclude(id=self.instance.user_id)
 
 
-class DeleteDapForm(Form):
+class DeleteDapForm(DivErrorForm):
     verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
 
 
-class DeleteUserForm(Form):
+class DeleteUserForm(DivErrorForm):
     verification = CharField(max_length=30, help_text='Enter the username to confirm the deletion.')
 
 
-class DeleteVersionForm(Form):
+class DeleteVersionForm(DivErrorForm):
     verification_name = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
     verification_version = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='version', why='deletion'))
 
 
-class ActivationDapForm(ModelForm):
+class ActivationDapForm(DivErrorModelForm):
     verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deactivation'))
 
     class Meta:
@@ -75,7 +105,7 @@ class ActivationDapForm(ModelForm):
         fields = ('active',)
 
 
-class TransferDapForm(ModelForm):
+class TransferDapForm(DivErrorModelForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the transfer.')
 
     class Meta:
@@ -83,18 +113,18 @@ class TransferDapForm(ModelForm):
         fields = ('user',)
 
 
-class LeaveDapForm(Form):
+class LeaveDapForm(DivErrorForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the leaving.')
 
 
-class TagsForm(ModelForm):
+class TagsForm(DivErrorModelForm):
 
     class Meta:
         model = MetaDap
         fields = ('tags',)
 
 
-class ReportForm(ModelForm):
+class ReportForm(DivErrorModelForm):
 
     class Meta:
         model = Report
