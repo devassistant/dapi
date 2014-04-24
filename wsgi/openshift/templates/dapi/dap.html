@@ -1,114 +1,120 @@
 {% extends "dapi/base.html" %}
 {% block title %}{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}{% endblock %}
 {% load markdown %}
+{% load gravatar %}
 {% block content %}
 <div class="page-header">
   <h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}
   <small>{{ dap.summary }}</small></h1>
 </div>
+
+{% if not metadap.active %}
+<div class="alert alert-warning">Warning, this dap is not active. Consider it as deleted.</div>
+{% endif %}
+{% if dap.is_pre %}
+<div class="alert alert-warning">Warning, this is a prerelease!</div>
+{% if dap != metadap.latest %}
+<div class="alert alert-warning">Warning, this is not the <a href="{% url 'dapi.views.dap_version' metadap.package_name metadap.latest.version %}">latest version available</a>!</div>
+{% endif %}
+{% else %}
+{% if dap != metadap.latest_stable %}
+<div class="alert alert-warning">Warning, this is not the <a href="{% url 'dapi.views.dap_version' metadap.package_name metadap.latest_stable.version %}">latest stable version available</a>!</div>
+{% endif %}
+{% endif %}
+{% if reports %}
+<div class="alert alert-warning">Warning, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report(s)</a>!</div>
+{% endif %}
+
 {% if dap.description %}{{ dap.description|markdown }}{% endif %}
-<ul>
-    {% if not metadap.active %}
-    <li>Warning, this dap is not active. Consider it as deleted.</li>
+
+<div class="row">
+  <div class="container col-sm-4">
+    {% if metadap.average_rank %}
+    <p><span class="glyphicon glyphicon-star"></span> {{ metadap.average_rank|floatformat }} (ranked {{ metadap.rank_count }} times)</p>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <p><span class="glyphicon glyphicon-star-empty"></span> 
+    {% for i in "xxxxx" %}
+    <a href="{% url 'dapi.views.dap_rank' metadap forloop.counter %}">{{ forloop.counter }}</a>
+    {% endfor %}
+    {% if rank %}
+    (<a href="{% url 'dapi.views.dap_rank' metadap 0 %}">unset {{ rank }}</a>)
+    {% endif %}
+    </p>
+    {% endif %}
+    <p>{% gravatar metadap.user.email 16 metadap.user.username %}  Owned by <a href="{% url 'dapi.views.user' metadap.user %}">{{ metadap.user }}</a></p>
+    {% if metadap.comaintainers.exists %}
+    <p><span class="glyphicon glyphicon-user"></span> Comaintained by:<ul class="list-unstyled">
+      {% for comaintainer in metadap.comaintainers.all %}
+      <li>{% gravatar comaintainer.email 16 comaintainer.username %}  <a href="{% url 'dapi.views.user' comaintainer %}">{{ comaintainer }}</a></li>
+      {% endfor %}
+    </ul></p>
     {% endif %}
     {% if dap %}
-    <li>License: {{ dap.license }}</li>
+    <p><span class="glyphicon glyphicon-retweet"></span> {{ dap.license }}</p>
     {% if dap.homepage %}
-    <li><a href="{{ dap.homepage }}">homepage</a></li>
+    <p><span class="glyphicon glyphicon-globe"></span> <a href="{{ dap.homepage }}">homepage</a></p>
     {% endif %}
     {% if dap.bugreports %}
-    <li><a href="{{ dap.bugreports }}">bugreports</a></li>
-    {% endif %}
-    {% if dap.description %}
-    <li></li>
-    {% endif %}
-    {% if dap.is_pre %}
-    <li>Warning, this is a prerelease!</li>
-    {% if dap != metadap.latest %}
-    <li>Warning, this is not the latest version available!</li>
-    {% endif %}
-    {% else %}
-    {% if dap != metadap.latest_stable %}
-    <li>Warning, this is not the latest stable version available!</li>
+    <p><span class="glyphicon glyphicon-exclamation-sign"></span> <a href="{{ dap.bugreports_link }}">bugreports</a></p>
     {% endif %}
     {% endif %}
-    <li>Authors:
-        <ul>
-        {% for author in dap.author_set.all %}
-            <li>{{ author }}</li>
-        {% endfor %}
-        </ul>
-    </li>
-    <li><a href="{{ dap.file.url }}">download</a></li>
-    {% else %}
-    <li>All version of this dap were deleted</li>
-    {% endif %}
-    <li>Owned by <a href="{% url 'dapi.views.user' metadap.user %}">{{ metadap.user }}</a>
-    {% if metadap.comaintainers.exists %}
-        <ul>
-        {% for comaintainer in metadap.comaintainers.all %}
-            <li><a href="{% url 'dapi.views.user' comaintainer %}">{{ comaintainer }}</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    </li>
     {% if metadap.tags.exists %}
-    <li>Tags:<ul>
+    <p><ul class="list-inline">
     {% for tag in metadap.tags.all|dictsort:"name" %}
-        <li><a href="{% url 'dapi.views.tag' tag.slug %}">{{ tag }}</a></li>
+      <li class="label label-info"><span class="glyphicon glyphicon-tag"></span> <a href="{% url 'dapi.views.tag' tag.slug %}">{{ tag }}</a></li>
     {% endfor %}
-        {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
-        <li><a href="{% url 'dapi.views.dap_tags' metadap %}">manage tags</a></li>
-        {% endif %}
-    </ul></li>
-    {% else %}
+    </ul></p>
+    {% endif %}
     {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
-    <li><a href="{% url 'dapi.views.dap_tags' metadap %}">add tags</a></li>
-    {% endif %}
-    {% endif %}
-    {% if metadap.average_rank %}
-    <li>Average rank: {{ metadap.average_rank|floatformat }}</li>
-    {% endif %}
-    <li>Totally ranked: {{ metadap.rank_count }} times</li>
-    {% if user.is_authenticated %}
-    <li>Rank this dap:
-    {% for i in "xxxxx" %}
-        <a href="{% url 'dapi.views.dap_rank' metadap forloop.counter %}">{{ forloop.counter }}</a>
-    {% endfor %}(more is better)
-    </li>
-    {% endif %}
-    {% if rank %}
-    <li>You ranked: {{ rank }} - <a href="{% url 'dapi.views.dap_rank' metadap 0 %}">unrank</a></li>
+    <p><a href="{% url 'dapi.views.dap_tags' metadap %}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags"></span> Manage tags</a></p>
     {% endif %}
     {% if user == metadap.user or user.is_superuser %}
-    <li><a href="{% url 'dapi.views.dap_admin' metadap %}">admin</a></li>
+    <p><a href="{% url 'dapi.views.dap_admin' metadap %}" class="btn btn-primary btn-xs">
+    <span class="glyphicon glyphicon-minus-sign"></span> Administrate {{ metadap }}</a></p>
     {% endif %}
     {% if user in metadap.comaintainers.all %}
-    <li><a href="{% url 'dapi.views.dap_leave' metadap %}">leave this dap</a></li>
+    <p><a href="{% url 'dapi.views.dap_leave' metadap %}" class="btn btn-warning btn-xs">
+    <span class="glyphicon glyphicon-plane"></span> Leave {{ metadap }}</a></p>
     {% endif %}
-    {% if reports %}
-    <li>Waring, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report(s)</a>!</li>
-    {% endif %}
-    <li><a href="{% url 'dapi.views.dap_report' metadap.package_name %}">report this dap as evil</a></li>
-</ul>
+    <p><a href="{% url 'dapi.views.dap_report' metadap.package_name %}" class="btn btn-danger btn-xs">
+    <span class="glyphicon glyphicon-warning-sign"></span> Report {{ metadap }} as evil</a></p>
+    <p><a href="{{ dap.file.url }}" class="btn btn-success btn-lg">
+    <span class="glyphicon glyphicon-download"></span> Download</a></p>
+  </div>
 
-<h2>Available versions</h2>
-<ul>
-{% for version in metadap.sorted_versions %}
-    <li><a href="{% url 'dapi.views.dap_version' metadap.package_name version %}">{{ version }}</a>
-    {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
-    (<a href="{% url 'dapi.views.dap_version_delete' metadap.package_name version %}">delete</a>)
-    {% endif %}
-    </li>
-{% endfor %}
-</ul>
+{% if metadap.sorted_versions %}
+  <div class="container col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Available versions <span class="glyphicon glyphicon-th-list pull-right"></span></div>
+      <ul class="list-group">
+      {% for version in metadap.sorted_versions %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.dap_version' metadap.package_name version %}">{{ version }}</a>
+          {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
+          <a href="{% url 'dapi.views.dap_version_delete' metadap.package_name version %}" class="pull-right btn btn-danger btn-xs">
+          <span class="glyphicon glyphicon-trash"></span> Delete</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
 
 {% if similar %}
-<h2>Similar daps</h2>
-<ul>
-{% for sim in similar %}
-    <li><a href="{% url 'dapi.views.dap' sim %}">{{ sim }}</a></li>
-{% endfor %}
-</ul>
+  <div class="container col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Similar daps <span class="glyphicon glyphicon-tags pull-right"></span></div>
+      <ul class="list-group">
+      {% for sim in similar %}
+        <li class="list-group-item"><a href="{% url 'dapi.views.dap' sim %}">{{ sim }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
 {% endif %}
+
+</div>
+
 {% endblock %}

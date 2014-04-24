@@ -112,6 +112,13 @@ class Dap(models.Model):
         '''Returns the list of authors as strings'''
         return [author.author for author in self.author_set.all()]
 
+    def bugreports_link(self):
+        '''Returns URL to add to bugreports link'''
+        if not self.bugreports.startswith('http'):
+            return 'mailto:' + self.bugreports
+        else:
+            return self.bugreports
+
     class Meta:
         unique_together = ('metadap', 'version',)
 
