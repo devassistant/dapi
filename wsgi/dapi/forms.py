@@ -141,6 +141,8 @@ class ReportForm(DivErrorModelForm):
         super(ReportForm, self).__init__(*args, **kwargs)
         self.instance.metadap = metadap
         self.fields['versions'].queryset = Dap.objects.filter(metadap=metadap)
+        for key in self.fields.keys():
+            self.fields[key].widget.attrs['class'] = 'form-control'
 
 
 class ReportAnonymousForm(ReportForm):
