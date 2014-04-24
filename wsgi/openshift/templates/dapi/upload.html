@@ -6,8 +6,7 @@
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
-  <p>By submitting the form you agree to <a href="{% url 'dapi.views.terms' %}">the Terms of Use</a>.</p>
-  <p><input type="submit" value="Upload" class="btn btn-success" /></p>
+  <p><input type="submit" value="Upload" class="btn btn-success" /> By uploading a file you agree to <a href="{% url 'dapi.views.terms' %}">the Terms of Use</a>.</p>
 </form>
 
 {% endblock %}
