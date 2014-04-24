@@ -4,7 +4,7 @@
 {% block content %}
 <div class="row">
   <div class="container col-sm-4">
-    {% gravatar u.email 230 u.username %}
+    {% gravatar u.email 270 u.username %}
     {% if u.get_full_name %}
     <h1>{{ u.get_full_name }}</h1>
     <h2>{{ u.username }}</h2>
@@ -22,7 +22,7 @@
     <a href="{{ u.profile|args:backend|call:'get_social_url' }}">{{ u.profile|args:backend|call:'get_social_username' }}</a> at {{ backend|title }}</p>
     {% endfor %}
     {% if user == u or user.is_superuser %}
-    <p><a href="{% url 'dapi.views.user_edit' u %}" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> Edit {{ u }}</a></p>
+    <p class="text-center"><a href="{% url 'dapi.views.user_edit' u %}" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> Edit {{ u }}</a></p>
     {% endif %}
   </div>
 
