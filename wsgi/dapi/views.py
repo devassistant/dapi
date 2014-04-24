@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 from rest_framework import viewsets
 
 from taggit.models import Tag
@@ -26,7 +27,8 @@ def index(request):
     top_rated = MetaDap.objects.filter(active=True).order_by('-average_rank', '-rank_count')[:10]
     most_rated = MetaDap.objects.filter(active=True).order_by('-rank_count', '-average_rank')[:10]
     recent = MetaDap.objects.filter(active=True).order_by('-pk')[:10]
-    return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated, 'recent': recent})
+    tags = Tag.objects.annotate(num_times=Count('taggit_taggeditem_items')).exclude(num_times=0).order_by('-num_times')[:10]
+    return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated, 'recent': recent, 'tags': tags})
 
 
 def tag(request, tag):

@@ -1,18 +1,18 @@
 {% extends "dapi/base.html" %}
 {% block title %}Index{% endblock %}
+{% load gravatar %}
 {% block content %}
-
 <div class="row">
 
 {% if top_rated %}
-  <div class="container col-sm-4">
+  <div class="container col-sm-3">
     <div class="panel panel-default">
-      <div class="panel-heading">Top rated daps</div>
+      <div class="panel-heading">Top rated daps <span class="glyphicon glyphicon-star pull-right"></span></div>
       <ul class="list-group">
       {% for dap in top_rated %}
         <li class="list-group-item">
           <a href="{% url 'dapi.views.dap' dap.package_name %}" title="{{ dap.latest.summary }}">{{ dap.package_name }}</a>
-          {% if dap.average_rank %}({{ dap.average_rank|floatformat }}){% endif %}
+          {% if dap.average_rank %}<span class="glyphicon glyphicon-star"></span> {{ dap.average_rank|floatformat }}{% endif %}
         </li>
       {% endfor %}
       </ul>
@@ -21,14 +21,14 @@
 {% endif %}
 
 {% if most_rated %}
-  <div class="container col-sm-4">
+  <div class="container col-sm-3">
     <div class="panel panel-default">
-      <div class="panel-heading">Most rated daps</div>
+      <div class="panel-heading">Most rated daps <span class="glyphicon glyphicon-user pull-right"></span></div>
       <ul class="list-group">
       {% for dap in most_rated %}
         <li class="list-group-item">
           <a href="{% url 'dapi.views.dap' dap.package_name %}" title="{{ dap.latest.summary }}">{{ dap.package_name }}</a>
-          ({{ dap.rank_count }} times)
+          <span class="glyphicon glyphicon-user"></span> {{ dap.rank_count }}
         </li>
       {% endfor %}
       </ul>
@@ -37,13 +37,30 @@
 {% endif %}
 
 {% if recent %}
-  <div class="container col-sm-4">
+  <div class="container col-sm-3">
     <div class="panel panel-default">
-      <div class="panel-heading">Recent daps</div>
+      <div class="panel-heading">Recent daps <span class="glyphicon glyphicon-time pull-right"></span></div>
       <ul class="list-group">
       {% for dap in recent %}
         <li class="list-group-item">
           <a href="{% url 'dapi.views.dap' dap.package_name %}" title="{{ dap.latest.summary }}">{{ dap.package_name }}</a>
+          by <a href="{% url 'dapi.views.user' dap.user %}">{% gravatar dap.user.email 16 dap.user.username %} {{ dap.user }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
+{% if tags %}
+  <div class="container col-sm-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">Popular tags <span class="glyphicon glyphicon-tags pull-right"></span></div>
+      <ul class="list-group">
+      {% for tag in tags %}
+        <li class="list-group-item">
+          <a href="{% url 'dapi.views.tag' tag.slug %}">{{ tag.name }}</a>
+          <span class="glyphicon glyphicon-tag"></span> {{ tag.num_times }}
         </li>
       {% endfor %}
       </ul>
