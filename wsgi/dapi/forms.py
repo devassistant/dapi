@@ -28,13 +28,14 @@ class DivErrorList(ErrorList):
 class DivErrorForm(Form):
     '''A form that uses DivErrorList'''
     def __init__(self, *args, **kwargs):
-        super(Form, self).__init__(*args, **kwargs)
+        super(DivErrorForm, self).__init__(*args, **kwargs)
         self.error_class = DivErrorList
 
 class DivErrorModelForm(ModelForm):
     '''A model form that uses DivErrorList'''
     def __init__(self, *args, **kwargs):
-        super(Form, self).__init__(*args, **kwargs)
+        super(DivErrorModelForm, self).__init__(*args, **kwargs)
+        print "a"
         self.error_class = DivErrorList
 
 
@@ -49,7 +50,7 @@ class UserForm(DivErrorModelForm):
         fields = ('username', 'email', 'first_name', 'last_name')
 
     def __init__(self, *args, **kwargs):
-        super(ModelForm, self).__init__(*args, **kwargs)
+        super(UserForm, self).__init__(*args, **kwargs)
         if self.instance.profile.syncs.exists():
             self.fields['email'].help_text = 'Further fields cannot be edited, because at least one service is configured to override those data on login. See below to disable it.'
             for field in 'email first_name last_name'.split():
@@ -68,7 +69,7 @@ class ProfileSyncForm(DivErrorModelForm):
 
     def __init__(self, *args, **kwargs):
         social_models.UserSocialAuth.__str__ = lambda self: self.get_backend().name
-        super(ModelForm, self).__init__(*args, **kwargs)
+        super(ProfileSyncForm, self).__init__(*args, **kwargs)
         self.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=self.instance.user)
 
 
@@ -79,7 +80,7 @@ class ComaintainersForm(DivErrorModelForm):
         fields = ('comaintainers',)
 
     def __init__(self, *args, **kwargs):
-        super(ModelForm, self).__init__(*args, **kwargs)
+        super(ComaintainersForm, self).__init__(*args, **kwargs)
         self.fields['comaintainers'].help_text = ''
         self.fields['comaintainers'].queryset = User.objects.exclude(id=self.instance.user_id)
 
@@ -136,7 +137,7 @@ class ReportForm(DivErrorModelForm):
         }
 
     def __init__(self, metadap, *args, **kwargs):
-        super(ModelForm, self).__init__(*args, **kwargs)
+        super(ReportForm, self).__init__(*args, **kwargs)
         self.instance.metadap = metadap
         self.fields['versions'].queryset = Dap.objects.filter(metadap=metadap)
 
