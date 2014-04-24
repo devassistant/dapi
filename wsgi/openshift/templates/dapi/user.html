@@ -22,8 +22,10 @@
     <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
     {% load method_call %}
     {% for backend in backends.backends %}
+    {% if u.profile|args:backend|call:'get_social_username' %}
     <p><span class="glyphicon glyphicon-user"></span>
     <a href="{{ u.profile|args:backend|call:'get_social_url' }}">{{ u.profile|args:backend|call:'get_social_username' }}</a> at {{ backend|title }}</p>
+    {% endif %}
     {% endfor %}
     {% if user == u or user.is_superuser %}
     <p class="text-center"><a href="{% url 'dapi.views.user_edit' u %}" class="btn btn-primary"><span class="glyphicon glyphicon-wrench"></span> Edit {{ u }}</a></p>
