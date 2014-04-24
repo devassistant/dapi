@@ -113,7 +113,7 @@
       <div class="panel-heading">Similar daps <span class="glyphicon glyphicon-tags pull-right"></span></div>
       <ul class="list-group">
       {% for sim in similar %}
-        <li class="list-group-item"><a href="{% url 'dapi.views.dap' sim %}">{{ sim }}</a></li>
+        <li class="list-group-item"><a href="{% url 'dapi.views.dap' sim %}" title="{{ sim.latest.summary }}">{{ sim }}</a></li>
       {% endfor %}
       </ul>
     </div>

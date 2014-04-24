@@ -11,7 +11,7 @@
       <ul class="list-group">
       {% for dap in top_rated %}
         <li class="list-group-item">
-          <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+          <a href="{% url 'dapi.views.dap' dap.package_name %}" title="{{ dap.latest.summary }}">{{ dap.package_name }}</a>
           {% if dap.average_rank %}({{ dap.average_rank|floatformat }}){% endif %}
         </li>
       {% endfor %}
@@ -27,7 +27,7 @@
       <ul class="list-group">
       {% for dap in most_rated %}
         <li class="list-group-item">
-          <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+          <a href="{% url 'dapi.views.dap' dap.package_name %}" title="{{ dap.latest.summary }}">{{ dap.package_name }}</a>
           ({{ dap.rank_count }} times)
         </li>
       {% endfor %}
@@ -43,7 +43,7 @@
       <ul class="list-group">
       {% for dap in recent %}
         <li class="list-group-item">
-          <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap.package_name }}</a>
+          <a href="{% url 'dapi.views.dap' dap.package_name %}" title="{{ dap.latest.summary }}">{{ dap.package_name }}</a>
         </li>
       {% endfor %}
       </ul>
