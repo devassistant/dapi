@@ -1,10 +1,19 @@
 {% extends "dapi/base.html" %}
 {% block title %}Leave {{ dap }}{% endblock %}
 {% block content %}
-<h1>Leave {{ dap }}</h1>
+<div class="page-header">
+  <h1>Leave <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap }}</a></h1>
+</div>
+
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <p><input type="submit" value="Leave this dap" /></p>
+  {{ form.non_field_errors }}
+  {{ form.verification.errors }}
+  <div class="input-group">
+    <input id="id_verification" name="verification" type="text" placeholder="{{ form.verification.help_text }}" class="form-control" />
+    <div class="input-group-btn">
+      <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-tags"></span> Leave {{ dap }}</button>
+    </div>
+  </div>
 </form>
 {% endblock %}

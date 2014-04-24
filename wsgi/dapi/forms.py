@@ -2,6 +2,7 @@ from django.forms import *
 from dapi.models import MetaDap, Dap, Report, Profile
 from django.contrib.auth.models import User
 from django.forms.util import ErrorList
+from django.utils.safestring import mark_safe
 from captcha.fields import CaptchaField
 from social.apps.django_app.default import models as social_models
 
@@ -22,7 +23,7 @@ class DivErrorList(ErrorList):
           %s
         </div>
         '''
-        return template % '\n'.join(['<p>%s</p>' % e for e in self])
+        return mark_safe(template % '\n'.join(['<p>%s</p>' % e for e in self]))
 
 
 class DivErrorForm(Form):
