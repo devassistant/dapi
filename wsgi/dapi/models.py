@@ -90,7 +90,7 @@ class Dap(models.Model):
     homepage = models.CharField(max_length=200, blank=True)
     bugreports = models.CharField(max_length=200, blank=True)
     summary = models.CharField(max_length=500)
-    description = models.CharField(max_length=2000, blank=True)
+    description = models.TextField(blank=True)
 
     def __unicode__(self):
         '''Returns dap's name followed by a dash and version'''
