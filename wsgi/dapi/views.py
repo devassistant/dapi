@@ -233,7 +233,9 @@ def dap_tags(request, dap):
         form = TagsForm(instance=m)
         if form['tags'].value():
             data = {'tags': ', '.join([tagged.tag.name for tagged in form['tags'].value()])}
-            form = TagsForm(data, instance=m)
+        else:
+            data = {'tags': ''}
+        form = TagsForm(data, instance=m)
     return render(request, 'dapi/dap-tags.html', {'form': form, 'dap': m})
 
 
