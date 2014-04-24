@@ -82,8 +82,8 @@
       <div id="footer"><p class="text-muted credit">&copy; {% now 'Y' %} <a href="http://www.redhat.com/">Red Hat Inc.</a> <a href="https://github.com/hroncok/dapi">Code</a> is <a href="http://www.gnu.org/licenses/agpl-3.0.html" title="GNU Affero General Public License (Version 3)">AGPLv3</a>, content is <a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 International">CC BY-SA</a>. Does not apply for content uploaded by users. <a href="{% url 'dapi.views.terms' %}">Terms of Use</a>.</p></div>
       </div>
     </div>
-    {% block scripts %}{% endblock %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+    {% block scripts %}{% endblock %}
   </body>
 </html>
