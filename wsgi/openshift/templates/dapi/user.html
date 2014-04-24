@@ -4,25 +4,23 @@
 {% block content %}
 <div class="row">
   <div class="container col-sm-4">
-    <div>
-      {% gravatar u.email 230 u.username %}
-      {% if u.get_full_name %}
-      <h1>{{ u.get_full_name }}</h1>
-      <h2>{{ u.username }}</h2>
-      {% else %}
-      <h1>{{ u.username }}</h1>
-      {% endif %}
-      {% if u.is_staff %}
-      <p><span class="glyphicon glyphicon-wrench"></span> Admin</p>
-      {% endif %}
-    </div>
-      <p><span class="glyphicon glyphicon-time"></span> Joined on {{ u.date_joined|date:'M d, Y' }}</p>
-      <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
-      {% load method_call %}
-      {% for backend in backends.backends %}
-      <p><span class="glyphicon glyphicon-user"></span>
-      <a href="{{ u.profile|args:backend|call:'get_social_url' }}">{{ u.profile|args:backend|call:'get_social_username' }}</a> at {{ backend|title }}</p>
-      {% endfor %}
+    {% gravatar u.email 230 u.username %}
+    {% if u.get_full_name %}
+    <h1>{{ u.get_full_name }}</h1>
+    <h2>{{ u.username }}</h2>
+    {% else %}
+    <h1>{{ u.username }}</h1>
+    {% endif %}
+    {% if u.is_staff %}
+    <p><span class="glyphicon glyphicon-wrench"></span> Admin</p>
+    {% endif %}
+    <p><span class="glyphicon glyphicon-time"></span> Joined on {{ u.date_joined|date:'M d, Y' }}</p>
+    <p><span class="glyphicon glyphicon-time"></span> Last seen on {{ u.last_login|date:'M d, Y' }}</p>
+    {% load method_call %}
+    {% for backend in backends.backends %}
+    <p><span class="glyphicon glyphicon-user"></span>
+    <a href="{{ u.profile|args:backend|call:'get_social_url' }}">{{ u.profile|args:backend|call:'get_social_username' }}</a> at {{ backend|title }}</p>
+    {% endfor %}
   </div>
 
 
@@ -39,7 +37,7 @@
       </ul>
     </div>
 {% else %}
-    <div><p>{{ u }} doesn't own any daps yet.</p></div>
+    <p>{{ u }} doesn't own any daps yet.</p>
 {% endif %}
   </div>
 
@@ -56,7 +54,7 @@
       </ul>
     </div>
 {% else %}
-    <div><p>{{ u }} doesn't comaintain any daps.</p></div>
+    <p>{{ u }} doesn't comaintain any daps.</p>
 {% endif %}
   </div>
 
