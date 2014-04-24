@@ -1,27 +1,47 @@
 {% extends 'dapi/base.html' %}
 {% block title %}Results{% endblock %}
+{% load gravatar %}
 {% block content %}
-    {% if query %}
-        <h1>Results</h1>
+{% if query %}
+<div class="page-header">
+  <h1>Results for {{ query }}</h1>
+</div>
 
-        {% for result in page.object_list %}
-            <p>
-                <a href="{% url 'dapi.views.dap' result.object.package_name %}">{{ result.object.package_name }}</a>
-            </p>
-        {% empty %}
-            <p>No results found.</p>
-        {% endfor %}
 
-        {% if page.has_previous or page.has_next %}
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">previous</a>{% endif %}
-                    <span class="current">Page {{ page.number }} of {{ page.paginator.num_pages }}.</span>
-                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">next</a>{% endif %}
-                </span>
-            </div>
-        {% endif %}
+<div class="panel panel-default">
+  <table class="table">
+  {% for result in page.object_list %}
+    <tr>
+      <td><a href="{% url 'dapi.views.dap' result.object.package_name %}">{{ result.object.package_name }}</a></td>
+      <td>{{ result.object.latest.summary }}</td>
+      <td>{% if result.object.average_rank %}{{ result.object.average_rank|floatformat }} <span class="glyphicon glyphicon-star"></span> by {{ result.object.rank_count }} <span class="glyphicon glyphicon-user"></span>{% endif %}</td>
+      <td><a href="{% url 'dapi.views.user' result.object.user %}">{% gravatar result.object.user.email 16 result.object.user.username %} {{ result.object.user }}</a></td>
+    </tr>
+  {% empty %}
+    <tr><td>No results found. Maybe try to search for something else.</td><tr>
+  {% endfor %}
+  </table>
+</div>
+
+{% if page.paginator.num_pages > 1 %}
+<ul class="pagination">
+  <li{% if not page.has_previous %} class="disabled"{% endif %}>
+    <a{% if page.has_previous %} href="?page={{ page.previous_page_number }}"{% endif %}>&laquo;</a>
+  </li>
+  {% for num in page.paginator.page_range %}
+    {% ifequal num page.number %}
+      <li class="active"><a>{{ num }}<span class="sr-only">(current)</span></a></li>
     {% else %}
-        {# Show some example queries to run, maybe query syntax, something else? #}
-    {% endif %}
+      <li><a href="?page={{ num }}">{{ num }}</a></li>
+    {% endifequal %}
+  {% endfor %}
+  <li{% if not page.has_next %} class="disabled"{% endif %}>
+    <a{% if page.has_next %} href="?page={{ page.next_page_number }}"{% endif %}>&raquo;</a>
+  </li>
+</ul>
+{% endif %}
+
+{% else %}
+<p>Huh, haven't you forget to actually search for <em>something</em>?</p>
+{% endif %}
 {% endblock %}
