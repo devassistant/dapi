@@ -1,10 +1,20 @@
 {% extends "dapi/base.html" %}
 {% block title %}{{ dap }} tags{% endblock %}
 {% block content %}
-<h1>{{ dap }} tags</h1>
+<div class="page-header">
+  <h1>Tags for <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap }}</a></h1>
+</div>
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <p><input type="submit" value="Save" /></p>
+  <p>{{ form.tags.help_text }}</p>
+  {{ form.non_field_errors }}
+  {{ form.tags.errors }}
+  <div class="input-group">
+    <input id="id_tags" name="tags" type="text" value="{{ form.tags.value }}" class="form-control" />
+    <div class="input-group-btn">
+      <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-tags"></span> Save tags</button>
+    </div>
+  </div>
 </form>
+
 {% endblock %}
