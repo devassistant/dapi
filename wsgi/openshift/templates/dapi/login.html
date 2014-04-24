@@ -1,10 +1,16 @@
 {% extends "dapi/base.html" %}
 {% block title %}Login{% endblock %}
+{% load backends %}
 {% block content %}
 
-Login with:
+<h1>Login</h1>
 {% for name in backends.not_associated %}
-<a href="{% url 'social:begin' name %}?next={{ next }}">{{ name }}</a>,
+<p>
+  <a href="{% url 'social:begin' name %}?next={{ next }}" class="btn btn-primary btn-lg">
+  <span class="glyphicon glyphicon-user"></span> Log in with {{ name|title }}</a>
+  <a href="{{ name|register }}" class="btn btn-info btn-sm" target="_blank">
+  <span class="glyphicon glyphicon-globe"></span> Sign up for a {{ name|title }} account</a>
+</p>
 {% endfor %}
 <p>By logging in you agree to <a href="{% url 'dapi.views.terms' %}">the Terms of Use</a>.</p>
 {% endblock %}

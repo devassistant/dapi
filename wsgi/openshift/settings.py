@@ -208,6 +208,9 @@ SOCIAL_AUTH_FEDORA_EXTRA_DATA = [('nickname', 'username')]
 SOCIAL_AUTH_GITHUB_PROFILE_LINK = 'https://github.com/{username}'
 SOCIAL_AUTH_FEDORA_PROFILE_LINK = 'https://fedoraproject.org/wiki/User:{username}'
 
+SOCIAL_AUTH_GITHUB_REGISTER_LINK = 'https://github.com/join'
+SOCIAL_AUTH_FEDORA_REGISTER_LINK = 'https://admin.fedoraproject.org/accounts/user/new'
+
 try:
     with open(GITHUB_FILE) as f:
         github = f.readlines()
