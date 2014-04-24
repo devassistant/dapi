@@ -57,7 +57,7 @@ def upload(request):
                 messages.success(request, 'Dap successfully uploaded.')
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dname, )))
             else:
-                form.errors['file'] = errors
+                form.errors['file'] = form.error_class(errors)
     else:
         form = UploadDapForm()
     return render(request, 'dapi/upload.html', {'form': form})
@@ -138,7 +138,7 @@ def dap_admin(request, dap):
                     messages.success(request, 'Dap {dap} successfully transfered.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
-                    tform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
+                    tform.errors['verification'] = tform.error_class(['You didn\'t enter the dap\'s name correctly.'])
         if 'aform' in request.POST:
             aform = ActivationDapForm(request.POST, instance=m)
             if aform.is_valid():
@@ -147,7 +147,7 @@ def dap_admin(request, dap):
                     messages.success(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap, de='' if m.active else 'de'))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
-                    aform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
+                    aform.errors['verification'] = aform.error_class(['You didn\'t enter the dap\'s name correctly.'])
         if 'dform' in request.POST:
             dform = DeleteDapForm(request.POST)
             if dform.is_valid():
@@ -156,7 +156,7 @@ def dap_admin(request, dap):
                     messages.success(request, 'Dap {dap} successfully deleted.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
-                    dform.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
+                    dform.errors['verification'] = dform.error_class(['You didn\'t enter the dap\'s name correctly.'])
     return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
 
 
@@ -178,7 +178,7 @@ def dap_leave(request, dap):
                 messages.success(request, 'Successfully leaved {dap}.'.format(dap=dap))
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
             else:
-                form.errors['verification'] = ['You didn\'t enter the dap\'s name correctly.']
+                form.errors['verification'] = form.error_class(['You didn\'t enter the dap\'s name correctly.'])
     else:
         form = LeaveDapForm()
     return render(request, 'dapi/dap-leave.html', {'form': form, 'dap': m})
@@ -197,10 +197,10 @@ def dap_version_delete(request, dap, version):
         if form.is_valid():
             wrong = False
             if dap != request.POST['verification_name']:
-                form.errors['verification_name'] = ['You didn\'t enter the dap\'s name correctly.']
+                form.errors['verification_name'] = form.error_class(['You didn\'t enter the dap\'s name correctly.'])
                 wrong = True
             if version != request.POST['verification_version']:
-                form.errors['verification_version'] = ['You didn\'t enter the version correctly.']
+                form.errors['verification_version'] = form.error_class(['You didn\'t enter the version correctly.'])
                 wrong = True
             if not wrong:
                 d.delete()
@@ -350,7 +350,7 @@ def user_edit(request, user):
                     messages.success(request, 'Successfully deleted {user}.'.format(user=user))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
-                    dform.errors['verification'] = ['You didn\'t enter the username correctly.']
+                    dform.errors['verification'] = dform.error_class(['You didn\'t enter the username correctly.'])
     return render(request, 'dapi/user-edit.html', {'uform': uform, 'pform': pform, 'dform': dform, 'u': u})
 
 
