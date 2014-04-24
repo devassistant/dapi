@@ -2,13 +2,15 @@
 {% block title %}{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}{% endblock %}
 {% load markdown %}
 {% block content %}
-<h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}</h1>
+<div class="page-header">
+  <h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}
+  <small>{{ dap.summary }}</small></h1>
+</div>
 <ul>
     {% if not metadap.active %}
     <li>Warning, this dap is not active. Consider it as deleted.</li>
     {% endif %}
     {% if dap %}
-    <li>{{ dap.summary }}</li>
     <li>License: {{ dap.license }}</li>
     {% if dap.homepage %}
     <li><a href="{{ dap.homepage }}">homepage</a></li>

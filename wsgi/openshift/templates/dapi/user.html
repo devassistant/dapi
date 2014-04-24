@@ -6,10 +6,14 @@
   <div class="container col-sm-4">
     {% gravatar u.email 270 u.username %}
     {% if u.get_full_name %}
-    <h1>{{ u.get_full_name }}</h1>
-    <h2>{{ u.username }}</h2>
+    <div class="page-header">
+      <h1>{{ u.get_full_name }}<br />
+      <small>{{ u.username }}</small></h1>
+    </div>
     {% else %}
-    <h1>{{ u.username }}</h1>
+    <div class="page-header">
+      <h1>{{ u.username }}</h1>
+    </div>
     {% endif %}
     {% if u.is_staff %}
     <p><span class="glyphicon glyphicon-cog"></span> Admin</p>

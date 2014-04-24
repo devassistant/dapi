@@ -3,7 +3,7 @@
 {% load backends %}
 {% block content %}
 
-<h1>Login</h1>
+<div class="page-header"><h1>Login</h1></div>
 {% for name in backends.not_associated %}
 <p>
   <a href="{% url 'social:begin' name %}?next={{ next }}" class="btn btn-primary btn-lg">
