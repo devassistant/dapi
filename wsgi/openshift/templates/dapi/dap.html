@@ -27,6 +27,16 @@
 
 {% if dap.description %}{{ dap.description|markdown }}{% endif %}
 
+{% if metadap.tags.exists %}
+<div class="row">
+<ul class="list-inline text-center">
+{% for tag in metadap.tags.all|dictsort:"name" %}
+  <li><a class="label label-info" href="{% url 'dapi.views.tag' tag.slug %}"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</a></li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
 <div class="row">
   <div class="container col-sm-4">
     {% if metadap.average_rank %}
@@ -35,10 +45,12 @@
     {% if user.is_authenticated %}
     <p><span class="glyphicon glyphicon-star-empty"></span> 
     {% for i in "xxxxx" %}
-    <a href="{% url 'dapi.views.dap_rank' metadap forloop.counter %}">{{ forloop.counter }}</a>
+    <a class="badge{% if forloop.counter == rank %} alert-success{% endif %}" href="{% url 'dapi.views.dap_rank' metadap forloop.counter %}">
+      {{ forloop.counter }}
+    </a>
     {% endfor %}
     {% if rank %}
-    (<a href="{% url 'dapi.views.dap_rank' metadap 0 %}">unset {{ rank }}</a>)
+    <a href="{% url 'dapi.views.dap_rank' metadap 0 %}" class="badge">unset</a>
     {% endif %}
     </p>
     {% endif %}
@@ -58,13 +70,6 @@
     {% if dap.bugreports %}
     <p><span class="glyphicon glyphicon-exclamation-sign"></span> <a href="{{ dap.bugreports_link }}">bugreports</a></p>
     {% endif %}
-    {% endif %}
-    {% if metadap.tags.exists %}
-    <p><ul class="list-inline">
-    {% for tag in metadap.tags.all|dictsort:"name" %}
-      <li class="label label-info"><span class="glyphicon glyphicon-tag"></span> <a href="{% url 'dapi.views.tag' tag.slug %}">{{ tag }}</a></li>
-    {% endfor %}
-    </ul></p>
     {% endif %}
     {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
     <p><a href="{% url 'dapi.views.dap_tags' metadap %}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags"></span> Manage tags</a></p>
