@@ -35,7 +35,7 @@ def tag(request, tag):
     '''Lists all daps of given tag'''
     t = get_object_or_404(Tag, slug=tag)
     all_tagged_daps = MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('-average_rank', '-rank_count')
-    paginator = Paginator(all_tagged_daps, 25)
+    paginator = Paginator(all_tagged_daps, 10)
     page = request.GET.get('page')
     try:
         daps_list = paginator.page(page)
