@@ -3,10 +3,11 @@
 {% load gravatar %}
 {% block content %}
 <div class="page-header">
+<a href="{% url 'dapi.views.dap_report' dap.package_name %}" class="btn btn-danger pull-right">
+<span class="glyphicon glyphicon-warning-sign"></span> Report {{ dap }}</a>
+
   <h1>Reports for <a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap }}</a></h1>
 </div>
-<p><a href="{% url 'dapi.views.dap_report' dap.package_name %}" class="btn btn-danger btn-sm">
-<span class="glyphicon glyphicon-warning-sign"></span> Report {{ dap }}</a></p>
 
 {% for report in reports %}
 <div class="panel panel-{% if report.solved %}success{% else %}danger{% endif %}">
