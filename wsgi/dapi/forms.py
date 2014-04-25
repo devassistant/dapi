@@ -26,25 +26,29 @@ class DivErrorList(ErrorList):
         return mark_safe(template % '\n'.join(['<p>%s</p>' % e for e in self]))
 
 
-class DivErrorForm(Form):
+class BootstrapForm(Form):
     '''A form that uses DivErrorList'''
     def __init__(self, *args, **kwargs):
-        super(DivErrorForm, self).__init__(*args, **kwargs)
+        super(BootstrapForm, self).__init__(*args, **kwargs)
         self.error_class = DivErrorList
+        for key in self.fields.keys():
+            if key != 'file':
+                self.fields[key].widget.attrs['class'] = 'form-control'
 
-class DivErrorModelForm(ModelForm):
+class BootstrapModelForm(ModelForm):
     '''A model form that uses DivErrorList'''
     def __init__(self, *args, **kwargs):
-        super(DivErrorModelForm, self).__init__(*args, **kwargs)
-        print "a"
+        super(BootstrapModelForm, self).__init__(*args, **kwargs)
         self.error_class = DivErrorList
+        for key in self.fields.keys():
+            self.fields[key].widget.attrs['class'] = 'form-control'
 
 
-class UploadDapForm(DivErrorForm):
+class UploadDapForm(BootstrapForm):
     file = FileField(label='')
 
 
-class UserForm(DivErrorModelForm):
+class UserForm(BootstrapModelForm):
 
     class Meta:
         model = User
@@ -56,10 +60,10 @@ class UserForm(DivErrorModelForm):
             self.fields['email'].help_text = 'Further fields cannot be edited, because at least one service is configured to override those data on login. See below to disable it.'
             for field in 'email first_name last_name'.split():
                 self.fields[field].widget.attrs['readonly'] = 'readonly'
-                self.fields[field].widget.attrs['class'] = 'disabled'
+                self.fields[field].widget.attrs['class'] += ' disabled'
 
 
-class ProfileSyncForm(DivErrorModelForm):
+class ProfileSyncForm(BootstrapModelForm):
 
     class Meta:
         model = Profile
@@ -74,7 +78,7 @@ class ProfileSyncForm(DivErrorModelForm):
         self.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=self.instance.user)
 
 
-class ComaintainersForm(DivErrorModelForm):
+class ComaintainersForm(BootstrapModelForm):
 
     class Meta:
         model = MetaDap
@@ -86,20 +90,20 @@ class ComaintainersForm(DivErrorModelForm):
         self.fields['comaintainers'].queryset = User.objects.exclude(id=self.instance.user_id)
 
 
-class DeleteDapForm(DivErrorForm):
+class DeleteDapForm(BootstrapForm):
     verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
 
 
-class DeleteUserForm(DivErrorForm):
+class DeleteUserForm(BootstrapForm):
     verification = CharField(max_length=30, help_text='Enter the username to confirm the deletion.')
 
 
-class DeleteVersionForm(DivErrorForm):
+class DeleteVersionForm(BootstrapForm):
     verification_name = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
     verification_version = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='version', why='deletion'))
 
 
-class ActivationDapForm(DivErrorModelForm):
+class ActivationDapForm(BootstrapModelForm):
     verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deactivation'))
 
     class Meta:
@@ -107,7 +111,7 @@ class ActivationDapForm(DivErrorModelForm):
         fields = ('active',)
 
 
-class TransferDapForm(DivErrorModelForm):
+class TransferDapForm(BootstrapModelForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the transfer.')
 
     class Meta:
@@ -115,18 +119,18 @@ class TransferDapForm(DivErrorModelForm):
         fields = ('user',)
 
 
-class LeaveDapForm(DivErrorForm):
+class LeaveDapForm(BootstrapForm):
     verification = CharField(max_length=200, help_text='Type the name of this dap to verify the leaving.')
 
 
-class TagsForm(DivErrorModelForm):
+class TagsForm(BootstrapModelForm):
 
     class Meta:
         model = MetaDap
         fields = ('tags',)
 
 
-class ReportForm(DivErrorModelForm):
+class ReportForm(BootstrapModelForm):
 
     class Meta:
         model = Report
@@ -141,8 +145,6 @@ class ReportForm(DivErrorModelForm):
         super(ReportForm, self).__init__(*args, **kwargs)
         self.instance.metadap = metadap
         self.fields['versions'].queryset = Dap.objects.filter(metadap=metadap)
-        for key in self.fields.keys():
-            self.fields[key].widget.attrs['class'] = 'form-control'
 
 
 class ReportAnonymousForm(ReportForm):
