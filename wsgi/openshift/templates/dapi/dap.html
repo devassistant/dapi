@@ -22,7 +22,7 @@
 {% endif %}
 {% endif %}
 {% if reports %}
-<div class="alert alert-warning">Warning, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report(s)</a>!</div>
+<div class="alert alert-warning">Warning, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report{{ reports.count|pluralize }}</a>!</div>
 {% endif %}
 
 {% if dap.description %}{{ dap.description|markdown }}{% endif %}
