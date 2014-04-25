@@ -1,5 +1,12 @@
 {% extends "dapi/base.html" %}
+{% load staticfiles %}
+
 {% block title %}{{ dap }} administration{% endblock %}
+
+{% block head_scripts %}
+    <link rel=stylesheet type="text/css" href="{% static 'chosen.min.css' %}" />
+{% endblock %}
+
 {% block content %}
 <h1>{{ dap }} administration</h1>
 <h2>Comaintainers</h2>
@@ -31,4 +38,11 @@
   {{ dform.as_p }}
   <p><input type="submit" name="dform" value="Delete this dap forever" /></p>
 </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'chosen.jquery.min.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+    $("#id_comaintainers").chosen()
+    </script>
 {% endblock %}
