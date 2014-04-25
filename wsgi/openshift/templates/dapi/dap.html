@@ -54,7 +54,7 @@
     {% endif %}
     </p>
     {% endif %}
-    <p>{% gravatar metadap.user.email 16 metadap.user.username %}  Owned by <a href="{% url 'dapi.views.user' metadap.user %}">{{ metadap.user }}</a></p>
+    <p>{% gravatar metadap.user.email 16 metadap.user.username %} Owned by <a href="{% url 'dapi.views.user' metadap.user %}">{{ metadap.user }}</a></p>
     {% if metadap.comaintainers.exists %}
     <p><span class="glyphicon glyphicon-user"></span> Comaintained by:<ul class="list-unstyled">
       {% for comaintainer in metadap.comaintainers.all %}
