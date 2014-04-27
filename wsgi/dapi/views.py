@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
-from rest_framework import viewsets, generics, permissions
+from rest_framework import viewsets, permissions, mixins
 from haystack.query import SearchQuerySet, EmptySearchQuerySet
 from haystack.forms import ModelSearchForm
 
@@ -399,7 +399,7 @@ class DapViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Dap.objects.all()
     serializer_class = serializers.DapSerializer
 
-class SearchView(generics.ListAPIView):
+class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     '''API endpoint that allows to search for a metadap. Just add ?q= to the URL.'''
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.SearchResultSerializer

@@ -10,6 +10,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'metadaps', views.MetaDapViewSet)
 router.register(r'daps', views.DapViewSet)
+router.register(r'search', views.SearchViewSet, base_name='search')
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -18,6 +19,6 @@ urlpatterns = patterns('',
     url(r'^captcha/', include('captcha.urls')),
     url(r'^search/', include('haystack.urls')),
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/search/', views.SearchView.as_view(), name='search'),
+    #url(r'^api/search/', views.SearchView.as_view(), name='search'),
     url(r'^api/', include(router.urls)),
 )
