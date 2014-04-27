@@ -10,7 +10,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, permissions
+from haystack.query import SearchQuerySet, EmptySearchQuerySet
+from haystack.forms import ModelSearchForm
 
 from taggit.models import Tag
 
@@ -396,3 +398,24 @@ class DapViewSet(viewsets.ReadOnlyModelViewSet):
     '''API endpoint that allows daps to be viewed'''
     queryset = Dap.objects.all()
     serializer_class = serializers.DapSerializer
+
+class SearchView(generics.ListAPIView):
+    '''API endpoint that allows to search for a metadap. Just add ?q= to the URL.'''
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = serializers.SearchResultSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        # This will return a dict of the fount things
+        request = self.request
+        results = EmptySearchQuerySet()
+
+        if request.GET.get('q'):
+            form = ModelSearchForm(request.QUERY_PARAMS, searchqueryset=None, load_all=True)
+ 
+            if form.is_valid():
+                query = form.cleaned_data['q']
+                results = form.search()
+        else:
+            form = ModelSearchForm(searchqueryset=None, load_all=True)
+
+        return results

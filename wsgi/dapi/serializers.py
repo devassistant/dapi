@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from dapi.models import MetaDap, Dap
-from rest_framework import serializers
+from rest_framework import serializers, fields
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -109,3 +109,17 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'download',
             'human_link',
         )
+
+class SearchResultSerializer(serializers.Serializer):
+    content_type = fields.CharField(source='model_name')
+    content_object = fields.SerializerMethodField('_content_object')
+ 
+    def _content_object(self, obj):
+        if obj.model_name == 'metadap':
+            return MetaDapSerializer(obj.object, many=False, context=self.context).data
+        return {}
+ 
+    def __init__(self,  *args, **kwargs):
+        self.unit = kwargs.pop('unit', None)
+        return super(SearchResultSerializer, self).__init__(*args, **kwargs)
+

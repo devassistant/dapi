@@ -18,5 +18,6 @@ urlpatterns = patterns('',
     url(r'^captcha/', include('captcha.urls')),
     url(r'^search/', include('haystack.urls')),
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/search/', views.SearchView.as_view(), name='search'),
     url(r'^api/', include(router.urls)),
 )
