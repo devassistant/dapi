@@ -16,17 +16,17 @@ setup(
         'South',
         'daploader>=0.0.4',
         'PyYAML',
-        'python-social-auth==c5dd3339',
+        'python-social-auth',
         'django-taggit',
         'django-simple-captcha',
         'django-haystack',
         'whoosh',
-        'djangorestframework==03b4c60b',
+        'djangorestframework',
         'django-gravatar2',
         'markdown2',
     ],
     dependency_links = [
-        'git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth-c5dd3339',
-        'git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework-03b4c60b',
+        'git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth',
+        'git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework',
     ]
 )
