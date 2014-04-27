@@ -7,7 +7,7 @@ from captcha.fields import CaptchaField
 from social.apps.django_app.default import models as social_models
 
 
-VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}.'
+VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}'
 
 
 class DivErrorList(ErrorList):
@@ -104,7 +104,7 @@ class DeleteVersionForm(BootstrapForm):
 
 
 class ActivationDapForm(BootstrapModelForm):
-    verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deactivation'))
+    verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='(de)activation'))
 
     class Meta:
         model = MetaDap
@@ -112,7 +112,7 @@ class ActivationDapForm(BootstrapModelForm):
 
 
 class TransferDapForm(BootstrapModelForm):
-    verification = CharField(max_length=200, help_text='Type the name of this dap to verify the transfer.')
+    verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='transfer'))
 
     class Meta:
         model = MetaDap
@@ -120,7 +120,7 @@ class TransferDapForm(BootstrapModelForm):
 
 
 class LeaveDapForm(BootstrapForm):
-    verification = CharField(max_length=200, help_text='Type the name of this dap to verify the leaving.')
+    verification = CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='leaving'))
 
 
 class TagsForm(BootstrapModelForm):

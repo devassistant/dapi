@@ -126,7 +126,7 @@ def dap_admin(request, dap):
                 cform.save()
                 m.comaintainers.remove(m.user)
                 messages.success(request, 'Comaintainers successfully saved.')
-                return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+                return HttpResponseRedirect(reverse('dapi.views.dap_admin', args=(dap, )))
         if 'tform' in request.POST:
             olduser = m.user
             tform = TransferDapForm(request.POST, instance=m)
@@ -145,7 +145,7 @@ def dap_admin(request, dap):
                 if dap == request.POST['verification']:
                     aform.save()
                     messages.success(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap, de='' if m.active else 'de'))
-                    return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
+                    return HttpResponseRedirect(reverse('dapi.views.dap_admin', args=(dap, )))
                 else:
                     aform.errors['verification'] = aform.error_class(['You didn\'t enter the dap\'s name correctly.'])
         if 'dform' in request.POST:

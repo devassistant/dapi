@@ -8,41 +8,116 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ dap }} administration</h1>
-<h2>Comaintainers</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ cform.as_p }}
-  <p><input type="submit" name="cform" value="Save" /></p>
-</form>
+<div class="page-header">
+  <h1><a href="{% url 'dapi.views.dap' dap.package_name %}">{{ dap }}</a> administration</h1>
+</div>
 
-<h2>Transfer ownership</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ tform.as_p }}
-  <p><input type="submit" name="tform" value="Transfer this dap" /></p>
-</form>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Comaintainers</h3>
+  </div>
+  <div class="panel-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ cform.as_p }}
+      <p class="text-right"><button type="submit" name="cform" class="btn btn-success">Save comaintainers</button></p>
+    </form>
+  </div>
+</div>
 
-<h2>Deactivate this dap</h2>
-<p>When you deactivate a dap, no new version can be uploaded and dap is no longer available in search results (unless manually specified).</p>
-<form method="post">
-  {% csrf_token %}
-  {{ aform.as_p }}
-  <p><input type="submit" name="aform" value="Deactivate this dap" /></p>
-</form>
 
-<h2>Delete this dap</h2>
-<p>Delete this dap only if simple deactivation is not enough. Once you delete the dap, all dap versions and metadata are deleted forever. Another user can then upload different dap with the same name.</p>
-<form method="post">
-  {% csrf_token %}
-  {{ dform.as_p }}
-  <p><input type="submit" name="dform" value="Delete this dap forever" /></p>
-</form>
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">Transfer ownership</h3>
+  </div>
+  <div class="panel-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ tform.non_field_errors }}
+      {{ tform.user.errors }}
+      <p>{{ tform.user }}</p>
+      {{ tform.verification.errors }}
+      <div class="input-group">
+        <input id="id_verification" name="verification" type="text" placeholder="{{ tform.verification.help_text }}" class="form-control" />
+        <div class="input-group-btn">
+          <button type="submit" name="tform" class="btn btn-danger">Transfer {{ dap }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if dap.active %}
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">Deactivate this dap</h3>
+  </div>
+  <div class="panel-body">
+    <p>When you deactivate a dap, no new version can be uploaded and dap is no longer available in search results (unless manually specified).</p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" id="id_active" name="active" value="" />
+      {{ aform.non_field_errors }}
+      {{ aform.verification.errors }}
+      <div class="input-group">
+        <input id="id_verification" name="verification" type="text" placeholder="{{ aform.verification.help_text }}" class="form-control" />
+        <div class="input-group-btn">
+          <button type="submit" name="aform" class="btn btn-danger">Deactivate {{ dap }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% else %}
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <h3 class="panel-title">Activate this dap</h3>
+  </div>
+  <div class="panel-body">
+    <p>This dap is now deactivated, no new version can be uploaded and dap is no longer available in search results (unless manually specified).</p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" id="id_active" name="active" value="active" />
+      {{ aform.non_field_errors }}
+      {{ aform.verification.errors }}
+      <div class="input-group">
+        <input id="id_verification" name="verification" type="text" placeholder="{{ aform.verification.help_text }}" class="form-control" />
+        <div class="input-group-btn">
+          <button type="submit" name="aform" class="btn btn-success">Activate {{ dap }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+
+
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">Delete this dap</h3>
+  </div>
+  <div class="panel-body">
+    <p>Delete this dap only if simple deactivation is not enough. Once you delete the dap, all dap versions and metadata are deleted forever. Another user can then upload different dap with the same name.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ dform.non_field_errors }}
+      {{ dform.verification.errors }}
+      <div class="input-group">
+        <input id="id_verification" name="verification" type="text" placeholder="{{ dform.verification.help_text }}" class="form-control" />
+        <div class="input-group-btn">
+          <button type="submit" name="dform" class="btn btn-danger">Delete {{ dap }} forever</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'chosen.jquery.min.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
     $("#id_comaintainers").chosen()
+    $("#id_user").chosen()
     </script>
 {% endblock %}
