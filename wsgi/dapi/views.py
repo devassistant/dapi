@@ -389,18 +389,22 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.UserSerializer
 
 class MetaDapViewSet(viewsets.ReadOnlyModelViewSet):
-    '''API endpoint that allows metadaps to be viewed'''
+    '''API endpoint that allows metadaps to be viewed
+    
+    A metadap stores the information about a dap across all it's versions'''
     queryset = MetaDap.objects.all()
     lookup_field = 'package_name'
     serializer_class = serializers.MetaDapSerializer
 
 class DapViewSet(viewsets.ReadOnlyModelViewSet):
-    '''API endpoint that allows daps to be viewed'''
+    '''API endpoint that allows daps to be viewed
+    
+    A dap represents one dap in a specific version'''
     queryset = Dap.objects.all()
     serializer_class = serializers.DapSerializer
 
 class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    '''API endpoint that allows to search for a metadap. Just add ?q= to the URL.'''
+    '''API endpoint that allows to search for a metadap. Just add **?q=_query_** to the URL.'''
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.SearchResultSerializer
 

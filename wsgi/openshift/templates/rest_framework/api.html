@@ -46,7 +46,11 @@
 <div class="content-main">
   <div class="page-header"><h1>{{ name }}</h1></div>
   {% block description %}
+  {% if description %}
   {{ description }}
+  {% else %}
+  <p>Select a view from the given list to see more information about what's in.</p>
+  {% endif %}
   {% endblock %}
   <div class="request-info" style="clear: both" >
     <pre class="prettyprint"><b>{{ request.method }}</b> {{ request.get_full_path }}</pre>
