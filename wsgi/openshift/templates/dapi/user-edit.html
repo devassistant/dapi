@@ -1,45 +1,72 @@
 {% extends "dapi/base.html" %}
 {% block title %}Edit {{ u }}{% endblock %}
 {% block content %}
-<h1>Edit {{ u }}</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ uform.as_p }}
-  <p><input type="submit" name="uform" value="Save" /></p>
-</form>
+<div class="page-header">
+  <h1>Edit <a href="{% url 'dapi.views.user' u.username %}">{{ u.username }}</a></h1>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">User details</h3>
+  </div>
+  <div class="panel-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ uform.as_p }}
+      <p class="text-right"><button type="submit" name="uform" class="btn btn-success">Save user details</button></p>
+    </form>
+  </div>
+</div>
 
 {% if user == u %}
-{% if backends.not_associated %}
-<p>Associate:</p>
-  <ul>
-  {% for name in backends.not_associated %}
-    <li><a href="{% url 'social:begin' name %}?next={{ request.path }}">{{ name }}</a></li>
-  {% endfor %}
-  </ul>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Services to log in with</h3>
+  </div>
+  <div class="panel-body">
+    {% if backends.not_associated %}
+    {% for name in backends.not_associated %}
+      <p><a href="{% url 'social:begin' name %}?next={{ request.path }}" class="btn btn-primary btn-sm">
+      <span class="glyphicon glyphicon-user"></span> Associate {{ name|title }}</a></p>
+    {% endfor %}
+    {% endif %}
 
+    {% if backends.associated.count > 1 %}
+    {% for assoc in backends.associated %}
+    <form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}?next={{ request.path }}" method="post">
+      {% csrf_token %}
+      <p><button class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove-sign"></span> Disconnect {{ assoc.provider|title }}</button></p>
+    </form>
+    {% endfor %}
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      {{ pform.as_p }}
+      <p class="text-right"><button type="submit" name="pform" class="btn btn-success">Save syncing services</button></p>
+    </form>
+  </div>
+</div>
 {% endif %}
 
-{% if backends.associated.count > 1 %}
-{% for assoc in backends.associated %}
-<form action="{% url 'social:disconnect_individual' assoc.provider assoc.id %}?next={{ request.path }}" method="post">{% csrf_token %}<button>Disconnect {{ assoc.provider }}</button></form>
-{% endfor %}
-{% endif %}
-{% endif %}
-
-<form method="post">
-  {% csrf_token %}
-  {{ pform.as_p }}
-  <p><input type="submit" name="pform" value="Save" /></p>
-</form>
-
-
-{% if u.metadap_set.exists %}
-<p>There are daps associated to this user, therefor it cannot be deleted. If you really want to delete this user, go and transfer those daps to someone else, or delete them entirely.</p>
-{% else %}
-<form method="post">
-  {% csrf_token %}
-  {{ dform.as_p }}
-  <p><input type="submit" name="dform" value="Delete this user forever" /></p>
-</form>
-{% endif %}
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">Delete {{ u.username }}</h3>
+  </div>
+  <div class="panel-body">
+    {% if u.metadap_set.exists %}
+    <p>There are daps associated to {{ u.username }}, thus it cannot be deleted. If you really want to delete {{ u.username }}, go and transfer those daps to someone else, or delete them entirely.</p>
+    {% else %}
+    <form method="post">
+      {% csrf_token %}
+      {{ dform.non_field_errors }}
+      {{ dform.verification.errors }}
+      <div class="input-group">
+        <input id="id_verification" name="verification" type="text" placeholder="{{ dform.verification.help_text }}" class="form-control" />
+        <div class="input-group-btn">
+          <button type="submit" name="dform" class="btn btn-danger">Delete {{ u.username }} forever</button>
+        </div>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
