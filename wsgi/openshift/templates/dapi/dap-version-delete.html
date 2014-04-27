@@ -1,10 +1,12 @@
 {% extends "dapi/base.html" %}
 {% block title %}Delete {{ dap }}{% endblock %}
 {% block content %}
-<h1>Delete {{ dap }}</h1>
+<div class="page-header">
+  <h1>Delete {{ dap }}</h1>
+</div>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <p><input type="submit" value="Delete this version forever" /></p>
+  <p class="text-right"><button type="submit" class="btn btn-danger">Delete {{ dap }} forever</button></p>
 </form>
 {% endblock %}
