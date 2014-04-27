@@ -22,17 +22,33 @@ from dapi import serializers
 
 def index(request):
     '''The homepage, currentl lists top and most ranked daps'''
-    top_rated = models.MetaDap.objects.filter(active=True).order_by('-average_rank', '-rank_count')[:10]
-    most_rated = models.MetaDap.objects.filter(active=True).order_by('-rank_count', '-average_rank')[:10]
+    top_rated = models.MetaDap.objects.filter(active=True).order_by(
+        '-average_rank',
+        '-rank_count',
+    )[:10]
+    most_rated = models.MetaDap.objects.filter(active=True).order_by(
+        '-rank_count',
+        '-average_rank',
+    )[:10]
     recent = models.MetaDap.objects.filter(active=True).order_by('-pk')[:10]
-    tags = taggit_models.Tag.objects.annotate(num_times=Count('taggit_taggeditem_items')).exclude(num_times=0).order_by('-num_times')[:10]
-    return render(request, 'dapi/index.html', {'top_rated': top_rated, 'most_rated': most_rated, 'recent': recent, 'tags': tags})
+    tags = taggit_models.Tag.objects.annotate(
+        num_times=Count('taggit_taggeditem_items')
+    ).exclude(num_times=0).order_by('-num_times')[:10]
+    return render(request, 'dapi/index.html', {
+        'top_rated': top_rated,
+        'most_rated': most_rated,
+        'recent': recent,
+        'tags': tags
+    })
 
 
 def tag(request, tag):
     '''Lists all daps of given tag'''
     t = get_object_or_404(taggit_models.Tag, slug=tag)
-    all_tagged_daps = models.MetaDap.objects.filter(tags__slug__in=[tag], active=True).order_by('-average_rank', '-rank_count')
+    all_tagged_daps = models.MetaDap.objects.filter(
+        tags__slug__in=[tag],
+        active=True,
+    ).order_by('-average_rank', '-rank_count')
     paginator = Paginator(all_tagged_daps, 10)
     page = request.GET.get('page')
     try:
@@ -67,7 +83,13 @@ def dap_devel(request, dap):
     rank = logic.get_rank(m, request.user)
     reports = m.report_set.filter(solved=False)
     if m.latest:
-        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
+        return render(request, 'dapi/dap.html', {
+            'metadap': m,
+            'dap': m.latest,
+            'similar': m.similar_active_daps()[:5],
+            'rank': rank,
+            'reports': reports,
+        })
     else:
         raise Http404
 
@@ -78,7 +100,13 @@ def dap_stable(request, dap):
     rank = logic.get_rank(m, request.user)
     reports = m.report_set.filter(solved=False)
     if m.latest_stable:
-        return render(request, 'dapi/dap.html', {'metadap': m, 'dap': m.latest_stable, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
+        return render(request, 'dapi/dap.html', {
+            'metadap': m,
+            'dap': m.latest_stable,
+            'similar': m.similar_active_daps()[:5],
+            'rank': rank,
+            'reports': reports,
+        })
     else:
         raise Http404
 
@@ -94,7 +122,13 @@ def dap(request, dap):
         d = m.latest
     else:
         d = None
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
+    return render(request, 'dapi/dap.html', {
+        'metadap': m,
+        'dap': d,
+        'similar': m.similar_active_daps()[:5],
+        'rank': rank,
+        'reports': reports,
+    })
 
 
 def dap_version(request, dap, version):
@@ -103,7 +137,13 @@ def dap_version(request, dap, version):
     d = get_object_or_404(models.Dap, metadap=m.pk, version=version)
     rank = logic.get_rank(m, request.user)
     reports = m.report_set.filter(solved=False)
-    return render(request, 'dapi/dap.html', {'metadap': m, 'dap': d, 'similar': m.similar_active_daps()[:5], 'rank': rank, 'reports': reports})
+    return render(request, 'dapi/dap.html', {
+        'metadap': m,
+        'dap': d,
+        'similar': m.similar_active_daps()[:5],
+        'rank': rank,
+        'reports': reports,
+    })
 
 
 @login_required
@@ -136,16 +176,19 @@ def dap_admin(request, dap):
                     messages.success(request, 'Dap {dap} successfully transfered.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
                 else:
-                    tform.errors['verification'] = tform.error_class(['You didn\'t enter the dap\'s name correctly.'])
+                    tform.errors['verification'] = \
+                        tform.error_class(['You didn\'t enter the dap\'s name correctly.'])
         if 'aform' in request.POST:
             aform = forms.ActivationDapForm(request.POST, instance=m)
             if aform.is_valid():
                 if dap == request.POST['verification']:
                     aform.save()
-                    messages.success(request, 'Dap {dap} successfully {de}activated.'.format(dap=dap, de='' if m.active else 'de'))
+                    messages.success(request, 'Dap {dap} successfully {de}activated.'
+                                     .format(dap=dap, de='' if m.active else 'de'))
                     return HttpResponseRedirect(reverse('dapi.views.dap_admin', args=(dap, )))
                 else:
-                    aform.errors['verification'] = aform.error_class(['You didn\'t enter the dap\'s name correctly.'])
+                    aform.errors['verification'] = \
+                        aform.error_class(['You didn\'t enter the dap\'s name correctly.'])
         if 'dform' in request.POST:
             dform = forms.DeleteDapForm(request.POST)
             if dform.is_valid():
@@ -154,8 +197,15 @@ def dap_admin(request, dap):
                     messages.success(request, 'Dap {dap} successfully deleted.'.format(dap=dap))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
-                    dform.errors['verification'] = dform.error_class(['You didn\'t enter the dap\'s name correctly.'])
-    return render(request, 'dapi/dap-admin.html', {'cform': cform, 'tform': tform, 'aform': aform, 'dform': dform, 'dap': m})
+                    dform.errors['verification'] = \
+                        dform.error_class(['You didn\'t enter the dap\'s name correctly.'])
+    return render(request, 'dapi/dap-admin.html', {
+        'cform': cform,
+        'tform': tform,
+        'aform': aform,
+        'dform': dform,
+        'dap': m,
+    })
 
 
 @login_required
@@ -176,7 +226,8 @@ def dap_leave(request, dap):
                 messages.success(request, 'Successfully leaved {dap}.'.format(dap=dap))
                 return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
             else:
-                form.errors['verification'] = form.error_class(['You didn\'t enter the dap\'s name correctly.'])
+                form.errors['verification'] = \
+                    form.error_class(['You didn\'t enter the dap\'s name correctly.'])
     else:
         form = forms.LeaveDapForm()
     return render(request, 'dapi/dap-leave.html', {'form': form, 'dap': m})
@@ -187,7 +238,8 @@ def dap_version_delete(request, dap, version):
     '''Delete a particular version of a dap'''
     m = get_object_or_404(models.MetaDap, package_name=dap)
     d = get_object_or_404(models.Dap, metadap=m.pk, version=version)
-    if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
+    if request.user != m.user and not request.user in m.comaintainers.all() \
+       and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to delete versions of this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap_version', args=(dap, version)))
     if request.method == 'POST':
@@ -195,10 +247,12 @@ def dap_version_delete(request, dap, version):
         if form.is_valid():
             wrong = False
             if dap != request.POST['verification_name']:
-                form.errors['verification_name'] = form.error_class(['You didn\'t enter the dap\'s name correctly.'])
+                form.errors['verification_name'] = \
+                    form.error_class(['You didn\'t enter the dap\'s name correctly.'])
                 wrong = True
             if version != request.POST['verification_version']:
-                form.errors['verification_version'] = form.error_class(['You didn\'t enter the version correctly.'])
+                form.errors['verification_version'] = \
+                    form.error_class(['You didn\'t enter the version correctly.'])
                 wrong = True
             if not wrong:
                 d.delete()
@@ -213,7 +267,8 @@ def dap_version_delete(request, dap, version):
 def dap_tags(request, dap):
     '''Manage dap's tags'''
     m = get_object_or_404(models.MetaDap, package_name=dap)
-    if request.user != m.user and not request.user in m.comaintainers.all() and not request.user.is_superuser:
+    if request.user != m.user and not request.user in m.comaintainers.all() \
+       and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to change tags of this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     if request.method == 'POST':
@@ -247,7 +302,8 @@ def dap_rank(request, dap, rank):
         if not c:
             r.rank = rank
             r.save()
-        messages.success(request, 'Successfully ranked {dap} with {rank}'.format(dap=dap, rank=rank))
+        messages.success(request, 'Successfully ranked {dap} with {rank}'
+                         .format(dap=dap, rank=rank))
     else:
         try:
             request.user.rank_set.get(metadap=m).delete()
@@ -280,8 +336,11 @@ def dap_report(request, dap):
                     to.append(admin[1])
                 send_mail('Dap {dap} reported as evil'.format(dap=dap),
                           '''Hi, dap {dap} was reported as evil.
-                          See {link} for more information.'''.format(dap=dap,
-                                                                     link=request.build_absolute_uri(reverse('dapi.views.dap_reports', args=(dap, )))),
+                          See {link} for more information.'''
+                          .format(dap=dap,
+                                  link=request.build_absolute_uri(
+                                      reverse('dapi.views.dap_reports', args=(dap, ))
+                                  )),
                           'no-reply@rhcloud.com',
                           to, fail_silently=False)
             messages.success(request, 'Dap successfully reported.')
@@ -350,8 +409,14 @@ def user_edit(request, user):
                     messages.success(request, 'Successfully deleted {user}.'.format(user=user))
                     return HttpResponseRedirect(reverse('dapi.views.index'))
                 else:
-                    dform.errors['verification'] = dform.error_class(['You didn\'t enter the username correctly.'])
-    return render(request, 'dapi/user-edit.html', {'uform': uform, 'pform': pform, 'dform': dform, 'u': u})
+                    dform.errors['verification'] = \
+                        dform.error_class(['You didn\'t enter the username correctly.'])
+    return render(request, 'dapi/user-edit.html', {
+        'uform': uform,
+        'pform': pform,
+        'dform': dform,
+        'u': u,
+    })
 
 
 def login(request):
@@ -384,17 +449,19 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'username'
     serializer_class = serializers.UserSerializer
 
+
 class MetaDapViewSet(viewsets.ReadOnlyModelViewSet):
     '''API endpoint that allows metadaps to be viewed
-    
+
     A metadap stores the information about a dap across all it's versions'''
     queryset = models.MetaDap.objects.all()
     lookup_field = 'package_name'
     serializer_class = serializers.MetaDapSerializer
 
+
 class DapViewSet(viewsets.ReadOnlyModelViewSet):
     '''API endpoint that allows daps to be viewed
-    
+
     A dap represents one dap in a specific version'''
     queryset = models.Dap.objects.all()
     lookup_field = 'nameversion'
@@ -417,6 +484,7 @@ class DapViewSet(viewsets.ReadOnlyModelViewSet):
 
         return obj
 
+
 class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     '''API endpoint that allows to search for a metadap. Just add **?q=_query_** to the URL.'''
     permission_classes = (permissions.AllowAny,)
@@ -428,8 +496,9 @@ class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         results = haystack_query.EmptySearchQuerySet()
 
         if request.GET.get('q'):
-            form = haystack_forms.ModelSearchForm(request.QUERY_PARAMS, searchqueryset=None, load_all=True)
- 
+            form = haystack_forms.ModelSearchForm(request.QUERY_PARAMS,
+                                                  searchqueryset=None, load_all=True)
+
             if form.is_valid():
                 query = form.cleaned_data['q']
                 results = form.search()

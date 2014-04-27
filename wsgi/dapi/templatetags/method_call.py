@@ -9,7 +9,7 @@ register = template.Library()
 @register.filter(name='call')
 def call_method(obj, method_name):
     method = getattr(obj, method_name)
-    if obj.__dict__.has_key("__call_arg"):
+    if "__call_arg" in obj.__dict__:
         ret = method(*obj.__call_arg)
         del obj.__call_arg
         return ret
@@ -18,7 +18,7 @@ def call_method(obj, method_name):
 
 @register.filter
 def args(obj, arg):
-    if not obj.__dict__.has_key("__call_arg"):
+    if "__call_arg" not in obj.__dict__:
         obj.__call_arg = []
 
     obj.__call_arg += [arg]

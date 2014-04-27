@@ -17,13 +17,19 @@ class MetaDap(models.Model):
     It holds the (meta)data related to all versions'''
     package_name = models.CharField(max_length=200, unique=True)
     user = models.ForeignKey(auth_models.User)
-    comaintainers = models.ManyToManyField(auth_models.User, null=True, blank=True, default=None, related_name='codap_set')
-    latest = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
-    latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
+    comaintainers = models.ManyToManyField(auth_models.User, null=True, blank=True,
+                                           default=None, related_name='codap_set')
+    latest = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+',
+                               on_delete=models.SET_DEFAULT)
+    latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None,
+                                      related_name='+', on_delete=models.SET_DEFAULT)
     tags = taggit_managers.TaggableManager(blank=True)
     active = models.BooleanField(default=True)
-    ranks = models.ManyToManyField(auth_models.User, through='Rank', related_name='ranked_set', null=True, blank=True, default=None)
-    reports = models.ManyToManyField(auth_models.User, through='Report', related_name='reported_set', null=True, blank=True, default=None)
+    ranks = models.ManyToManyField(auth_models.User, through='Rank', related_name='ranked_set',
+                                   null=True, blank=True, default=None)
+    reports = models.ManyToManyField(auth_models.User, through='Report',
+                                     related_name='reported_set', null=True,
+                                     blank=True, default=None)
     average_rank = models.FloatField(null=True, blank=True, default=None)
     rank_count = models.IntegerField(default=0)
 
@@ -58,7 +64,9 @@ class MetaDap(models.Model):
 
     def similar_active_daps_api(self):
         '''Dirty trick to return API links of similar daps'''
-        return [settings.SITE_URL+urlresolvers.reverse('metadap-detail', args=(dap.package_name, )) for dap in self.similar_active_daps()]
+        return [settings.SITE_URL +
+                urlresolvers.reverse('metadap-detail', args=(dap.package_name, ))
+                for dap in self.similar_active_daps()]
 
     def _get_average_rank(self):
         '''Calculates the average rank of the dap.
@@ -83,7 +91,7 @@ class MetaDap(models.Model):
         '''Gets the link to website, where the latest dap lives'''
         link = urlresolvers.reverse('dapi.views.dap', args=(self.package_name, ))
         if absolute:
-            return settings.SITE_URL+link
+            return settings.SITE_URL + link
         return link
 
 
@@ -127,9 +135,10 @@ class Dap(models.Model):
 
     def get_human_link(self, absolute=True):
         '''Gets the link to website, where this dap lives'''
-        link = urlresolvers.reverse('dapi.views.dap_version', args=(self.metadap.package_name, self.version))
+        link = urlresolvers.reverse('dapi.views.dap_version',
+                                    args=(self.metadap.package_name, self.version))
         if absolute:
-            return settings.SITE_URL+link
+            return settings.SITE_URL + link
         return link
 
     class Meta:
@@ -181,27 +190,31 @@ class Report(models.Model):
     )
     problem = models.CharField(max_length=1, choices=TYPE_CHOICES)
     metadap = models.ForeignKey(MetaDap)
-    reporter = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, on_delete=models.SET_DEFAULT)
+    reporter = models.ForeignKey(auth_models.User, null=True, blank=True, default=None,
+                                 on_delete=models.SET_DEFAULT)
     email = models.EmailField(null=True, blank=True, default=None)
-    versions = models.ManyToManyField(Dap, null=True, blank=True, default=None, related_name='report_set')
+    versions = models.ManyToManyField(Dap, null=True, blank=True, default=None,
+                                      related_name='report_set')
     message = models.TextField()
     solved = models.BooleanField(default=False)
 
     def __unicode__(self):
-        '''Returns metadap name, username or e-mail and typo of report sepearted by spaces'''
+        '''Returns metadap name, username or e-mail and typ of report sepearted by spaces'''
         if self.reporter:
             user = self.reporter.username
         elif self.email:
             user = self.email
         else:
             user = '<anonymous>'
-        return self.metadap.package_name + ' ' + user + ' ' + self.get_problem_display().split()[0].lower()
+        return self.metadap.package_name + ' ' + user + ' ' + \
+            self.get_problem_display().split()[0].lower()
 
 
 class Profile(models.Model):
     '''Additional data stored per User'''
     user = models.OneToOneField(auth_models.User, primary_key=True)
-    syncs = models.ManyToManyField(social_models.UserSocialAuth, null=True, blank=True, default=None)
+    syncs = models.ManyToManyField(social_models.UserSocialAuth, null=True,
+                                   blank=True, default=None)
 
     def __unicode__(self):
         '''Returns username'''
@@ -221,7 +234,8 @@ class Profile(models.Model):
         if not username:
             return None
         try:
-            url = getattr(settings, 'SOCIAL_AUTH_{provider}_PROFILE_LINK'.format(provider=provider.upper()))
+            url = getattr(settings, 'SOCIAL_AUTH_{provider}_PROFILE_LINK'
+                          .format(provider=provider.upper()))
         except AttributeError:
             return None
         return url.format(username=username)
@@ -238,7 +252,7 @@ class Profile(models.Model):
         '''Gets the link to website, where this user lives'''
         link = urlresolvers.reverse('dapi.views.user', args=(self.user.username, ))
         if absolute:
-            return settings.SITE_URL+link
+            return settings.SITE_URL + link
         return link
 
 

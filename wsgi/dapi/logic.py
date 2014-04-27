@@ -33,11 +33,22 @@ def save_dap_to_db(f, dap, user):
     try:
         m = models.MetaDap.objects.get(package_name=dap.meta['package_name'])
         if m.user != user and user not in m.comaintainers.all():
-            return ['We have {dap} already here, but you don\'t own it.'.format(dap=m.package_name)], None
+            return (
+                ['We have {dap} already here, but you don\'t own it.'.format(dap=m.package_name)],
+                None
+            )
         if m.latest and dapver.compare(m.latest.version, dap.meta['version']) >= 0:
-            return ['We have {dap} already in the same or higher version ({version}). If you want to update it, bump the version.'.format(dap=m.package_name, version=m.latest.version)], None
+            return (
+                ['We have {dap} already in the same or higher version ({version}). '
+                    'If you want to update it, bump the version.'
+                    .format(dap=m.package_name, version=m.latest.version)],
+                None
+            )
         if not m.active:
-            return ['We have {dap} already here, but it\'s not active.'.format(dap=m.package_name)], None
+            return (
+                ['We have {dap} already here, but it\'s not active.'.format(dap=m.package_name)],
+                None
+            )
     except models.MetaDap.DoesNotExist:
         m = models.MetaDap()
         m.package_name = dap.meta['package_name']

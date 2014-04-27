@@ -12,8 +12,10 @@ VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}'
 
 class DivErrorList(formsutil.ErrorList):
     '''Make the form errors look better'''
+
     def __unicode__(self):
         return self.as_divs()
+
     def as_divs(self):
         if not self:
             return ''
@@ -28,6 +30,7 @@ class DivErrorList(formsutil.ErrorList):
 
 class BootstrapForm(forms.Form):
     '''A form that uses DivErrorList'''
+
     def __init__(self, *args, **kwargs):
         super(BootstrapForm, self).__init__(*args, **kwargs)
         self.error_class = DivErrorList
@@ -35,8 +38,10 @@ class BootstrapForm(forms.Form):
             if key != 'file':
                 self.fields[key].widget.attrs['class'] = 'form-control'
 
+
 class BootstrapModelForm(forms.ModelForm):
     '''A model form that uses DivErrorList'''
+
     def __init__(self, *args, **kwargs):
         super(BootstrapModelForm, self).__init__(*args, **kwargs)
         self.error_class = DivErrorList
@@ -57,7 +62,9 @@ class UserForm(BootstrapModelForm):
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         if self.instance.profile.syncs.exists():
-            self.fields['email'].help_text = 'Further fields cannot be edited, because at least one service is configured to override those data on login. See below to disable it.'
+            self.fields['email'].help_text = \
+                'Further fields cannot be edited, because at least one service is configured to' \
+                'override those data on login. See below to disable it.'
             for field in 'email first_name last_name'.split():
                 self.fields[field].widget.attrs['readonly'] = 'readonly'
                 self.fields[field].widget.attrs['class'] += ' disabled'
@@ -75,7 +82,8 @@ class ProfileSyncForm(BootstrapModelForm):
     def __init__(self, *args, **kwargs):
         social_models.UserSocialAuth.__str__ = lambda self: self.get_backend().name
         super(ProfileSyncForm, self).__init__(*args, **kwargs)
-        self.fields['syncs'].queryset = social_models.UserSocialAuth.objects.filter(user=self.instance.user)
+        self.fields['syncs'].queryset = \
+            social_models.UserSocialAuth.objects.filter(user=self.instance.user)
 
 
 class ComaintainersForm(BootstrapModelForm):
@@ -87,24 +95,40 @@ class ComaintainersForm(BootstrapModelForm):
     def __init__(self, *args, **kwargs):
         super(ComaintainersForm, self).__init__(*args, **kwargs)
         self.fields['comaintainers'].help_text = ''
-        self.fields['comaintainers'].queryset = auth_models.User.objects.exclude(id=self.instance.user_id)
+        self.fields['comaintainers'].queryset = \
+            auth_models.User.objects.exclude(id=self.instance.user_id)
 
 
 class DeleteDapForm(BootstrapForm):
-    verification = forms.CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
+    verification = forms.CharField(
+        max_length=200,
+        help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'),
+    )
 
 
 class DeleteUserForm(BootstrapForm):
-    verification = forms.CharField(max_length=30, help_text='Enter the username to confirm the deletion.')
+    verification = forms.CharField(
+        max_length=30,
+        help_text='Enter the username to confirm the deletion.',
+    )
 
 
 class DeleteVersionForm(BootstrapForm):
-    verification_name = forms.CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'))
-    verification_version = forms.CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='version', why='deletion'))
+    verification_name = forms.CharField(
+        max_length=200,
+        help_text=VERIFY_HELP_TEXT.format(what='name', why='deletion'),
+    )
+    verification_version = forms.CharField(
+        max_length=200,
+        help_text=VERIFY_HELP_TEXT.format(what='version', why='deletion'),
+    )
 
 
 class ActivationDapForm(BootstrapModelForm):
-    verification = forms.CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='(de)activation'))
+    verification = forms.CharField(
+        max_length=200,
+        help_text=VERIFY_HELP_TEXT.format(what='name', why='(de)activation'),
+    )
 
     class Meta:
         model = models.MetaDap
@@ -112,7 +136,10 @@ class ActivationDapForm(BootstrapModelForm):
 
 
 class TransferDapForm(BootstrapModelForm):
-    verification = forms.CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='transfer'))
+    verification = forms.CharField(
+        max_length=200,
+        help_text=VERIFY_HELP_TEXT.format(what='name', why='transfer'),
+    )
 
     class Meta:
         model = models.MetaDap
@@ -120,7 +147,10 @@ class TransferDapForm(BootstrapModelForm):
 
 
 class LeaveDapForm(BootstrapForm):
-    verification = forms.CharField(max_length=200, help_text=VERIFY_HELP_TEXT.format(what='name', why='leaving'))
+    verification = forms.CharField(
+        max_length=200,
+        help_text=VERIFY_HELP_TEXT.format(what='name', why='leaving'),
+    )
 
 
 class TagsForm(BootstrapModelForm):
@@ -153,4 +183,5 @@ class ReportAnonymousForm(ReportForm):
     class Meta(ReportForm.Meta):
         fields = ReportForm.Meta.fields + ('email',)
         help_texts = ReportForm.Meta.help_texts
-        help_texts['email'] = 'Optional. So we can inform you about the solution. We don\'t send spam or sell e-mail addresses.'
+        help_texts['email'] = 'Optional. So we can inform you about the solution. ' \
+            'We don\'t send spam or sell e-mail addresses.'

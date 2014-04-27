@@ -10,6 +10,7 @@ t = {
     'debug': 'danger',
 }
 
+
 @register.filter(is_safe=True)
 @stringfilter
 def alerts(value):

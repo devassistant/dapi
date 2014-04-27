@@ -5,6 +5,7 @@ from dapi import models
 from rest_framework import serializers
 from rest_framework import fields as rest_fields
 
+
 class DapVersionLookup(object):
     '''Class that have Dap suitable get_url() method'''
     lookup_field = 'nameversion'
@@ -15,7 +16,8 @@ class DapVersionLookup(object):
         May raise a `NoReverseMatch` if the `view_name` and `lookup_field`
         attributes are not configured to correctly match the URL conf.'''
         try:
-            return reverse(view_name, kwargs={'nameversion': obj.__unicode__()}, request=request, format=format)
+            return reverse(view_name, kwargs={'nameversion': obj.__unicode__()},
+                           request=request, format=format)
         except urlresolvers.NoReverseMatch:
             pass
 
@@ -58,7 +60,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'github_username',
             'human_link',
         )
-        
 
 
 class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
@@ -143,16 +144,16 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'human_link',
         )
 
+
 class SearchResultSerializer(serializers.Serializer):
     content_type = rest_fields.CharField(source='model_name')
     content_object = rest_fields.SerializerMethodField('_content_object')
- 
+
     def _content_object(self, obj):
         if obj.model_name == 'metadap':
             return MetaDapSerializer(obj.object, many=False, context=self.context).data
         return {}
- 
-    def __init__(self,  *args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
         self.unit = kwargs.pop('unit', None)
         return super(SearchResultSerializer, self).__init__(*args, **kwargs)
-

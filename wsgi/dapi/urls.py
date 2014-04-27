@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.conf.urls import patterns, url
 
-urlpatterns = patterns('dapi.views',
+urlpatterns = patterns(
+    'dapi.views',
     url(r'^$', 'index'),
     url(r'^dap/(?P<dap>[a-z][a-z0-9\-_]*[a-z0-9]|[a-z])/$', 'dap'),
     url(r'^dap/(?P<dap>[a-z][a-z0-9\-_]*[a-z0-9]|[a-z])/stable/$', 'dap_stable'),
@@ -25,6 +26,7 @@ urlpatterns = patterns('dapi.views',
 )
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
+    urlpatterns += patterns(
+        '',
         (r'^download/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     )

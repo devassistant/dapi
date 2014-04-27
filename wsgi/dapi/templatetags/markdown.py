@@ -7,7 +7,8 @@ import markdown2
 
 register = template.Library()
 
+
 @register.filter(is_safe=True)
 @stringfilter
-def markdown(value,mode='escape'):
-    return mark_safe(markdown2.markdown(force_unicode(value),safe_mode=mode))
+def markdown(value, mode='escape'):
+    return mark_safe(markdown2.markdown(force_unicode(value), safe_mode=mode))
