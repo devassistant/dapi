@@ -24,6 +24,7 @@ setup(
         'djangorestframework',
         'django-gravatar2',
         'markdown2',
+        'Markdown',
     ],
     dependency_links = [
         'git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth',
