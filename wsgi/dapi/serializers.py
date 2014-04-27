@@ -1,6 +1,7 @@
-from django.contrib.auth.models import User
-from dapi.models import MetaDap, Dap
-from rest_framework import serializers, fields
+from django.contrib.auth import models as auth_models
+from dapi import models
+from rest_framework import serializers
+from rest_framework import serializers, fields as rest_fields
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,7 +22,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     human_link = serializers.Field(source='profile.get_human_link')
 
     class Meta:
-        model = User
+        model = auth_models.User
         fields = (
             'url',
             'id',
@@ -53,7 +54,7 @@ class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
     human_link = serializers.Field(source='get_human_link')
 
     class Meta:
-        model = MetaDap
+        model = models.MetaDap
         fields = (
             'url',
             'id',
@@ -88,7 +89,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
     human_link = serializers.Field(source='get_human_link')
 
     class Meta:
-        model = Dap
+        model = models.Dap
         fields = (
             'url',
             'id',
@@ -111,8 +112,8 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 class SearchResultSerializer(serializers.Serializer):
-    content_type = fields.CharField(source='model_name')
-    content_object = fields.SerializerMethodField('_content_object')
+    content_type = rest_fields.CharField(source='model_name')
+    content_object = rest_fields.SerializerMethodField('_content_object')
  
     def _content_object(self, obj):
         if obj.model_name == 'metadap':

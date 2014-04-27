@@ -1,14 +1,14 @@
 from django.conf import settings
+from dapi import models
 
 import daploader
 from daploader import dapver
 import logging
 import os
 try:
-    from cStringIO import StringIO
+    import cStringIO as sio
 except ImportError:
-    from io import StringIO
-from dapi.models import *
+    import io as sio
 
 
 def handle_uploaded_dap(f, user):
@@ -17,7 +17,7 @@ def handle_uploaded_dap(f, user):
     errors = []
     try:
         dap = daploader.Dap(f.temporary_file_path(), mimic_filename=f.name)
-        out = StringIO()
+        out = sio.StringIO()
         if not dap.check(output=out, network=False, level=logging.ERROR):
             errors = out.getvalue().rstrip().split('\n')
     except (daploader.DapFileError, daploader.DapMetaError) as e:
@@ -31,19 +31,19 @@ def handle_uploaded_dap(f, user):
 def save_dap_to_db(f, dap, user):
     '''Save the dap and it's metadata to the database'''
     try:
-        m = MetaDap.objects.get(package_name=dap.meta['package_name'])
+        m = models.MetaDap.objects.get(package_name=dap.meta['package_name'])
         if m.user != user and user not in m.comaintainers.all():
             return ['We have {dap} already here, but you don\'t own it.'.format(dap=m.package_name)], None
         if m.latest and dapver.compare(m.latest.version, dap.meta['version']) >= 0:
             return ['We have {dap} already in the same or higher version ({version}). If you want to update it, bump the version.'.format(dap=m.package_name, version=m.latest.version)], None
         if not m.active:
             return ['We have {dap} already here, but it\'s not active.'.format(dap=m.package_name)], None
-    except MetaDap.DoesNotExist:
-        m = MetaDap()
+    except models.MetaDap.DoesNotExist:
+        m = models.MetaDap()
         m.package_name = dap.meta['package_name']
         m.user = user
         m.save()
-    d = Dap()
+    d = models.Dap()
     for attr in ['version', 'license', 'homepage', 'bugreports', 'summary', 'description']:
         setattr(d, attr, dap.meta[attr])
     d.metadap = m

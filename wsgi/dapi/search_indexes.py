@@ -1,13 +1,13 @@
 import datetime
 from haystack import indexes
-from dapi.models import MetaDap
+from dapi import models
 
 
 class MetaDapIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
 
     def get_model(self):
-        return MetaDap
+        return models.MetaDap
 
     def index_queryset(self, using=None):
         '''Used when the entire index for model is updated.'''

@@ -1,4 +1,4 @@
-from dapi.models import *
+from dapi import models
 from django.contrib import admin
 
 
@@ -13,11 +13,11 @@ class MetaDapAdmin(admin.ModelAdmin):
     filter_horizontal = ['comaintainers']
 
 
-admin.site.register(MetaDap, MetaDapAdmin)
+admin.site.register(models.MetaDap, MetaDapAdmin)
 
 
 class AuthorInline(admin.StackedInline):
-    model = Author
+    model = models.Author
     extra = 1
 
 
@@ -29,10 +29,10 @@ class DapAdmin(admin.ModelAdmin):
     inlines = [AuthorInline]
 
 
-admin.site.register(Dap, DapAdmin)
+admin.site.register(models.Dap, DapAdmin)
 
-admin.site.register(Rank)
-admin.site.register(Profile)
+admin.site.register(models.Rank)
+admin.site.register(models.Profile)
 
 
 class ReportAdmin(admin.ModelAdmin):
@@ -44,4 +44,4 @@ class ReportAdmin(admin.ModelAdmin):
     filter_horizontal = ['versions']
 
 
-admin.site.register(Report, ReportAdmin)
+admin.site.register(models.Report, ReportAdmin)

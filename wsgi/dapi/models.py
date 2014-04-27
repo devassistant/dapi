@@ -1,30 +1,29 @@
 from __future__ import division
 
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import pre_delete, post_delete, post_save
-from django.dispatch import receiver
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from taggit.managers import TaggableManager
-from social.apps.django_app.default import models as social_models
-
 from daploader import dapver
+from django.conf import settings
+from django.contrib.auth import models as auth_models
+from django.core import urlresolvers
+from django.core import validators
+from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
+from social.apps.django_app.default import models as social_models
+from taggit import managers as taggit_managers
 
 
 class MetaDap(models.Model):
     '''Model represents a dap in no version.
     It holds the (meta)data related to all versions'''
     package_name = models.CharField(max_length=200, unique=True)
-    user = models.ForeignKey(User)
-    comaintainers = models.ManyToManyField(User, null=True, blank=True, default=None, related_name='codap_set')
+    user = models.ForeignKey(auth_models.User)
+    comaintainers = models.ManyToManyField(auth_models.User, null=True, blank=True, default=None, related_name='codap_set')
     latest = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
     latest_stable = models.ForeignKey('Dap', null=True, blank=True, default=None, related_name='+', on_delete=models.SET_DEFAULT)
-    tags = TaggableManager(blank=True)
+    tags = taggit_managers.TaggableManager(blank=True)
     active = models.BooleanField(default=True)
-    ranks = models.ManyToManyField(User, through='Rank', related_name='ranked_set', null=True, blank=True, default=None)
-    reports = models.ManyToManyField(User, through='Report', related_name='reported_set', null=True, blank=True, default=None)
+    ranks = models.ManyToManyField(auth_models.User, through='Rank', related_name='ranked_set', null=True, blank=True, default=None)
+    reports = models.ManyToManyField(auth_models.User, through='Report', related_name='reported_set', null=True, blank=True, default=None)
     average_rank = models.FloatField(null=True, blank=True, default=None)
     rank_count = models.IntegerField(default=0)
 
@@ -59,7 +58,7 @@ class MetaDap(models.Model):
 
     def similar_active_daps_api(self):
         '''Dirty trick to return API links of similar daps'''
-        return [settings.SITE_URL+reverse('metadap-detail', args=(dap.package_name, )) for dap in self.similar_active_daps()]
+        return [settings.SITE_URL+urlresolvers.reverse('metadap-detail', args=(dap.package_name, )) for dap in self.similar_active_daps()]
 
     def _get_average_rank(self):
         '''Calculates the average rank of the dap.
@@ -82,7 +81,7 @@ class MetaDap(models.Model):
 
     def get_human_link(self, absolute=True):
         '''Gets the link to website, where the latest dap lives'''
-        link = reverse('dapi.views.dap', args=(self.package_name, ))
+        link = urlresolvers.reverse('dapi.views.dap', args=(self.package_name, ))
         if absolute:
             return settings.SITE_URL+link
         return link
@@ -128,7 +127,7 @@ class Dap(models.Model):
 
     def get_human_link(self, absolute=True):
         '''Gets the link to website, where this dap lives'''
-        link = reverse('dapi.views.dap_version', args=(self.metadap.package_name, self.version))
+        link = urlresolvers.reverse('dapi.views.dap_version', args=(self.metadap.package_name, self.version))
         if absolute:
             return settings.SITE_URL+link
         return link
@@ -153,12 +152,12 @@ class Rank(models.Model):
     '''Rank given by one User to one MetaDap'''
     rank = models.IntegerField(
         validators=[
-            MaxValueValidator(5),
-            MinValueValidator(1)
+            validators.MaxValueValidator(5),
+            validators.MinValueValidator(1)
         ]
     )
     metadap = models.ForeignKey(MetaDap)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(auth_models.User)
 
     def __unicode__(self):
         '''Returns metadap name, username and rank, in this order, separated by spaces'''
@@ -182,7 +181,7 @@ class Report(models.Model):
     )
     problem = models.CharField(max_length=1, choices=TYPE_CHOICES)
     metadap = models.ForeignKey(MetaDap)
-    reporter = models.ForeignKey(User, null=True, blank=True, default=None, on_delete=models.SET_DEFAULT)
+    reporter = models.ForeignKey(auth_models.User, null=True, blank=True, default=None, on_delete=models.SET_DEFAULT)
     email = models.EmailField(null=True, blank=True, default=None)
     versions = models.ManyToManyField(Dap, null=True, blank=True, default=None, related_name='report_set')
     message = models.TextField()
@@ -201,7 +200,7 @@ class Report(models.Model):
 
 class Profile(models.Model):
     '''Additional data stored per User'''
-    user = models.OneToOneField(User, primary_key=True)
+    user = models.OneToOneField(auth_models.User, primary_key=True)
     syncs = models.ManyToManyField(social_models.UserSocialAuth, null=True, blank=True, default=None)
 
     def __unicode__(self):
@@ -237,13 +236,13 @@ class Profile(models.Model):
 
     def get_human_link(self, absolute=True):
         '''Gets the link to website, where this user lives'''
-        link = reverse('dapi.views.user', args=(self.user.username, ))
+        link = urlresolvers.reverse('dapi.views.user', args=(self.user.username, ))
         if absolute:
             return settings.SITE_URL+link
         return link
 
 
-@receiver(post_delete, sender=Dap)
+@receiver(signals.post_delete, sender=Dap)
 def dap_post_delete_handler(sender, **kwargs):
     '''When a dap is deleted, delete the associated file
     and refill values of latest and latest_stable to the DB.'''
@@ -266,19 +265,19 @@ def recalculate_rank(sender, **kwargs):
     rank.metadap.save()
 
 
-@receiver(post_save, sender=Rank)
+@receiver(signals.post_save, sender=Rank)
 def rank_post_save_handler(sender, **kwargs):
     '''When a rank is saved (created or updated), recalculate the average rank and rank count.'''
     recalculate_rank(sender, **kwargs)
 
 
-@receiver(post_delete, sender=Rank)
+@receiver(signals.post_delete, sender=Rank)
 def rank_post_delete_handler(sender, **kwargs):
     '''When a rank is deleted, recalculate the average rank and rank count.'''
     recalculate_rank(sender, **kwargs)
 
 
-@receiver(pre_delete, sender=User)
+@receiver(signals.pre_delete, sender=auth_models.User)
 def user_pre_delete_handler(sender, **kwargs):
     '''When an user is deleted, save his e-mail address to his former reports.'''
     user = kwargs['instance']
