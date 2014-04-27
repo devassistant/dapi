@@ -9,5 +9,5 @@ register = template.Library()
 
 @register.filter(is_safe=True)
 @stringfilter
-def markdown(value):
-    return mark_safe(markdown2.markdown(force_unicode(value),safe_mode='escape'))
+def markdown(value,mode='escape'):
+    return mark_safe(markdown2.markdown(force_unicode(value),safe_mode=mode))
