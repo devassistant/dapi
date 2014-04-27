@@ -397,7 +397,25 @@ class DapViewSet(viewsets.ReadOnlyModelViewSet):
     
     A dap represents one dap in a specific version'''
     queryset = models.Dap.objects.all()
+    lookup_field = 'nameversion'
     serializer_class = serializers.DapSerializer
+
+    def get_object(self, queryset=None):
+        '''Returns the object the view is displaying'''
+        if queryset is None:
+            queryset = self.filter_queryset(self.get_queryset())
+
+        nv = self.kwargs.get('nameversion', None)
+        nv = nv.split('-')
+        dap = '-'.join(nv[:-1])
+        version = nv[-1]
+
+        m = get_object_or_404(models.MetaDap, package_name=dap)
+        obj = get_object_or_404(models.Dap, metadap=m.pk, version=version)
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
 
 class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     '''API endpoint that allows to search for a metadap. Just add **?q=_query_** to the URL.'''

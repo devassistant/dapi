@@ -1,14 +1,38 @@
 from django.contrib.auth import models as auth_models
+from rest_framework.reverse import reverse
+from django.core import urlresolvers
 from dapi import models
 from rest_framework import serializers
-from rest_framework import serializers, fields as rest_fields
+from rest_framework import fields as rest_fields
+
+class DapVersionLookup(object):
+    '''Class that have Dap suitable get_url() method'''
+    lookup_field = 'nameversion'
+
+    def get_url(self, obj, view_name, request, format):
+        '''Given an object, return the URL that hyperlinks to the object.
+
+        May raise a `NoReverseMatch` if the `view_name` and `lookup_field`
+        attributes are not configured to correctly match the URL conf.'''
+        try:
+            return reverse(view_name, kwargs={'nameversion': obj.__unicode__()}, request=request, format=format)
+        except urlresolvers.NoReverseMatch:
+            pass
+
+
+class HyperlinkedRelatedField(DapVersionLookup, serializers.HyperlinkedRelatedField):
+    '''Represents a relationship using hyperlinking'''
+
+
+class HyperlinkedIdentityField(DapVersionLookup, serializers.HyperlinkedIdentityField):
+    '''Represents an object using hyperlinking'''
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     fedora_username = serializers.Field(source='profile.fedora_username')
     github_username = serializers.Field(source='profile.github_username')
     full_name = serializers.Field(source='get_full_name')
-    url = serializers.HyperlinkedIdentityField(
+    api_link = serializers.HyperlinkedIdentityField(
         view_name='user-detail',
         lookup_field='username')
     metadap_set = serializers.HyperlinkedRelatedField(
@@ -24,7 +48,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = auth_models.User
         fields = (
-            'url',
+            'api_link',
             'id',
             'username',
             'full_name',
@@ -41,7 +65,7 @@ class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
     reports = serializers.Field(source='get_unsolved_reports_count')
     tags = serializers.Field(source='tags.all')
     similar_daps = serializers.Field(source='similar_active_daps_api')
-    url = serializers.HyperlinkedIdentityField(
+    api_link = serializers.HyperlinkedIdentityField(
         view_name='metadap-detail',
         lookup_field='package_name')
     user = serializers.HyperlinkedRelatedField(
@@ -51,12 +75,19 @@ class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
         view_name='user-detail',
         lookup_field='username',
         many=True)
+    dap_set = HyperlinkedRelatedField(
+        view_name='dap-detail',
+        many=True)
+    latest = HyperlinkedRelatedField(
+        view_name='dap-detail')
+    latest_stable = HyperlinkedRelatedField(
+        view_name='dap-detail')
     human_link = serializers.Field(source='get_human_link')
 
     class Meta:
         model = models.MetaDap
         fields = (
-            'url',
+            'api_link',
             'id',
             'package_name',
             'user',
@@ -75,6 +106,7 @@ class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class DapSerializer(serializers.HyperlinkedModelSerializer):
+    api_link = HyperlinkedIdentityField(view_name='dap-detail')
     package_name = serializers.Field(source='metadap.package_name')
     authors = serializers.Field(source='get_authors')
     is_pre = serializers.Field(source='is_pre')
@@ -91,7 +123,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Dap
         fields = (
-            'url',
+            'api_link',
             'id',
             'metadap',
             'package_name',
