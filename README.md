@@ -35,11 +35,11 @@ echo GITHUB-API-SECRET >> ${OPENSHIFT_DATA_DIR}github
 
 Don't forget to update settings.py with your e-mail address, ALLOWED_HOSTS and SITE_URL.
 
-Go to `http://website.url/admin`, log in as admin and add a Profile for your admin user! Feel free to disable admin on production.
+Go to `http://website.url/admin`, log in as admin and add a Profile for your admin user! (Note that admin is normally disabled on production)
 
 Github tokens
 -------------
 
 Create a Github app as described in [python-socail-auth docs](http://psa.matiasaguirre.net/docs/backends/github.html).
 
-Save Client ID and Client Secret to a simple plaintext file (first line ID, second line secret) and save it as `github`. On localhost, save the file to `wsgi/`, on Openshift, save the file to `$OPENSHIFT_DATA_DIR`. Use different key/secret combo for localhost and for Openshift. In teh above doc those keys are referenced with GITHUB-API-ID and GITHUB-API-SECRET.
+Save Client ID and Client Secret to a simple plaintext file (first line ID, second line secret) and save it as `github`. On localhost, save the file to `wsgi/`, on Openshift, save the file to `$OPENSHIFT_DATA_DIR`. Use different key/secret combo for localhost and for Openshift. In the above doc those keys are referenced with GITHUB-API-ID and GITHUB-API-SECRET.
