@@ -80,6 +80,13 @@ class MetaDap(models.Model):
         '''Gets the number of active reports'''
         return self.report_set.filter(solved=False).count()
 
+    def get_human_link(self, absolute=True):
+        '''Gets the link to website, where the latest dap lives'''
+        link = reverse('dapi.views.dap', args=(self.package_name, ))
+        if absolute:
+            return settings.SITE_URL+link
+        return link
+
 
 class Dap(models.Model):
     '''Model representing a specific version of a dap (of MetaDap instance)'''
@@ -118,6 +125,13 @@ class Dap(models.Model):
             return 'mailto:' + self.bugreports
         else:
             return self.bugreports
+
+    def get_human_link(self, absolute=True):
+        '''Gets the link to website, where this dap lives'''
+        link = reverse('dapi.views.dap_version', args=(self.metadap.package_name, self.version))
+        if absolute:
+            return settings.SITE_URL+link
+        return link
 
     class Meta:
         unique_together = ('metadap', 'version',)
@@ -220,6 +234,13 @@ class Profile(models.Model):
     def github_username(self):
         '''If the user uses Github to login, return his Github username'''
         return self.get_social_username('github')
+
+    def get_human_link(self, absolute=True):
+        '''Gets the link to website, where this user lives'''
+        link = reverse('dapi.views.user', args=(self.user.username, ))
+        if absolute:
+            return settings.SITE_URL+link
+        return link
 
 
 @receiver(post_delete, sender=Dap)

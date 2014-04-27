@@ -18,6 +18,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         view_name='metadap-detail',
         lookup_field='package_name',
         many=True)
+    human_link = serializers.Field(source='profile.get_human_link')
 
     class Meta:
         model = User
@@ -30,6 +31,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'codap_set',
             'fedora_username',
             'github_username',
+            'human_link',
         )
         
 
@@ -48,6 +50,7 @@ class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
         view_name='user-detail',
         lookup_field='username',
         many=True)
+    human_link = serializers.Field(source='get_human_link')
 
     class Meta:
         model = MetaDap
@@ -66,6 +69,7 @@ class MetaDapSerializer(serializers.HyperlinkedModelSerializer):
             'comaintainers',
             'tags',
             'similar_daps',
+            'human_link',
         )
 
 
@@ -81,6 +85,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
     metadap = serializers.HyperlinkedRelatedField(
         view_name='metadap-detail',
         lookup_field='package_name')
+    human_link = serializers.Field(source='get_human_link')
 
     class Meta:
         model = Dap
@@ -102,4 +107,5 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'reports',
             'active',
             'download',
+            'human_link',
         )
