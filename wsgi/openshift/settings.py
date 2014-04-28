@@ -12,7 +12,7 @@ if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
     GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], GITHUB_FILE)
     WHOOSH_INDEX = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], WHOOSH_INDEX)
-    SITE_URL = 'http://dapi-devassistant.rhcloud.com'
+    SITE_URL = 'http://dapi.devassistant.org'
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:
@@ -53,7 +53,7 @@ else:
         }
     }
 
-ALLOWED_HOSTS = ['.rhcloud.com', '127.0.0.1']
+ALLOWED_HOSTS = ['dapi.devassistant.org']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
