@@ -14,7 +14,7 @@ setup(
         'Django==1.6',
         'psycopg2',
         'South',
-        'daploader>=0.0.4',
+        'daploader>=0.0.5',
         'PyYAML',
         'python-social-auth',
         'django-taggit',
