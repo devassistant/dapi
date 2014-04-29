@@ -1,4 +1,4 @@
 RewriteEngine On
-RewriteRule ^application/download/(.+)$ /static/download/$1 [L]
 RewriteCond %{HTTP_HOST} ^dapi-devassistant.rhcloud.com
-RewriteRule ^(.*)$ http://dapi.devassistant.org/$1 [R=301,L]
+RewriteRule ^(.*)$ http://dapi.devassistant.org/ [R=301,L]
+RewriteRule ^application/download/(.+)$ /static/download/$1 [L]
