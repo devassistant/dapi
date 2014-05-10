@@ -2,3 +2,4 @@
 # This is a simple post deploy hook executed after your application 
 # is deployed and started.  This script gets executed directly, so 
 # it could be python, php, ruby, etc.
+curl https://api.runscope.com/radar/5e9be81d-a623-4dfd-98d3-00fa4740fc8a/start > /dev/null
