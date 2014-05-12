@@ -281,7 +281,12 @@ REST_FRAMEWORK = {
 
 GRAVATAR_DEFAULT_IMAGE = 'identicon'
 
-SOUTH_MIGRATION_MODULES = {
-    'taggit': 'taggit.south_migrations',
-    'dapi': 'dapi.migrations',
-}
+if ON_OPENSHIFT:
+    SOUTH_MIGRATION_MODULES = {
+        'dapi': 'dapi.migrations',
+    }
+else:
+    SOUTH_MIGRATION_MODULES = {
+        'taggit': 'taggit.south_migrations',
+        'dapi': 'dapi.migrations',
+    }
