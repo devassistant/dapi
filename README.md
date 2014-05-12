@@ -62,12 +62,10 @@ If you want to deploy this on OpenShift, follow those steps:
  1. Create Python 2.7 app on OpenShift (via web or `rhc`)
  2. Add PostgreSQL cartridge (via web or `rhc`)
  3. Clone this repository
- 4. Create branch master
- 5. Merge devel branch (or any other you want)
- 6. `git remote add upstream -m master OPENSHIFT-GIT-URL # something like ssh://hexa@app-namespace.rhcloud.com/~/git/app.git/`
- 7. Don't forget to update settings.py with your e-mail address, ALLOWED_HOSTS and SITE_URL.
- 8. `git push openshift devel:master`
- 9. ssh to the OpenShift app and run the following:
+ 4. `git remote add upstream -m master OPENSHIFT-GIT-URL # something like ssh://hexa@app-namespace.rhcloud.com/~/git/app.git/`
+ 5. Don't forget to update settings.py with your e-mail address, ALLOWED_HOSTS and SITE_URL.
+ 6. `git push openshift devel:master` - replace `devel` with your local branch if necessary
+ 7. ssh to the OpenShift app and run the following:
 
 ````
 cd app-root/repo/wsgi/
@@ -75,7 +73,7 @@ python manage.py syncdb --noinput
 python manage.py migrate
 python manage.py schemamigration dapi --initial
 python manage.py migrate dapi --fake
-cp -r "${OPENSHIFT_REPO_DIR}wsgi/dapi/migrations" ${OPENSHIFT_DATA_DIR}
+cp -r dapi/migrations ${OPENSHIFT_DATA_DIR}
 mkdir ${OPENSHIFT_DATA_DIR}upload
 echo GITHUB-API-ID > ${OPENSHIFT_DATA_DIR}github # see section Github tokens
 echo GITHUB-API-SECRET >> ${OPENSHIFT_DATA_DIR}github
