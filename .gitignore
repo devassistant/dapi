@@ -12,3 +12,4 @@ wsgi/upload
 wsgi/static/admin
 *.dap
 wsgi/whoosh/
+venv
