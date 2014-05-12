@@ -5,8 +5,6 @@ This is Dapi - the DevAssistant Package Index.
 
 It's Django app running on OpenShift using Python 2.7 and PostgreSQL 9.2 cartridges.
 
-**This is currently in very experimental status and is not intended for production!**
-
 Running on localhost
 --------------------
 
