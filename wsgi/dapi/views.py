@@ -22,10 +22,12 @@ from dapi import serializers
 
 def index(request):
     '''The homepage, currentl lists top and most ranked daps'''
-    top_rated = models.MetaDap.objects.filter(active=True).order_by(
-        '-average_rank',
-        '-rank_count',
-    )[:10]
+    top_rated = models.MetaDap.objects.filter(active=True).annotate(
+        null_rank=Count('average_rank')).order_by(
+            '-null_rank',
+            '-average_rank',
+            '-rank_count',
+        )[:10]
     most_rated = models.MetaDap.objects.filter(active=True).order_by(
         '-rank_count',
         '-average_rank',
