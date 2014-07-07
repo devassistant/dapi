@@ -23,7 +23,7 @@ class AuthorInline(admin.StackedInline):
 
 class DapAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Mandatory', {'fields': ['metadap', 'version', 'file', 'license', 'summary']}),
+        ('Mandatory', {'fields': ['metadap', 'version', 'file', 'sha256sum', 'license', 'summary']}),
         ('Optional', {
             'fields': ['homepage', 'bugreports', 'description'],
             'classes': ['collapse'],

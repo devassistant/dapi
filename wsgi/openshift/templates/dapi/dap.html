@@ -70,6 +70,7 @@
     {% if dap.bugreports %}
     <p><span class="glyphicon glyphicon-exclamation-sign"></span> <a href="{{ dap.bugreports_link }}">bugreports</a></p>
     {% endif %}
+    <p><span class="glyphicon glyphicon-ok-sign"></span> <abbr title="SHA256: {{ dap.sha256sum }}">{{ dap.sha256sum|slice:":12" }}</abbr></p>
     {% endif %}
     {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
     <p><a href="{% url 'dapi.views.dap_tags' metadap %}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags"></span> Manage tags</a></p>

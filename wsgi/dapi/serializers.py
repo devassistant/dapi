@@ -142,6 +142,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'active',
             'download',
             'human_link',
+            'sha256sum',
         )
 
 

@@ -57,6 +57,7 @@ def save_dap_to_db(f, dap, user):
     d = models.Dap()
     for attr in ['version', 'license', 'homepage', 'bugreports', 'summary', 'description']:
         setattr(d, attr, dap.meta[attr])
+    d.sha256sum = dap.sha256sum
     d.metadap = m
     d.file = f
     d.save()

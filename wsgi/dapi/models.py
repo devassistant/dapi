@@ -105,6 +105,7 @@ class Dap(models.Model):
     bugreports = models.CharField(max_length=200, blank=True)
     summary = models.CharField(max_length=500)
     description = models.TextField(blank=True)
+    sha256sum = models.CharField(max_length=64)
 
     def __unicode__(self):
         '''Returns dap's name followed by a dash and version'''

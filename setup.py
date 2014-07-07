@@ -14,7 +14,7 @@ setup(
         'Django==1.6',
         'psycopg2',
         'South',
-        'daploader>=0.0.5',
+        'daploader>=0.0.9',
         'PyYAML',
         'python-social-auth',
         'django-taggit',
@@ -29,5 +29,6 @@ setup(
     dependency_links = [
         'git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth',
         'git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework',
+        'https://pypi.python.org/packages/source/d/daploader/daploader-0.0.9.tar.gz',
     ]
 )
