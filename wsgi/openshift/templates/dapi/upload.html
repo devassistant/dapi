@@ -6,8 +6,24 @@
 </div>
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
+  <p>By submitting this form, you agree to <a href="{% url 'dapi.views.terms' %}">the Terms of Use</a>. This is a summary of (and not a substitute for) the requirements contained in the Terms of Use:</p>
+
+  <p>Do not upload:</p>
+
+  <ul>
+    <li>content you don't have the right to use or distribute</li>
+    <li>advertising or promotional materials</li>
+    <li>malware</li>
+    <li>offensive, obscene, hateful, defamatory, or illegal content</li>
+    <li>content that is not governed by <a href="https://fedoraproject.org/wiki/Licensing:Main?rd=Licensing#Good_Licenses">one of the acceptable licenses for the 
+    Fedora Project</a></li>
+  </ul>
+
+  <p>You are solely responsible for the content you upload.
+  Content you upload remains yours (if you own it).
+  We may remove any content you upload at any time, for any reason.</p>
   {{ form.as_p }}
-  <p><button type="submit" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-upload"></span> Upload</button> By uploading a file you agree to <a href="{% url 'dapi.views.terms' %}">the Terms of Use</a>.</p>
+  <p><button type="submit" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-upload"></span> Upload</button></p>
 </form>
 
 {% endblock %}
