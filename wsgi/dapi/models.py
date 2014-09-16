@@ -158,6 +158,17 @@ class Author(models.Model):
         return self.author
 
 
+class Dependency(models.Model):
+    '''Dependency field of dap's metadata.
+    It allows to associate more dependencies to one dap.'''
+    dap = models.ForeignKey(Dap)
+    dependency = models.CharField(max_length=250)
+
+    def __unicode__(self):
+        '''Returns dependency string'''
+        return self.dependency
+
+
 class Rank(models.Model):
     '''Rank given by one User to one MetaDap'''
     rank = models.IntegerField(

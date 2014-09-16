@@ -21,6 +21,11 @@ class AuthorInline(admin.StackedInline):
     extra = 1
 
 
+class DependencyInline(admin.StackedInline):
+    model = models.Dependency
+    extra = 1
+
+
 class DapAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Mandatory', {'fields': ['metadap', 'version', 'file', 'sha256sum', 'license', 'summary']}),
@@ -29,7 +34,7 @@ class DapAdmin(admin.ModelAdmin):
             'classes': ['collapse'],
         }),
     ]
-    inlines = [AuthorInline]
+    inlines = [AuthorInline, DependencyInline]
 
 
 admin.site.register(models.Dap, DapAdmin)

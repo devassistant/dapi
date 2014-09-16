@@ -2,6 +2,7 @@
 {% block title %}{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}{% endblock %}
 {% load markdown %}
 {% load gravatar %}
+{% load deplink %}
 {% block content %}
 <div class="page-header">
   <h1>{% if dap %}{{ dap }}{% else %}{{ metadap }}{% endif %}
@@ -71,6 +72,13 @@
     <p><span class="glyphicon glyphicon-exclamation-sign"></span> <a href="{{ dap.bugreports_link }}">bugreports</a></p>
     {% endif %}
     <p><span class="glyphicon glyphicon-ok-sign"></span> <abbr title="SHA256: {{ dap.sha256sum }}">{{ dap.sha256sum|slice:":12" }}</abbr></p>
+    {% endif %}
+    {% if dap.dependency_set.exists %}
+      <p><span class="glyphicon glyphicon-paperclip"></span> dependencies:<ul>
+      {% for dep in dap.dependency_set.all|dictsort:"dependency" %}
+        <li>{{ dep|deplink }}</li>
+      {% endfor %}
+      </ul></p>
     {% endif %}
     {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
     <p><a href="{% url 'dapi.views.dap_tags' metadap %}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags"></span> Manage tags</a></p>
