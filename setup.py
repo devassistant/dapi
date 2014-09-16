@@ -16,19 +16,14 @@ setup(
         'South',
         'daploader>=0.0.9',
         'PyYAML',
-        'python-social-auth',
+        'python-social-auth>=0.2',
         'django-taggit',
         'django-simple-captcha',
         'django-haystack',
         'whoosh',
-        'djangorestframework',
+        'djangorestframework>=2.4',
         'django-gravatar2',
         'markdown2',
         'Markdown',
-    ],
-    dependency_links = [
-        'git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth',
-        'git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework',
-        'https://pypi.python.org/packages/source/d/daploader/daploader-0.0.9.tar.gz',
     ]
 )

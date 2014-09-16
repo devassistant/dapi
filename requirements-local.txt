@@ -2,12 +2,12 @@ Django==1.6
 South
 daploader
 PyYAML
+python-social-auth>=0.2
 django-taggit
 django-simple-captcha
 django-haystack
 whoosh
+djangorestframework>=2.4
 django-gravatar2
 markdown2
 Markdown
--e git+git://github.com/omab/python-social-auth.git@c5dd3339#egg=python-social-auth
--e git+git://github.com/tomchristie/django-rest-framework.git@03b4c60b#egg=djangorestframework
