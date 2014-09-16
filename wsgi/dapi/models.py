@@ -127,6 +127,10 @@ class Dap(models.Model):
         '''Returns the list of authors as strings'''
         return [author.author for author in self.author_set.all()]
 
+    def get_dependencies(self):
+        '''Returns the list of dependencies as strings'''
+        return [dependency.dependency for dependency in self.dependency_set.all()]
+
     def bugreports_link(self):
         '''Returns URL to add to bugreports link'''
         if not '://' in self.bugreports:
