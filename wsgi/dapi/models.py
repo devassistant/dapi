@@ -1,6 +1,6 @@
 from __future__ import division
 
-from daploader import dapver
+from devassistant.dapi import dapver
 from django.conf import settings
 from django.contrib.auth import models as auth_models
 from django.core import urlresolvers

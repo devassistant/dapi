@@ -14,7 +14,7 @@ setup(
         'Django==1.6',
         'psycopg2',
         'South',
-        'daploader>=0.0.9',
+        'devassistant==0.10.0.dev2',
         'PyYAML',
         'python-social-auth>=0.2',
         'django-taggit',
@@ -25,5 +25,8 @@ setup(
         'django-gravatar2',
         'markdown2',
         'Markdown',
+    ],
+    dependency_links = [
+        'git+git://github.com/devassistant/devassistant.git@565a3cf#egg=devassistant-0.10.0.dev2',
     ]
 )

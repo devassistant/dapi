@@ -1,8 +1,7 @@
 from django.conf import settings
 from dapi import models
 
-import daploader
-from daploader import dapver
+from devassistant import dapi
 import logging
 import os
 try:
@@ -15,12 +14,16 @@ def handle_uploaded_dap(f, user):
     '''Check uploaded file for validity and save it to the DB if it's OK.
     Report errors if not.'''
     errors = []
+    out = sio.StringIO()
+    logger = logging.getLogger(f.name)
+    handler = logging.StreamHandler(out)
+    logger.addHandler(handler)
+    logger.setLevel(logging.ERROR)
     try:
-        dap = daploader.Dap(f.temporary_file_path(), mimic_filename=f.name)
-        out = sio.StringIO()
-        if not dap.check(output=out, network=False, level=logging.ERROR):
+        dap = dapi.Dap(f.temporary_file_path(), mimic_filename=f.name)
+        if not dap.check(network=False, logger=logger):
             errors = out.getvalue().rstrip().split('\n')
-    except (daploader.DapFileError, daploader.DapMetaError) as e:
+    except (dapi.DapFileError, dapi.DapMetaError) as e:
         errors = [str(e)]
     dname = None
     if not errors:
