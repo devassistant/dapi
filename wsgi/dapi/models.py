@@ -135,7 +135,7 @@ class Dap(models.Model):
 
     def bugreports_link(self):
         '''Returns URL to add to bugreports link'''
-        if not '://' in self.bugreports:
+        if '://' not in self.bugreports:
             return 'mailto:' + self.bugreports
         else:
             return self.bugreports

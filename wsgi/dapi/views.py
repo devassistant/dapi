@@ -27,7 +27,7 @@ def index(request):
             '-null_rank',
             '-average_rank',
             '-rank_count',
-        )[:10]
+    )[:10]
     most_rated = models.MetaDap.objects.filter(active=True).order_by(
         '-rank_count',
         '-average_rank',
@@ -217,7 +217,7 @@ def dap_leave(request, dap):
     if request.user == m.user:
         messages.error(request, 'You cannot leave this dap. First, transfer it to someone else.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
-    if not request.user in m.comaintainers.all():
+    if request.user not in m.comaintainers.all():
         messages.error(request, 'You cannot leave this dap, you are not it\'s comaintainer.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
     if request.method == 'POST':
@@ -240,7 +240,7 @@ def dap_version_delete(request, dap, version):
     '''Delete a particular version of a dap'''
     m = get_object_or_404(models.MetaDap, package_name=dap)
     d = get_object_or_404(models.Dap, metadap=m.pk, version=version)
-    if request.user != m.user and not request.user in m.comaintainers.all() \
+    if request.user != m.user and request.user not in m.comaintainers.all() \
        and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to delete versions of this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap_version', args=(dap, version)))
@@ -269,7 +269,7 @@ def dap_version_delete(request, dap, version):
 def dap_tags(request, dap):
     '''Manage dap's tags'''
     m = get_object_or_404(models.MetaDap, package_name=dap)
-    if request.user != m.user and not request.user in m.comaintainers.all() \
+    if request.user != m.user and request.user not in m.comaintainers.all() \
        and not request.user.is_superuser:
         messages.error(request, 'You don\'t have permissions to change tags of this dap.')
         return HttpResponseRedirect(reverse('dapi.views.dap', args=(dap, )))
