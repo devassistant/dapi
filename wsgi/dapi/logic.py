@@ -2,6 +2,7 @@ from django.conf import settings
 from dapi import models
 
 from devassistant import dapi
+from devassistant.dapi import dapver
 import logging
 import os
 try:
@@ -67,12 +68,13 @@ def save_dap_to_db(f, dap, user):
     for author in dap.meta['authors']:
         d.author_set.create(author=author)
     for dependency in dap.meta['dependencies']:
-        dependency = dependency.replace(' ','') # remove spaces to make this canonical 
+        dependency = dependency.replace(' ', '')  # remove spaces to make this canonical
         d.dependency_set.create(dependency=dependency)
     m.latest = d
     if not d.is_pre():
         m.latest_stable = d
     m.save()
+    models.Dap.generate_dependencies_metafile()
     return [], m.package_name
 
 

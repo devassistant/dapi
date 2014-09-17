@@ -10,6 +10,8 @@ from django.db.models import signals
 from django.dispatch import receiver
 from social.apps.django_app.default import models as social_models
 from taggit import managers as taggit_managers
+from django.conf import settings
+import os
 
 
 class MetaDap(models.Model):
@@ -146,6 +148,20 @@ class Dap(models.Model):
             return settings.SITE_URL + link
         return link
 
+    @classmethod
+    def generate_dependencies_metafile(cls):
+        '''Generates the file that lists the dependencies'''
+        dest = os.path.join(settings.MEDIA_ROOT, 'meta.txt')
+        with open(dest, 'w') as f:
+            for d in Dap.objects.all():
+                f.write(str(d))
+                if d.dependency_set.exists():
+                    f.write('; depends (')
+                    deps = [str(dep) for dep in d.dependency_set.all()]
+                    f.write(', '.join(deps))
+                    f.write(')')
+                f.write('\n')
+
     class Meta:
         unique_together = ('metadap', 'version',)
 
@@ -275,7 +291,8 @@ class Profile(models.Model):
 @receiver(signals.post_delete, sender=Dap)
 def dap_post_delete_handler(sender, **kwargs):
     '''When a dap is deleted, delete the associated file
-    and refill values of latest and latest_stable to the DB.'''
+    and refill values of latest and latest_stable to the DB.
+    Regenerate the file with dependencies as well'''
     dap = kwargs['instance']
     # Delete the file
     storage, path = dap.file.storage, dap.file.path
@@ -285,6 +302,8 @@ def dap_post_delete_handler(sender, **kwargs):
     m.latest = m._get_latest()
     m.latest_stable = m._get_latest_stable()
     m.save()
+    # Regenerate the file
+    Dap.generate_dependencies_metafile()
 
 
 def recalculate_rank(sender, **kwargs):
