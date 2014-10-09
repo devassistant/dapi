@@ -4,6 +4,7 @@ RewriteCond %{HTTP_HOST} ^dapi-devassistant.rhcloud.com
 RewriteRule ^(.*)$ https://dapi.devassistant.org/ [R=301,L]
 
 RewriteRule ^application/download/(.+)$ /static/download/$1 [L]
+RewriteRule ^application/api/meta.txt$ /static/download/meta.txt [L]
 
 RewriteCond %{HTTP:X-Forwarded-Proto} !https 
 RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
