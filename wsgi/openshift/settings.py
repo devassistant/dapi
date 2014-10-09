@@ -12,7 +12,7 @@ if 'OPENSHIFT_REPO_DIR' in os.environ:
     ON_OPENSHIFT = True
     GITHUB_FILE = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], GITHUB_FILE)
     WHOOSH_INDEX = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], WHOOSH_INDEX)
-    SITE_URL = 'http://dapi.devassistant.org'
+    SITE_URL = 'https://dapi.devassistant.org'
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:
