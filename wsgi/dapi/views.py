@@ -493,7 +493,7 @@ class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.SearchResultSerializer
 
     def get_queryset(self, *args, **kwargs):
-        # This will return a dict of the fount things
+        # This will return a dict of the found things
         request = self.request
         results = haystack_query.EmptySearchQuerySet()
 
