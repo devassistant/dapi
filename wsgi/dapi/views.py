@@ -467,6 +467,7 @@ class DapViewSet(viewsets.ReadOnlyModelViewSet):
     A dap represents one dap in a specific version'''
     queryset = models.Dap.objects.all()
     lookup_field = 'nameversion'
+    lookup_value_regex = '[^/]+'
     serializer_class = serializers.DapSerializer
 
     def get_object(self, queryset=None):
