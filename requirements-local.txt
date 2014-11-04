@@ -10,4 +10,4 @@ djangorestframework==2.4.2
 django-gravatar2==1.1.4
 markdown2==2.2.1
 Markdown==2.4
--e git+git://github.com/devassistant/devassistant.git@565a3cf#egg=devassistant
+-e git+git://github.com/devassistant/devassistant.git@0f112c8#egg=devassistant
