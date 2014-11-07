@@ -11,7 +11,7 @@ register = template.Library()
 def deplink(value, autoescape=None):
     '''Add links for required daps'''
     usedmark = ''
-    for mark in '= < >'.split():
+    for mark in '< > ='.split():
         split = value.split(mark)
         if len(split) > 1:
             usedmark = mark
@@ -20,6 +20,7 @@ def deplink(value, autoescape=None):
         dap = split[0]
     else:
         dap = value
+    dep = dep.strip()
     try:
         m = models.MetaDap.objects.get(package_name=dap)
         link = '<a href="' + m.get_human_link() + '">' + dap + '</a>'
