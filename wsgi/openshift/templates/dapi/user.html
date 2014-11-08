@@ -38,7 +38,7 @@
     <div class="panel panel-default">
       <div class="panel-heading">Daps owned by {{ u }}</div>
       <ul class="list-group">
-      {% for dap in u.metadap_set.all|dictsortreversed:'rank_count'|dictsortreversed:'average_rank'|dictsortreversed:'active' %}
+      {% for dap in u.metadap_set.all|dictsort:'package_name'|dictsortreversed:'active' %}
         <li class="list-group-item">
           <a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a>
         </li>
@@ -55,7 +55,7 @@
     <div class="panel panel-default">
       <div class="panel-heading">Daps comaintained by {{ u }}</div>
       <ul class="list-group">
-      {% for dap in u.codap_set.all|dictsortreversed:'rank_count'|dictsortreversed:'average_rank'|dictsortreversed:'active' %}
+      {% for dap in u.codap_set.all|dictsort:'package_name'|dictsortreversed:'active' %}
         <li class="list-group-item">
           <a href="{% url 'dapi.views.dap' dap.package_name %}">{% if not dap.active %}<del>{% endif %}{{ dap.package_name }}{% if not dap.active %}</del>{% endif %}</a>
         </li>
