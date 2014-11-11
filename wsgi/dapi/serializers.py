@@ -111,6 +111,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
     package_name = serializers.Field(source='metadap.package_name')
     authors = serializers.Field(source='get_authors')
     dependencies = serializers.Field(source='get_dependencies')
+    supported_platforms = serializers.Field(source='get_supported_platforms')
     is_pre = serializers.Field(source='is_pre')
     is_latest = serializers.Field(source='is_latest')
     is_latest_stable = serializers.Field(source='is_latest_stable')
@@ -145,6 +146,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'human_link',
             'sha256sum',
             'dependencies',
+            'supported_platforms',
         )
 
 

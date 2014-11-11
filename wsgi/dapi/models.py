@@ -135,6 +135,10 @@ class Dap(models.Model):
         '''Returns the list of dependencies as strings'''
         return [dependency.dependency for dependency in self.dependency_set.all()]
 
+    def get_supported_platforms(self):
+        '''Returns the list of supported platforms as strings'''
+        return [platform.platform for platform in self.supported_platforms.all()]
+
     def bugreports_link(self):
         '''Returns URL to add to bugreports link'''
         if '://' not in self.bugreports:
