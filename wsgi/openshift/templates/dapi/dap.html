@@ -80,6 +80,15 @@
       {% endfor %}
       </ul></p>
     {% endif %}
+      <p><span class="glyphicon glyphicon-screenshot"></span> supported platforms:<ul>
+    {% if dap.supported_platforms.exists %}
+      {% for platform in dap.supported_platforms.all|dictsort:"platform" %}
+        <li>{{ platform }}</li>
+      {% endfor %}
+    {% else %}
+        <li>all</li>
+    {% endif %}
+      </ul></p>
     {% if user == metadap.user or user in metadap.comaintainers.all or user.is_superuser %}
     <p><a href="{% url 'dapi.views.dap_tags' metadap %}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags"></span> Manage tags</a></p>
     {% endif %}
