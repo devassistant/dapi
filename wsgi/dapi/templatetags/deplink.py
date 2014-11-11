@@ -16,6 +16,7 @@ def deplink(value, autoescape=None):
         if len(split) > 1:
             usedmark = mark
             break
+    dep = ''
     if usedmark:
         dap = split[0]
     else:
