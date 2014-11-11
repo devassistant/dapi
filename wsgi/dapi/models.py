@@ -108,6 +108,8 @@ class Dap(models.Model):
     summary = models.CharField(max_length=500)
     description = models.TextField(blank=True)
     sha256sum = models.CharField(max_length=64)
+    supported_platforms = models.ManyToManyField('Platform', null=True, blank=True,
+                                                 default=None, related_name='dap_set')
 
     def __unicode__(self):
         '''Returns dap's name followed by a dash and version'''
@@ -187,6 +189,17 @@ class Dependency(models.Model):
     def __unicode__(self):
         '''Returns dependency string'''
         return self.dependency
+
+
+class Platform(models.Model):
+    '''Supported platform field of dap's metadata.
+    It allows to associate more platforms to one dap
+    For each platform, only one DB filed is created.'''
+    platform = models.CharField(max_length=32, unique=True)
+
+    def __unicode__(self):
+        '''Returns platform name'''
+        return self.platform
 
 
 class Rank(models.Model):

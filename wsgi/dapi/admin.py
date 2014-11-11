@@ -30,7 +30,7 @@ class DapAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Mandatory', {'fields': ['metadap', 'version', 'file', 'sha256sum', 'license', 'summary']}),
         ('Optional', {
-            'fields': ['homepage', 'bugreports', 'description'],
+            'fields': ['homepage', 'bugreports', 'description', 'supported_platforms'],
             'classes': ['collapse'],
         }),
     ]
@@ -53,3 +53,9 @@ class ReportAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Report, ReportAdmin)
+
+
+class PlatformAdmin(admin.ModelAdmin):
+    fieldsets = [('Platform', {'fields': ['platform']})]
+
+admin.site.register(models.Platform, PlatformAdmin)

@@ -70,6 +70,14 @@ def save_dap_to_db(f, dap, user):
     for dependency in dap.meta['dependencies']:
         dependency = dependency.replace(' ', '')  # remove spaces to make this canonical
         d.dependency_set.create(dependency=dependency)
+    for platform in dap.meta['supported_platforms']:
+        try:
+            p = models.Platform.objects.get(platform=platform)
+        except models.Platform.DoesNotExist:
+            p = models.Platform(platform=platform)
+            p.save()
+        p.dap_set.add(d)
+        p.save()
     m.latest = d
     if not d.is_pre():
         m.latest_stable = d
