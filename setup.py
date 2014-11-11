@@ -27,6 +27,6 @@ setup(
         'Markdown==2.4 ',
     ],
     dependency_links = [
-        'git+git://github.com/devassistant/devassistant.git@0f112c8#egg=devassistant-0.10.0a1',
+        'git+git://github.com/hroncok/devassistant.git@cffa517#egg=devassistant-0.10.0a1',
     ]
 )
