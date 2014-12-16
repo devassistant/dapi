@@ -6,6 +6,8 @@
 </div>
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
+  <p><strong>Don't have a clue what to upload?</strong> <a href="http://docs.devassistant.org/en/latest/developer_documentation/create_assistant/packaging_and_distributing.html">The documentation</a> will solve that.</p>
+
   <p>By submitting this form, you agree to <a href="{% url 'dapi.views.terms' %}">the Terms of Use</a>. This is a summary of (and not a substitute for) the requirements contained in the Terms of Use:</p>
 
   <p>Do not upload:</p>
