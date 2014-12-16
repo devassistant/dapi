@@ -4,6 +4,9 @@ from django.contrib.auth import models as auth_models
 from django.forms import util as formsutil
 from django import forms
 from django.utils import safestring
+from django.utils.safestring import mark_safe
+from django.template.defaultfilters import filesizeformat
+from django.conf import settings
 from social.apps.django_app.default import models as social_models
 
 
@@ -51,6 +54,17 @@ class BootstrapModelForm(forms.ModelForm):
 
 class UploadDapForm(BootstrapForm):
     file = forms.FileField(label='')
+
+    def clean_file(self):
+        file = self.cleaned_data['file']
+        if file and file._size > int(settings.MAX_UPLOAD_SIZE):
+            raise forms.ValidationError(mark_safe(
+                u'Please keep filesize under {limit}. Current filesize is {current}. '
+                u'In case you really have a dap that\'s bigger than {limit}, please '
+                u'<a href="https://github.com/devassistant/dapi/issues/23">let us know</a>.'
+                .format(limit=filesizeformat(settings.MAX_UPLOAD_SIZE),
+                        current=filesizeformat(file._size))))
+        return file
 
 
 class UserForm(BootstrapModelForm):

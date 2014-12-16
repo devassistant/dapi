@@ -91,6 +91,18 @@ MEDIA_URL = SITE_URL + '/download/'
 # We have to write all uploaded files to disk, so we can test them with daplint right away
 FILE_UPLOAD_MAX_MEMORY_SIZE = 0
 
+# Limit file upload size
+# See http://stackoverflow.com/a/2472426/1839451
+# 2.5MB - 2621440
+# 5MB - 5242880
+# 10MB - 10485760
+# 20MB - 20971520
+# 50MB - 5242880
+# 100MB 104857600
+# 250MB - 214958080
+# 500MB - 429916160
+MAX_UPLOAD_SIZE = "5242880"
+
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
