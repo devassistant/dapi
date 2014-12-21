@@ -292,6 +292,12 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
 }
 
+# How many daps are listed in one column on front page
+FRONT_COUNT = 10
+
+# How many daps per page on paginated lists
+LIST_COUNT = 20
+
 GRAVATAR_DEFAULT_IMAGE = 'identicon'
 
 if ON_OPENSHIFT:

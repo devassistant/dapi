@@ -22,6 +22,7 @@ urlpatterns = patterns(
     url(r'^login/$', 'login'),
     url(r'^terms/$', 'terms'),
     url(r'^logout/$', 'logout'),
+    url(r'^all/$', 'all'),
     url(r'^tag/(?P<tag>[^/]+)/$', 'tag'),
 )
 

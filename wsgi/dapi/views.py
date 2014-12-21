@@ -27,21 +27,35 @@ def index(request):
             '-null_rank',
             '-average_rank',
             '-rank_count',
-    )[:10]
+    )[:settings.FRONT_COUNT]
     most_rated = models.MetaDap.objects.filter(active=True).order_by(
         '-rank_count',
         '-average_rank',
-    )[:10]
-    recent = models.MetaDap.objects.filter(active=True).order_by('-pk')[:10]
+    )[:settings.FRONT_COUNT]
+    recent = models.MetaDap.objects.filter(active=True).order_by('-pk')[:settings.FRONT_COUNT]
     tags = taggit_models.Tag.objects.annotate(
         num_times=Count('taggit_taggeditem_items')
-    ).exclude(num_times=0).order_by('-num_times')[:10]
+    ).exclude(num_times=0).order_by('-num_times')[:settings.FRONT_COUNT]
     return render(request, 'dapi/index.html', {
         'top_rated': top_rated,
         'most_rated': most_rated,
         'recent': recent,
         'tags': tags
     })
+
+
+def all(request):
+    '''Lists all daps'''
+    all_daps = models.MetaDap.objects.filter(active=True).order_by('package_name')
+    paginator = Paginator(all_daps, settings.LIST_COUNT)
+    page = request.GET.get('page')
+    try:
+        daps_list = paginator.page(page)
+    except PageNotAnInteger:
+        daps_list = paginator.page(1)
+    except EmptyPage:
+        daps_list = paginator.page(paginator.num_pages)
+    return render(request, 'dapi/daps.html', {'daps_list': daps_list})
 
 
 def tag(request, tag):
@@ -51,7 +65,7 @@ def tag(request, tag):
         tags__slug__in=[tag],
         active=True,
     ).order_by('-average_rank', '-rank_count')
-    paginator = Paginator(all_tagged_daps, 10)
+    paginator = Paginator(all_tagged_daps, settings.LIST_COUNT)
     page = request.GET.get('page')
     try:
         daps_list = paginator.page(page)
@@ -59,7 +73,7 @@ def tag(request, tag):
         daps_list = paginator.page(1)
     except EmptyPage:
         daps_list = paginator.page(paginator.num_pages)
-    return render(request, 'dapi/tag.html', {'daps_list': daps_list, 'tag': t})
+    return render(request, 'dapi/daps.html', {'daps_list': daps_list, 'tag': t})
 
 
 @login_required
