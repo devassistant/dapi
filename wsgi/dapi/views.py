@@ -4,7 +4,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import models as auth_models
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import EmptyPage, InvalidPage
 from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http import HttpResponseRedirect, Http404
@@ -18,6 +18,7 @@ from dapi import forms
 from dapi import logic
 from dapi import models
 from dapi import serializers
+from dapi.name_paginator import NamePaginator
 
 
 def index(request):
@@ -47,11 +48,14 @@ def index(request):
 def all(request):
     '''Lists all daps'''
     all_daps = models.MetaDap.objects.filter(active=True).order_by('package_name')
-    paginator = Paginator(all_daps, settings.LIST_COUNT)
-    page = request.GET.get('page')
+    paginator = NamePaginator(all_daps, on='package_name', per_page=settings.LIST_COUNT)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
     try:
         daps_list = paginator.page(page)
-    except PageNotAnInteger:
+    except InvalidPage:
         daps_list = paginator.page(1)
     except EmptyPage:
         daps_list = paginator.page(paginator.num_pages)
@@ -65,11 +69,14 @@ def tag(request, tag):
         tags__slug__in=[tag],
         active=True,
     ).order_by('-average_rank', '-rank_count')
-    paginator = Paginator(all_tagged_daps, settings.LIST_COUNT)
-    page = request.GET.get('page')
+    paginator = NamePaginator(all_tagged_daps, on='package_name', per_page=settings.LIST_COUNT)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
     try:
         daps_list = paginator.page(page)
-    except PageNotAnInteger:
+    except InvalidPage:
         daps_list = paginator.page(1)
     except EmptyPage:
         daps_list = paginator.page(paginator.num_pages)
