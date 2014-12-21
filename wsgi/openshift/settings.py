@@ -296,7 +296,7 @@ REST_FRAMEWORK = {
 FRONT_COUNT = 10
 
 # How many daps per page on paginated lists
-LIST_COUNT = 20
+LIST_COUNT = 15
 
 GRAVATAR_DEFAULT_IMAGE = 'identicon'
 
