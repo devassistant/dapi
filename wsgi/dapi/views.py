@@ -14,6 +14,7 @@ from haystack import forms as haystack_forms
 from haystack import query as haystack_query
 from rest_framework import viewsets, permissions, mixins, views
 from rest_framework import parsers, authentication, permissions, response
+from rest_framework.authtoken.models import Token
 from taggit import models as taggit_models
 from dapi import forms
 from dapi import logic
@@ -401,6 +402,11 @@ def user(request, user):
     u = get_object_or_404(auth_models.User, username=user)
     return render(request, 'dapi/user.html', {'u': u})
 
+@login_required
+def regenerate_token(request):
+    Token.objects.get(user=request.user).delete()
+    Token.objects.create(user=request.user)
+    return HttpResponseRedirect(reverse('dapi.views.user', args=(request.user, )))
 
 @login_required
 def user_edit(request, user):

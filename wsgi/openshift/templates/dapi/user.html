@@ -68,4 +68,7 @@
   </div>
 
 </div>
+{% if user == u %}
+<p class="text-center"><strong>Your API token:</strong> {{ user.auth_token }} (<a href="{% url 'dapi.views.regenerate_token' %}">regenerate</a>)</p>
+{% endif %}
 {% endblock %}

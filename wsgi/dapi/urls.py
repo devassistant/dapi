@@ -23,6 +23,7 @@ urlpatterns = patterns(
     url(r'^terms/$', 'terms'),
     url(r'^logout/$', 'logout'),
     url(r'^all/$', 'all'),
+    url(r'^regenerate_token/$', 'regenerate_token'),
     url(r'^tag/(?P<tag>[^/]+)/$', 'tag'),
 )
 
