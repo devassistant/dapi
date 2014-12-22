@@ -69,6 +69,17 @@
 
 </div>
 {% if user == u %}
-<p class="text-center"><strong>Your API token:</strong> {{ user.auth_token }} (<a href="{% url 'dapi.views.regenerate_token' %}">regenerate</a>)</p>
+<p class="text-center"><strong>Your API token:</strong> <span id="apitoken">click me</span></p>
 {% endif %}
 {% endblock %}
+
+{% if user == u %}
+{% block scripts %}
+<script>
+$('#apitoken').click(function(){
+    var $this = $(this);
+    $this.html('{{ user.auth_token }} (<a href="{% url 'dapi.views.regenerate_token' %}">regenerate</a>)');
+});
+</script>
+{% endblock %}
+{% endif %}
