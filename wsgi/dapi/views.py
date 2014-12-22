@@ -12,7 +12,8 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from haystack import forms as haystack_forms
 from haystack import query as haystack_query
-from rest_framework import viewsets, permissions, mixins
+from rest_framework import viewsets, permissions, mixins, views
+from rest_framework import parsers, authentication, permissions, response
 from taggit import models as taggit_models
 from dapi import forms
 from dapi import logic
@@ -530,3 +531,33 @@ class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             form = haystack_forms.ModelSearchForm(searchqueryset=None, load_all=True)
 
         return results
+
+
+class UploadViewSet(viewsets.ViewSet):
+    '''API endpoint to upload a dap file. Get your token in your profile.
+    Send your token in the header as follows:
+
+    ```Authorization: Token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
+
+    Example curl command:
+
+    ```curl /api/upload/ -H "Authorization: Token ..."
+    --form "file=@foo-1.0.dap"```'''
+
+    parser_classes = (parsers.MultiPartParser,)
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        form = forms.UploadDapForm(request.POST, request.FILES)
+        if form.is_valid():
+            errors, dname = logic.handle_uploaded_dap(request.FILES['file'], request.user)
+            if not errors:
+                return response.Response({'uploaded': dname})
+        else:
+            errors = form.errors['file'].as_text().split('\n')
+            errors = map(lambda e: e[2:], errors)  # All the errors start with '* '
+        return response.Response(
+            {'file errors': errors},
+            status=404,
+        )

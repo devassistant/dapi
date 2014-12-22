@@ -10,6 +10,7 @@ router.register(r'users', views.UserViewSet)
 router.register(r'metadaps', views.MetaDapViewSet)
 router.register(r'daps', views.DapViewSet)
 router.register(r'search', views.SearchViewSet, base_name='search')
+router.register(r'upload', views.UploadViewSet, base_name='upload')
 
 urlpatterns = patterns(
     '',
