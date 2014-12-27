@@ -16,6 +16,7 @@ if 'OPENSHIFT_REPO_DIR' in os.environ:
 
     # On staging, we have a file created with URL
     # It's dirty trick and should be replaced some day
+    # Might be used for the mirror as well
     try:
         with open(os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'url')) as f:
             SITE_URL = f.read().rstrip()
@@ -62,7 +63,12 @@ else:
         }
     }
 
-ALLOWED_HOSTS = ['dapi.devassistant.org', 'dapi-devassistant.rhcloud.com', 'staging-devassistant.rhcloud.com']
+ALLOWED_HOSTS = [
+    'dapi.devassistant.org',
+    'dapi-devassistant.rhcloud.com',
+    'staging-devassistant.rhcloud.com',
+    'mirror-devassistant.rhcloud.com',
+]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
