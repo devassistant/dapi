@@ -14,6 +14,14 @@ if 'OPENSHIFT_REPO_DIR' in os.environ:
     WHOOSH_INDEX = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], WHOOSH_INDEX)
     SITE_URL = 'https://dapi.devassistant.org'
 
+    # On staging, we have a file created with URL
+    # It's dirty trick and should be replaced some day
+    try:
+        with open(os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'url')) as f:
+            SITE_URL = f.read().rstrip()
+    except Exception:
+        pass
+
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 if ON_OPENSHIFT:
     DEBUG = bool(os.environ.get('DEBUG', False))
