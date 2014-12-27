@@ -10,6 +10,7 @@ from django.db.models import signals
 from django.dispatch import receiver
 from social.apps.django_app.default import models as social_models
 from taggit import managers as taggit_managers
+from rest_framework.authtoken.models import Token
 from django.conf import settings
 import os
 
@@ -350,3 +351,9 @@ def user_pre_delete_handler(sender, **kwargs):
     for report in user.report_set.all():
         report.email = user.email
         report.save()
+
+@receiver(signals.post_save, sender=auth_models.User)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    '''When an user is created, assign a token to him/her'''
+    if created:
+        Token.objects.create(user=instance)

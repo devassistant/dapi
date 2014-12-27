@@ -194,6 +194,7 @@ INSTALLED_APPS = (
     'captcha',
     'haystack',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_gravatar',
     'dapi',
 )
@@ -296,6 +297,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.UnicodeYAMLRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'PAGINATE_BY': 10,
 }
