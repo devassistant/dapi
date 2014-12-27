@@ -73,6 +73,7 @@
         </div>
       </nav>
 
+      {{ type_box }}
       {% load alerts %}
       {% for message in messages %}
       <div class="alert alert-{{ message.tags|alerts }}">
@@ -80,7 +81,6 @@
         {{ message }}
       </div>
       {% endfor %}
-      
       {% block content %}{% endblock %}
       <hr />
       <div id="footer"><p class="text-muted credit">&copy; {% now 'Y' %} <a href="http://www.redhat.com/">Red Hat Inc.</a> <a href="https://github.com/devassistant/dapi">Code</a> is <a href="http://www.gnu.org/licenses/agpl-3.0.html" title="GNU Affero General Public License (Version 3)">AGPLv3</a>, content is <a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 International">CC BY-SA</a>. Does not apply for content uploaded by users. <a href="{% url 'dapi.views.terms' %}">Terms of Use</a>.</p></div>
