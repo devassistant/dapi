@@ -22,7 +22,7 @@ cd wsgi/
 python manage.py syncdb --noinput
 python manage.py migrate
 python manage.py schemamigration dapi --initial
-python manage.py migrate dapi --fake
+python manage.py migrate dapi
 mkdir upload
 echo GITHUB-API-ID > github # see section Github tokens
 echo GITHUB-API-SECRET >> github
@@ -70,7 +70,7 @@ cd app-root/repo/wsgi/
 python manage.py syncdb --noinput
 python manage.py migrate
 python manage.py schemamigration dapi --initial
-python manage.py migrate dapi --fake
+python manage.py migrate dapi
 cp -r dapi/migrations ${OPENSHIFT_DATA_DIR}
 mkdir ${OPENSHIFT_DATA_DIR}upload
 echo GITHUB-API-ID > ${OPENSHIFT_DATA_DIR}github # see section Github tokens
