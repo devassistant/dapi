@@ -205,11 +205,16 @@ INSTALLED_APPS = (
     'dapi',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'social.backends.fedora.FedoraOpenId',
-    'social.backends.github.GithubOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+if not SITE_URL.startswith('https://mirror'):
+    AUTHENTICATION_BACKENDS = (
+        'social.backends.fedora.FedoraOpenId',
+        'social.backends.github.GithubOAuth2',
+        'django.contrib.auth.backends.ModelBackend',
+    )
+else:
+    AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.backends',
