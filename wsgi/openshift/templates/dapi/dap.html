@@ -25,8 +25,23 @@
 {% if reports %}
 <div class="alert alert-warning">Warning, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report{{ reports.count|pluralize }}</a>!</div>
 {% endif %}
+{% if not dap.has_assistants %}
+<div class="alert alert-warning">Warning, this dap contains no assistants! It might be useful only as a dependency.</div>
+{% endif %}
 
 {% if dap.description %}{{ dap.description|markdown }}{% endif %}
+
+{% if dap.assistant_set.exists %}
+<hr />
+<p>Following assistants or snippets are contained in this dap:</p>
+<ul>
+  {% for assistant in dap.assistant_set.all|dictsort:"assistant" %}
+  <li>{{ assistant }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<hr />
 
 {% if metadap.tags.exists %}
 <div class="row">
