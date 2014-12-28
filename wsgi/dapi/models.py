@@ -111,6 +111,7 @@ class Dap(models.Model):
     sha256sum = models.CharField(max_length=64)
     supported_platforms = models.ManyToManyField('Platform', null=True, blank=True,
                                                  default=None, related_name='dap_set')
+    has_assistants = models.BooleanField(default=True)
 
     def __unicode__(self):
         '''Returns dap's name followed by a dash and version'''
@@ -183,6 +184,17 @@ class Author(models.Model):
     def __unicode__(self):
         '''Returns name and e-mail address (value of author field)'''
         return self.author
+
+
+class Assistant(models.Model):
+    '''Assistant or snippet contained in a dap.
+    It allows to associate more assistants to one dap.'''
+    dap = models.ForeignKey(Dap)
+    assistant = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        '''Returns the assistant pseudo path'''
+        return self.assistant
 
 
 class Dependency(models.Model):

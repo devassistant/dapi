@@ -21,6 +21,11 @@ class AuthorInline(admin.StackedInline):
     extra = 1
 
 
+class AssistantInline(admin.StackedInline):
+    model = models.Assistant
+    extra = 1
+
+
 class DependencyInline(admin.StackedInline):
     model = models.Dependency
     extra = 1
@@ -28,13 +33,13 @@ class DependencyInline(admin.StackedInline):
 
 class DapAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Mandatory', {'fields': ['metadap', 'version', 'file', 'sha256sum', 'license', 'summary']}),
+        ('Mandatory', {'fields': ['metadap', 'version', 'file', 'sha256sum', 'license', 'summary', 'has_assistants']}),
         ('Optional', {
             'fields': ['homepage', 'bugreports', 'description', 'supported_platforms'],
             'classes': ['collapse'],
         }),
     ]
-    inlines = [AuthorInline, DependencyInline]
+    inlines = [AuthorInline, AssistantInline, DependencyInline]
 
 
 admin.site.register(models.Dap, DapAdmin)

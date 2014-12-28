@@ -70,6 +70,12 @@ def save_dap_to_db(f, dap, user):
     for dependency in dap.meta['dependencies']:
         dependency = dependency.replace(' ', '')  # remove spaces to make this canonical
         d.dependency_set.create(dependency=dependency)
+    d.has_assistants = False
+    for assistant in dap.list_assistants():
+        d.assistant_set.create(assistant=assistant)
+        if assistant.startswith('assistants/'):
+            d.has_assistants = True
+    d.save()
     for platform in dap.meta['supported_platforms']:
         try:
             p = models.Platform.objects.get(platform=platform)
