@@ -156,6 +156,10 @@ class Dap(models.Model):
             return settings.SITE_URL + link
         return link
 
+    def get_assistants(self):
+        '''Gets assistants as a list of strings'''
+        return [assistant.assistant for assistant in self.assistant_set.all()]
+
     @classmethod
     def generate_dependencies_metafile(cls):
         '''Generates the file that lists the dependencies'''

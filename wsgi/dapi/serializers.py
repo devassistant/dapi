@@ -122,6 +122,7 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
         view_name='metadap-detail',
         lookup_field='package_name')
     human_link = serializers.Field(source='get_human_link')
+    assistants = serializers.Field(source='get_assistants')
 
     class Meta:
         model = models.Dap
@@ -147,6 +148,8 @@ class DapSerializer(serializers.HyperlinkedModelSerializer):
             'sha256sum',
             'dependencies',
             'supported_platforms',
+            'has_assistants',
+            'assistants',
         )
 
 
