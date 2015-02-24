@@ -8,3 +8,5 @@ RewriteRule ^application/api/meta.txt$ /static/download/meta.txt [L]
 
 RewriteCond %{HTTP:X-Forwarded-Proto} !https 
 RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
+Header set Strict-Transport-Security "max-age=15768000"
