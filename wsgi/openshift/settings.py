@@ -333,3 +333,8 @@ else:
         'taggit': 'taggit.south_migrations',
         'dapi': 'dapi.migrations',
     }
+
+# Make cookies only available via HTTPS
+if ON_OPENSHIFT:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
