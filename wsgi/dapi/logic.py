@@ -5,11 +5,15 @@ from devassistant import dapi
 from devassistant.dapi import dapver
 import logging
 import os
+import platform
 try:
     import cStringIO as sio
 except ImportError:
     import io as sio
 
+
+# TODO: Load this info from DevAssistant
+PLATFORMS = [x.lower() for x in platform._supported_dists] + ['darwin', 'arch', 'mageia', 'ubuntu']
 
 def handle_uploaded_dap(f, user):
     '''Check uploaded file for validity and save it to the DB if it's OK.

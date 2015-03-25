@@ -1,5 +1,6 @@
 from captcha import fields as captcha_fields
 from dapi import models
+from dapi.logic import PLATFORMS
 from django.contrib.auth import models as auth_models
 from django.forms import util as formsutil
 from django import forms
@@ -8,6 +9,7 @@ from django.utils.safestring import mark_safe
 from django.template.defaultfilters import filesizeformat
 from django.conf import settings
 from social.apps.django_app.default import models as social_models
+from haystack.forms import SearchForm
 
 
 VERIFY_HELP_TEXT = 'Enter the {what} of this dap to verify the {why}'
@@ -199,3 +201,44 @@ class ReportAnonymousForm(ReportForm):
         help_texts = ReportForm.Meta.help_texts
         help_texts['email'] = 'Optional. So we can inform you about the solution. ' \
             'We don\'t send spam or sell e-mail addresses.'
+
+
+class MetaDapSearchForm(SearchForm):
+    noassistants = forms.BooleanField(required=False, label='Include daps without assistants')
+    unstable = forms.BooleanField(required=False, label='Include daps without stable release')
+    notactive = forms.BooleanField(required=False, label='Include deactivated daps')
+    platform = forms.ChoiceField(required=False, choices=[('', '*')] + [(p, p) for p in PLATFORMS],
+                                 label='Supported on specific platform')
+
+    def __init__(self, *args, **kwargs):
+        super(MetaDapSearchForm, self).__init__(*args, **kwargs)
+
+        self.fields['q'].label = 'Search query'
+
+        for key in self.fields.keys():
+            self.fields[key].widget.attrs['data-size'] = 'mini'
+
+        self.fields['q'].widget.attrs['class'] = 'form-control'
+        self.fields['q'].widget.attrs['placeholder'] = 'Search for something...'
+
+        self.error_class = DivErrorList
+
+    def search(self):
+        # First, store the SearchQuerySet received from other processing.
+        sqs = super(MetaDapSearchForm, self).search()
+
+        if not self.is_valid():
+            return self.no_query_found()
+
+        # This is how it is possible to filter the query
+        # Only fields defined in search_indexes.MetaDapIndex are available for filtering by
+        if not self.cleaned_data['notactive']:
+            sqs = sqs.filter(active=True)
+        if not self.cleaned_data['unstable']:
+            sqs = sqs.filter(has_stable=True)
+        if not self.cleaned_data['noassistants']:
+            sqs = sqs.filter(has_assistants=True)
+        if self.cleaned_data['platform']:
+            sqs = sqs.filter(supported_platforms__contains=self.cleaned_data['platform'])
+
+        return sqs

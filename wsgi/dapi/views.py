@@ -12,6 +12,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from haystack import forms as haystack_forms
 from haystack import query as haystack_query
+from haystack.views import SearchView
 from rest_framework import viewsets, permissions, mixins, views
 from rest_framework import parsers, authentication, permissions, response
 from rest_framework.authtoken.models import Token
@@ -471,6 +472,13 @@ def logout(request):
 def terms(request):
     '''Terms and conditions'''
     return render(request, 'dapi/terms.html')
+
+
+class ExtraContextSearchView(SearchView):
+    def extra_context(self):
+        extra = super(ExtraContextSearchView, self).extra_context()
+        extra['form'] = self.form
+        return extra
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
