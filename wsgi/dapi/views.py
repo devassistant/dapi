@@ -1,3 +1,4 @@
+import urllib
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
@@ -478,6 +479,9 @@ class ExtraContextSearchView(SearchView):
     def extra_context(self):
         extra = super(ExtraContextSearchView, self).extra_context()
         extra['form'] = self.form
+        urldata = self.form.cleaned_data
+        urldata = dict((k, 'on' if v == True else v) for k, v in urldata.iteritems() if v)
+        extra['url'] = urllib.urlencode(urldata)
         return extra
 
 

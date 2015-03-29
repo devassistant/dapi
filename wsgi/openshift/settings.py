@@ -321,6 +321,7 @@ FRONT_COUNT = 10
 
 # How many daps per page on paginated lists
 LIST_COUNT = 15
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = LIST_COUNT
 
 GRAVATAR_DEFAULT_IMAGE = 'identicon'
 
