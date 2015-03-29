@@ -479,9 +479,12 @@ class ExtraContextSearchView(SearchView):
     def extra_context(self):
         extra = super(ExtraContextSearchView, self).extra_context()
         extra['form'] = self.form
-        urldata = self.form.cleaned_data
-        urldata = dict((k, 'on' if v == True else v) for k, v in urldata.iteritems() if v)
-        extra['url'] = urllib.urlencode(urldata)
+        try:
+            urldata = self.form.cleaned_data
+            urldata = dict((k, 'on' if v == True else v) for k, v in urldata.iteritems() if v)
+            extra['url'] = urllib.urlencode(urldata)
+        except AttributeError:
+            extra['url'] = ''
         return extra
 
 
