@@ -209,6 +209,8 @@ class MetaDapSearchForm(SearchForm):
     notactive = forms.BooleanField(required=False, label='Include deactivated daps')
     platform = forms.ChoiceField(required=False, choices=[('', '*')] + [(p, p) for p in PLATFORMS],
                                  label='Supported on specific platform')
+    minimal_rank = forms.DecimalField(required=False, label='Minimal average rank')
+    minimal_rank_count = forms.DecimalField(required=False, label='Minimal rank count')
 
     def __init__(self, *args, **kwargs):
         super(MetaDapSearchForm, self).__init__(*args, **kwargs)
@@ -217,8 +219,8 @@ class MetaDapSearchForm(SearchForm):
 
         for key in self.fields.keys():
             self.fields[key].widget.attrs['data-size'] = 'mini'
+            self.fields[key].widget.attrs['class'] = 'form-control'
 
-        self.fields['q'].widget.attrs['class'] = 'form-control'
         self.fields['q'].widget.attrs['placeholder'] = 'Search for something...'
 
         self.error_class = DivErrorList
@@ -240,5 +242,9 @@ class MetaDapSearchForm(SearchForm):
             sqs = sqs.filter(has_assistants=True)
         if self.cleaned_data['platform']:
             sqs = sqs.filter(supported_platforms__contains=self.cleaned_data['platform'])
+        if self.cleaned_data['minimal_rank']:
+            sqs = sqs.filter(average_rank__gte=self.cleaned_data['minimal_rank'])
+        if self.cleaned_data['minimal_rank_count']:
+            sqs = sqs.filter(rank_count__gte=self.cleaned_data['minimal_rank_count'])
 
         return sqs

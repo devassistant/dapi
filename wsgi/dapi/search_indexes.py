@@ -10,6 +10,8 @@ class MetaDapIndex(indexes.SearchIndex, indexes.Indexable):
     has_assistants = indexes.BooleanField()
     has_stable = indexes.BooleanField()
     supported_platforms = indexes.MultiValueField()
+    average_rank = indexes.FloatField(model_attr='average_rank', default=0.0)
+    rank_count = indexes.IntegerField(model_attr='rank_count', default=0)
     # When adding new fields, do not forget to rebuild index by ./manage.py rebuild_index
 
     def get_model(self):
