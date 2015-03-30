@@ -11,7 +11,6 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
-from haystack import forms as haystack_forms
 from haystack import query as haystack_query
 from haystack.views import SearchView
 from rest_framework import viewsets, permissions, mixins, views
@@ -532,7 +531,20 @@ class DapViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    '''API endpoint that allows to search for a metadap. Just add **?q=_query_** to the URL.'''
+    '''API endpoint that allows to search for a metadap. Just add **?q=_query_** to the URL.
+
+    To extend the search, you can use:
+
+     * **noassistants=on** to include daps without assistants
+     * **unstable=on** to include daps without stable release
+     * **notactive=on** to include deactivated daps
+
+    To narrow the results down, you can use:
+
+     * **platform=_platform_** to search only daps supported on given _platform_ (e.g. fedora)
+     * **minimal_rank=_F_** to search only daps that have average rank greater or equal to _F_
+     * **minimal_rank_count=_N_** to search only daps that were ranked at lest _N_ times
+    '''
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.SearchResultSerializer
 
@@ -542,14 +554,14 @@ class SearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         results = haystack_query.EmptySearchQuerySet()
 
         if request.GET.get('q'):
-            form = haystack_forms.ModelSearchForm(request.QUERY_PARAMS,
+            form = forms.MetaDapSearchForm(request.QUERY_PARAMS,
                                                   searchqueryset=None, load_all=True)
 
             if form.is_valid():
                 query = form.cleaned_data['q']
                 results = form.search()
         else:
-            form = haystack_forms.ModelSearchForm(searchqueryset=None, load_all=True)
+            form = forms.MetaDapSearchForm(searchqueryset=None, load_all=True)
 
         return results
 
