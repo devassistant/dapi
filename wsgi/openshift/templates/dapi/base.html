@@ -41,6 +41,7 @@
                 <li><a href="//devassistant.org/" target="_blank">DevAssistant Homepage</a></li>
               </ul>
             </li>
+            {% if request.get_full_path|slice:":5" != '/api/' %}
             <li class="dropdown">
             {% if user.is_authenticated %}
               {% load gravatar %}
@@ -59,6 +60,7 @@
               </ul>
             {% endif %}
             </li>
+            {% endif %}
           </ul>
           <div class="col-sm-3 col-md-3 pull-right">
             <form class="navbar-form" role="search" method="get" action="/search">
