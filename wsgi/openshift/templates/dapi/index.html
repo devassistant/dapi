@@ -3,10 +3,10 @@
 {% load gravatar %}
 {% block content %}
 <div class="jumbotron">
-  <p class="text-center">Dapi is the place to find and share custom assistants for <a href="http://devassistant.org/">DevAssistant</a>.</p>
+  <p class="text-center">DAPI is the place to find and share custom Assistants for <a href="http://devassistant.org/">DevAssistant</a>.</p>
   <form role="search" method="get" action="/search">
     <div class="input-group">
-    <input type="text" class="form-control" placeholder="Try to search for some assistants" name="q">
+    <input type="text" class="form-control" placeholder="Try to search for some Assistants" name="q">
     <div class="input-group-btn">
       <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
     </div>
@@ -18,7 +18,7 @@
 {% if top_rated %}
   <div class="container col-sm-3">
     <div class="panel panel-default">
-      <div class="panel-heading">Top rated daps <span class="glyphicon glyphicon-star pull-right"></span></div>
+      <div class="panel-heading">Top rated DAPs <span class="glyphicon glyphicon-star pull-right"></span></div>
       <ul class="list-group">
       {% for dap in top_rated %}
         <li class="list-group-item">
@@ -34,7 +34,7 @@
 {% if most_rated %}
   <div class="container col-sm-3">
     <div class="panel panel-default">
-      <div class="panel-heading">Most rated daps <span class="glyphicon glyphicon-user pull-right"></span></div>
+      <div class="panel-heading">Most rated DAPs <span class="glyphicon glyphicon-user pull-right"></span></div>
       <ul class="list-group">
       {% for dap in most_rated %}
         <li class="list-group-item">
@@ -50,7 +50,7 @@
 {% if recent %}
   <div class="container col-sm-3">
     <div class="panel panel-default">
-      <div class="panel-heading">Recent daps <span class="glyphicon glyphicon-time pull-right"></span></div>
+      <div class="panel-heading">Recent DAPs <span class="glyphicon glyphicon-time pull-right"></span></div>
       <ul class="list-group">
       {% for dap in recent %}
         <li class="list-group-item">
@@ -82,7 +82,7 @@
 </div>
 
 <div class="text-center">
-  <a href="{% url 'dapi.views.all' %}" class="btn btn-primary btn-lg">Browse all daps...</a>
+  <a href="{% url 'dapi.views.all' %}" class="btn btn-primary btn-lg">Browse all DAPs...</a>
 </div>
 
 {% endblock %}

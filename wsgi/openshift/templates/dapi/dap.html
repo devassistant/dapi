@@ -10,7 +10,7 @@
 </div>
 
 {% if not metadap.active %}
-<div class="alert alert-warning">Warning, this dap is not active. Consider it as deleted.</div>
+<div class="alert alert-warning">Warning, this DAP is not active. Consider it as deleted.</div>
 {% endif %}
 {% if dap.is_pre %}
 <div class="alert alert-warning">Warning, this is a prerelease!</div>
@@ -23,17 +23,17 @@
 {% endif %}
 {% endif %}
 {% if reports %}
-<div class="alert alert-warning">Warning, this dap has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report{{ reports.count|pluralize }}</a>!</div>
+<div class="alert alert-warning">Warning, this DAP has <a href="{% url 'dapi.views.dap_reports' metadap.package_name %}">{{ reports.count }} unconfirmed report{{ reports.count|pluralize }}</a>!</div>
 {% endif %}
 {% if not dap.has_assistants %}
-<div class="alert alert-warning">Warning, this dap contains no assistants! It might be useful only as a dependency.</div>
+<div class="alert alert-warning">Warning, this DAP contains no Assistants! It might be useful only as a dependency.</div>
 {% endif %}
 
 {% if dap.description %}{{ dap.description|markdown }}{% endif %}
 
 {% if dap.assistant_set.exists %}
 <hr />
-<p>Following assistants or snippets are contained in this dap:</p>
+<p>Following Assistants or Snippets are contained in this DAP:</p>
 <ul>
   {% for assistant in dap.assistant_set.all|dictsort:"assistant" %}
   <li>{{ assistant }}</li>

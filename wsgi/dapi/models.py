@@ -16,7 +16,7 @@ import os
 
 
 class MetaDap(models.Model):
-    '''Model represents a dap in no version.
+    '''Model represents a DAP in no version.
     It holds the (meta)data related to all versions'''
     package_name = models.CharField(max_length=200, unique=True)
     user = models.ForeignKey(auth_models.User)
@@ -45,7 +45,7 @@ class MetaDap(models.Model):
         return sorted([dap.version for dap in self.dap_set.all()], cmp=dapver.compare, reverse=True)
 
     def _get_latest(self):
-        '''Returns the dap with the latest version (if any).
+        '''Returns the Dap with the latest version (if any).
         The latest attribute should be used to obtain this value from DB.'''
         versions = self.sorted_versions()
         if not versions:
@@ -53,7 +53,7 @@ class MetaDap(models.Model):
         return Dap.objects.get(metadap=self, version=versions[0])
 
     def _get_latest_stable(self):
-        '''Returns the dap with the latest stable version (if any).
+        '''Returns the Dap with the latest stable version (if any).
         The latest_stable attribute should be used to obtain this value from DB.'''
         versions = self.sorted_versions()
         for version in versions:
@@ -62,17 +62,17 @@ class MetaDap(models.Model):
         return None
 
     def similar_active_daps(self):
-        '''Returns active daps with similar tags'''
+        '''Returns active MetaDaps with similar tags'''
         return [dap for dap in self.tags.similar_objects() if dap.active]
 
     def similar_active_daps_api(self):
-        '''Dirty trick to return API links of similar daps'''
+        '''Dirty trick to return API links of similar MetaDaps'''
         return [settings.SITE_URL +
                 urlresolvers.reverse('metadap-detail', args=(dap.package_name, ))
                 for dap in self.similar_active_daps()]
 
     def _get_average_rank(self):
-        '''Calculates the average rank of the dap.
+        '''Calculates the average rank of the MetaDap.
         The average_rank attribute should be used to obtain this value from DB.'''
         total = 0
         for rank in self.rank_set.all():
@@ -82,7 +82,7 @@ class MetaDap(models.Model):
         return total / self.rank_set.count()
 
     def _get_rank_count(self):
-        '''Gets the count of ranks of the dap.
+        '''Gets the count of ranks of the MetaDap.
         The rank_count attribute should be used to obtain this value from DB.'''
         return self.rank_set.count()
 
@@ -91,7 +91,7 @@ class MetaDap(models.Model):
         return self.report_set.filter(solved=False).count()
 
     def get_human_link(self, absolute=True):
-        '''Gets the link to website, where the latest dap lives'''
+        '''Gets the link to website, where the latest MetaDap lives'''
         link = urlresolvers.reverse('dapi.views.dap', args=(self.package_name, ))
         if absolute:
             return settings.SITE_URL + link
@@ -99,7 +99,7 @@ class MetaDap(models.Model):
 
 
 class Dap(models.Model):
-    '''Model representing a specific version of a dap (of MetaDap instance)'''
+    '''Model representing a specific version of a DAP (of MetaDap instance)'''
     file = models.FileField(upload_to=lambda instance, filename: filename)
     metadap = models.ForeignKey(MetaDap)
     version = models.CharField(max_length=200)
@@ -114,7 +114,7 @@ class Dap(models.Model):
     has_assistants = models.BooleanField(default=True)
 
     def __unicode__(self):
-        '''Returns dap's name followed by a dash and version'''
+        '''Returns Dap's name followed by a dash and version'''
         return self.metadap.package_name + '-' + self.version
 
     def is_pre(self):
@@ -149,7 +149,7 @@ class Dap(models.Model):
             return self.bugreports
 
     def get_human_link(self, absolute=True):
-        '''Gets the link to website, where this dap lives'''
+        '''Gets the link to website, where this Dap lives'''
         link = urlresolvers.reverse('dapi.views.dap_version',
                                     args=(self.metadap.package_name, self.version))
         if absolute:
@@ -157,7 +157,7 @@ class Dap(models.Model):
         return link
 
     def get_assistants(self):
-        '''Gets assistants as a list of strings'''
+        '''Gets Assistants as a list of strings'''
         return [assistant.assistant for assistant in self.assistant_set.all()]
 
     @classmethod
@@ -179,8 +179,8 @@ class Dap(models.Model):
 
 
 class Author(models.Model):
-    '''Author field of dap's metadata.
-    It allows to associate more authors to one dap.
+    '''Author field of Dap's metadata.
+    It allows to associate more authors to one Dap.
     More authors of the same name and address are kept in the DB, but that's OK.'''
     dap = models.ForeignKey(Dap)
     author = models.CharField(max_length=200)
@@ -191,19 +191,19 @@ class Author(models.Model):
 
 
 class Assistant(models.Model):
-    '''Assistant or snippet contained in a dap.
-    It allows to associate more assistants to one dap.'''
+    '''Assistant or Snippet contained in a Dap.
+    It allows to associate more Assistants to one Dap.'''
     dap = models.ForeignKey(Dap)
     assistant = models.CharField(max_length=200)
 
     def __unicode__(self):
-        '''Returns the assistant pseudo path'''
+        '''Returns the Assistant pseudo path'''
         return self.assistant
 
 
 class Dependency(models.Model):
-    '''Dependency field of dap's metadata.
-    It allows to associate more dependencies to one dap.'''
+    '''Dependency field of Dap's metadata.
+    It allows to associate more dependencies to one Dap.'''
     dap = models.ForeignKey(Dap)
     dependency = models.CharField(max_length=250)
 
@@ -213,8 +213,8 @@ class Dependency(models.Model):
 
 
 class Platform(models.Model):
-    '''Supported platform field of dap's metadata.
-    It allows to associate more platforms to one dap
+    '''Supported platform field of Dap's metadata.
+    It allows to associate more platforms to one Dap
     For each platform, only one DB filed is created.'''
     platform = models.CharField(max_length=32, unique=True)
 
@@ -235,7 +235,7 @@ class Rank(models.Model):
     user = models.ForeignKey(auth_models.User)
 
     def __unicode__(self):
-        '''Returns metadap name, username and rank, in this order, separated by spaces'''
+        '''Returns MetaDap name, username and rank, in this order, separated by spaces'''
         return self.metadap.package_name + ' ' + self.user.username + ' ' + str(self.rank)
 
     class Meta:
@@ -243,14 +243,14 @@ class Rank(models.Model):
 
 
 class Report(models.Model):
-    '''Model that stores info about evil daps reported'''
+    '''Model that stores info about evil MetaDaps reported'''
     LEGAL = 'l'
     MALWARE = 'm'
     HATE = 'h'
     SPAM = 's'
     TYPE_CHOICES = (
         (LEGAL, 'Legal (copyright issues, non-free or patented content...)'),
-        (MALWARE, 'Malware (this dap tries to break my system or leak my data)'),
+        (MALWARE, 'Malware (this DAP tries to break my system or leak my data)'),
         (HATE, 'Hate (racism, sexism, adult content, etc)'),
         (SPAM, 'Spam or advertising'),
     )
@@ -265,7 +265,7 @@ class Report(models.Model):
     solved = models.BooleanField(default=False)
 
     def __unicode__(self):
-        '''Returns metadap name, username or e-mail and typ of report sepearted by spaces'''
+        '''Returns MetaDap name, username or e-mail and type of report separated by spaces'''
         if self.reporter:
             user = self.reporter.username
         elif self.email:
@@ -324,7 +324,7 @@ class Profile(models.Model):
 
 @receiver(signals.post_delete, sender=Dap)
 def dap_post_delete_handler(sender, **kwargs):
-    '''When a dap is deleted, delete the associated file
+    '''When a Dap is deleted, delete the associated file
     and refill values of latest and latest_stable to the DB.
     Regenerate the file with dependencies as well'''
     dap = kwargs['instance']

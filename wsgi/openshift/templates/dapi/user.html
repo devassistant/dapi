@@ -36,7 +36,7 @@
   <div class="container col-sm-4">
 {% if u.metadap_set.exists %}
     <div class="panel panel-default">
-      <div class="panel-heading">Daps owned by {{ u }}</div>
+      <div class="panel-heading">DAPs owned by {{ u }}</div>
       <ul class="list-group">
       {% for dap in u.metadap_set.all|dictsort:'package_name'|dictsortreversed:'active' %}
         <li class="list-group-item">
@@ -46,14 +46,14 @@
       </ul>
     </div>
 {% else %}
-    <p>{{ u }} doesn't own any daps yet.</p>
+    <p>{{ u }} doesn't own any DAPs yet.</p>
 {% endif %}
   </div>
 
   <div class="container col-sm-4">
 {% if u.codap_set.exists %}
     <div class="panel panel-default">
-      <div class="panel-heading">Daps comaintained by {{ u }}</div>
+      <div class="panel-heading">DAPs comaintained by {{ u }}</div>
       <ul class="list-group">
       {% for dap in u.codap_set.all|dictsort:'package_name'|dictsortreversed:'active' %}
         <li class="list-group-item">
@@ -63,7 +63,7 @@
       </ul>
     </div>
 {% else %}
-    <p>{{ u }} doesn't comaintain any daps.</p>
+    <p>{{ u }} doesn't comaintain any DAPs.</p>
 {% endif %}
   </div>
 

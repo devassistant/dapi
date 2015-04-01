@@ -50,10 +50,10 @@
 {% if dap.active %}
 <div class="panel panel-danger">
   <div class="panel-heading">
-    <h3 class="panel-title">Deactivate this dap</h3>
+    <h3 class="panel-title">Deactivate this DAP</h3>
   </div>
   <div class="panel-body">
-    <p>When you deactivate a dap, no new version can be uploaded and dap is no longer available in search results (unless manually specified).</p>
+    <p>When you deactivate a DAP, no new version can be uploaded and DAP is no longer available in search results (unless manually specified).</p>
     <form method="post">
       {% csrf_token %}
       <input type="hidden" id="id_active" name="active" value="" />
@@ -71,10 +71,10 @@
 {% else %}
 <div class="panel panel-success">
   <div class="panel-heading">
-    <h3 class="panel-title">Activate this dap</h3>
+    <h3 class="panel-title">Activate this DAP</h3>
   </div>
   <div class="panel-body">
-    <p>This dap is now deactivated, no new version can be uploaded and dap is no longer available in search results (unless manually specified).</p>
+    <p>This DAP is now deactivated, no new version can be uploaded and DAP is no longer available in search results (unless manually specified).</p>
     <form method="post">
       {% csrf_token %}
       <input type="hidden" id="id_active" name="active" value="active" />
@@ -95,10 +95,10 @@
 
 <div class="panel panel-danger">
   <div class="panel-heading">
-    <h3 class="panel-title">Delete this dap</h3>
+    <h3 class="panel-title">Delete this DAP</h3>
   </div>
   <div class="panel-body">
-    <p>Delete this dap only if simple deactivation is not enough. Once you delete the dap, all dap versions and metadata are deleted forever. Another user can then upload different dap with the same name.</p>
+    <p>Delete this DAP only if simple deactivation is not enough. Once you delete the DAP, all DAP versions and metadata are deleted forever. Another user can then upload different DAP with the same name.</p>
     <form method="post">
       {% csrf_token %}
       {{ dform.non_field_errors }}

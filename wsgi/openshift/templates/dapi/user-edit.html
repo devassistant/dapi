@@ -53,7 +53,7 @@
   </div>
   <div class="panel-body">
     {% if u.metadap_set.exists %}
-    <p>There are daps associated to {{ u.username }}, thus it cannot be deleted. If you really want to delete {{ u.username }}, go and transfer those daps to someone else, or delete them entirely.</p>
+    <p>There are DAPs associated to {{ u.username }}, thus it cannot be deleted. If you really want to delete {{ u.username }}, go and transfer those DAPs to someone else, or delete them entirely.</p>
     {% else %}
     <form method="post">
       {% csrf_token %}

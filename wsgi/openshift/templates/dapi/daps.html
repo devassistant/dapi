@@ -4,7 +4,7 @@
 
 {% if daps_list %}
 <div class="page-header">
-  <h1>{% block title %}{% if tag %}Daps tagged with {{ tag }}{% else %}All active daps{% endif %}{% endblock %}</h1>
+  <h1>{% block title %}{% if tag %}DAPs tagged with {{ tag }}{% else %}All active DAPs{% endif %}{% endblock %}</h1>
 </div>
 {% if daps_list.paginator.num_pages > 1 %}
 <ul class="pagination">
@@ -30,7 +30,7 @@
   </table>
 </div>
 {% else %}
-<p>There are no active daps{% if tag %} tagged with {{ tag }}{% endif %}.</p>
+<p>There are no active DAPs{% if tag %} tagged with {{ tag }}{% endif %}.</p>
 {% endif %}
 
 {% endblock %}

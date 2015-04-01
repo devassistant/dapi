@@ -204,9 +204,9 @@ class ReportAnonymousForm(ReportForm):
 
 
 class MetaDapSearchForm(SearchForm):
-    noassistants = forms.BooleanField(required=False, label='Include daps without assistants')
-    unstable = forms.BooleanField(required=False, label='Include daps without stable release')
-    notactive = forms.BooleanField(required=False, label='Include deactivated daps')
+    noassistants = forms.BooleanField(required=False, label='Include DAPs without Assistants')
+    unstable = forms.BooleanField(required=False, label='Include DAPs without stable release')
+    notactive = forms.BooleanField(required=False, label='Include deactivated DAPs')
     platform = forms.ChoiceField(required=False, choices=[('', '*')] + [(p, p) for p in PLATFORMS],
                                  label='Supported on specific platform')
     minimal_rank = forms.DecimalField(required=False, label='Minimal average rank')
