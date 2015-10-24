@@ -68,6 +68,7 @@ ALLOWED_HOSTS = [
     'dapi-devassistant.rhcloud.com',
     'staging-devassistant.rhcloud.com',
     'mirror-devassistant.rhcloud.com',
+    'badssl.hroncok.cz',
 ]
 
 # Local time zone for this installation. Choices can be found here:
